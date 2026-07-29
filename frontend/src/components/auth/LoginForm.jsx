@@ -1,12 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { User, Lock } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 
 function LoginForm() {
+
+    const navigate = useNavigate();
+    const { login } = useAuth();
+    const { addToast } = useToast();
 
     const [form, setForm] = useState({
         email: "",
         password: "",
     });
+    const [submitting, setSubmitting] = useState(false);
 
     const handleChange = (e) => {
         setForm({
@@ -15,11 +23,22 @@ function LoginForm() {
         });
     };
 
-    const handleSubmit = (e) => {
+    async function handleSubmit(e) {
         e.preventDefault();
+        if (submitting) return;
 
-        console.log(form);
-    };
+        try {
+            setSubmitting(true);
+            await login(form.email, form.password);
+            addToast("Welcome back!", "success");
+            navigate("/dashboard");
+        } catch (err) {
+            const message = err.response?.data?.message || "Login failed. Please try again.";
+            addToast(message, "error");
+        } finally {
+            setSubmitting(false);
+        }
+    }
 
     return (
         <form className="login-box" onSubmit={handleSubmit}>
@@ -47,6 +66,7 @@ function LoginForm() {
                     placeholder="Enter your email"
                     value={form.email}
                     onChange={handleChange}
+                    required
                 />
             </div>
 
@@ -61,6 +81,7 @@ function LoginForm() {
                     placeholder="Enter your password"
                     value={form.password}
                     onChange={handleChange}
+                    required
                 />
             </div>
 
@@ -78,8 +99,9 @@ function LoginForm() {
             <button
                 type="submit"
                 className="login-btn"
+                disabled={submitting}
             >
-                Login
+                {submitting ? "Signing in..." : "Login"}
             </button>
 
             <div className="divider">

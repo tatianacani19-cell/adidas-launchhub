@@ -8,8 +8,12 @@ import {
 
 import "../../styles/sidebar.css";
 import logo from "../../assets/images/adidas-logo.png";
+import { useAuth } from "../../context/AuthContext";
 
 function Sidebar() {
+
+    const { user } = useAuth();
+
     const menuItems = [
         {
             name: "Dashboard",
@@ -33,6 +37,10 @@ function Sidebar() {
         },
     ];
 
+    const initials = user?.name
+        ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase()
+        : "U";
+
     return (
         <aside className="sidebar">
 
@@ -41,7 +49,7 @@ function Sidebar() {
                 <h2>LaunchHub</h2>
             </div>
 
-            <nav className="sidebar-menu">
+            <nav className="sidebar-menu" aria-label="Main navigation">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
 
@@ -60,16 +68,15 @@ function Sidebar() {
                 })}
             </nav>
 
-            {/* Usuario al final del Sidebar */}
             <div className="sidebar-user">
 
                 <div className="avatar">
-                    F
+                    {initials}
                 </div>
 
                 <div>
-                    <strong>Tatiana C.</strong>
-                    <p>Marketing User</p>
+                    <strong>{user?.name || "User"}</strong>
+                    <p>{user?.role || "Role"}</p>
                 </div>
 
             </div>
