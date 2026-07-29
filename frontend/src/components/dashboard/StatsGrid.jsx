@@ -1,30 +1,36 @@
 import StatCard from "./StatCard";
 
-function StatsGrid() {
+function StatsGrid({ stats }) {
     return (
         <div className="stats-grid">
 
             <StatCard
-                title="Drafts"
-                value={4}
+                title="Total Launches"
+                value={stats.total}
+                subtitle="All launches"
+            />
+
+            <StatCard
+                title="Draft"
+                value={stats.draft}
                 subtitle="Pending approval"
             />
 
             <StatCard
                 title="In Review"
-                value={3}
-                subtitle="Pending approval"
+                value={stats.inReview}
+                subtitle="Under review"
             />
 
             <StatCard
                 title="Approved"
-                value={7}
+                value={stats.approved}
                 subtitle="Ready to publish"
             />
 
             <StatCard
                 title="Published"
-                value={12}
+                value={stats.published}
                 subtitle="Live launches"
             />
 

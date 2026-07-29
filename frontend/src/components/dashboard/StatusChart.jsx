@@ -7,13 +7,6 @@ import {
 
 import "../../styles/dashboard.css";
 
-const data = [
-    { name: "Draft", value: 4 },
-    { name: "In Review", value: 3 },
-    { name: "Approved", value: 7 },
-    { name: "Published", value: 12 },
-];
-
 const COLORS = [
     "#D6D6D6",
     "#BFBFBF",
@@ -21,12 +14,14 @@ const COLORS = [
     "#6F6F6F",
 ];
 
-function StatusChart() {
+function StatusChart({ stats }) {
 
-    const total = data.reduce(
-        (sum, item) => sum + item.value,
-        0
-    );
+    const data = [
+        { name: "Draft", value: stats.draft },
+        { name: "In Review", value: stats.inReview },
+        { name: "Approved", value: stats.approved },
+        { name: "Published", value: stats.published },
+    ];
 
     return (
         <div className="dashboard-card">
@@ -62,7 +57,7 @@ function StatusChart() {
                 </ResponsiveContainer>
 
                 <div className="chart-center">
-                    <h2>{total}</h2>
+                    <h2>{stats.total}</h2>
                     <span>Total</span>
                 </div>
 
