@@ -4,47 +4,47 @@ let transporter = null;
 
 function getTransporter() {
     if (!transporter) {
-        console.log("Creating SMTP transporter...");
-        console.log("  EMAIL_HOST:", process.env.EMAIL_HOST || "(undefined)");
-        console.log("  EMAIL_PORT:", process.env.EMAIL_PORT || "(undefined)");
-        console.log("  EMAIL_USER:", process.env.EMAIL_USER || "(undefined)");
-        console.log("  EMAIL_PASSWORD:", process.env.EMAIL_PASSWORD ? "(set)" : "(undefined)");
+        try {
+            console.log("[EMAIL] Creating SMTP transporter...");
+            console.log("[EMAIL]   Host:", process.env.EMAIL_HOST || "(undefined)");
+            console.log("[EMAIL]   Port:", process.env.EMAIL_PORT || "(undefined)");
+            console.log("[EMAIL]   User:", process.env.EMAIL_USER || "(undefined)");
+            console.log("[EMAIL]   Secure:", false);
 
-        transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST,
-            port: parseInt(process.env.EMAIL_PORT, 10) || 587,
-            secure: false,
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD,
-            },
-        });
+            transporter = nodemailer.createTransport({
+                host: process.env.EMAIL_HOST,
+                port: parseInt(process.env.EMAIL_PORT, 10) || 587,
+                secure: false,
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASSWORD,
+                },
+                connectionTimeout: 10000,
+                greetingTimeout: 10000,
+                socketTimeout: 10000,
+            });
+            console.log("[EMAIL] SMTP transporter created successfully");
+        } catch (error) {
+            console.error("[EMAIL] Failed to create SMTP transporter:", error.message);
+            throw error;
+        }
     }
     return transporter;
 }
-
-export const verifyEmailConnection = async () => {
-    try {
-        const transport = getTransporter();
-        await transport.verify();
-        console.log("✅ Email service: SMTP connection verified");
-        return true;
-    } catch (error) {
-        console.error("❌ Email service: SMTP connection failed");
-        console.error("   Host:", process.env.EMAIL_HOST);
-        console.error("   Port:", process.env.EMAIL_PORT);
-        console.error("   User:", process.env.EMAIL_USER || "(empty)");
-        console.error("   Error:", error.message);
-        return false;
-    }
-};
 
 export const sendResetEmail = async (email, token) => {
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
     const resetLink = `${frontendUrl}/reset-password/${token}`;
 
+    console.log("[EMAIL] ────────────────────────────────────────");
+    console.log("[EMAIL] Preparing to send reset email");
+    console.log("[EMAIL]   To:", email);
+    console.log("[EMAIL]   From:", process.env.EMAIL_USER);
+    console.log("[EMAIL]   Subject: LaunchHub Password Reset");
+    console.log("[EMAIL]   Reset link:", resetLink);
+
     const mailOptions = {
-        from: process.env.EMAIL_USER,
+        from: `"LaunchHub" <${process.env.EMAIL_USER}>`,
         to: email,
         subject: "LaunchHub Password Reset",
         html: `
@@ -73,7 +73,43 @@ export const sendResetEmail = async (email, token) => {
         `,
     };
 
-    const transport = getTransporter();
-    const info = await transport.sendMail(mailOptions);
-    return info;
+    try {
+        const transport = getTransporter();
+        console.log("[EMAIL] Sending email via SMTP...");
+        const info = await transport.sendMail(mailOptions);
+        console.log("[EMAIL] Email sent successfully!");
+        console.log("[EMAIL]   Message ID:", info.messageId);
+        console.log("[EMAIL]   Accepted:", JSON.stringify(info.accepted));
+        console.log("[EMAIL]   Rejected:", JSON.stringify(info.rejected));
+        console.log("[EMAIL] ────────────────────────────────────────");
+        return info;
+    } catch (error) {
+        console.error("[EMAIL] ────────────────────────────────────────");
+        console.error("[EMAIL] FAILED to send email");
+        console.error("[EMAIL]   To:", email);
+        console.error("[EMAIL]   Error name:", error.name);
+        console.error("[EMAIL]   Error message:", error.message);
+        if (error.code) console.error("[EMAIL]   Error code:", error.code);
+        if (error.response) console.error("[EMAIL]   SMTP response:", error.response);
+        if (error.responseCode) console.error("[EMAIL]   Response code:", error.responseCode);
+        if (error.envelope) console.error("[EMAIL]   Envelope:", JSON.stringify(error.envelope));
+
+        if (error.message.includes("Invalid login") || error.message.includes("authentication")) {
+            console.error("[EMAIL]   >>> AUTHENTICATION FAILED <<<");
+            console.error("[EMAIL]   Your Gmail App Password may be invalid or expired.");
+            console.error("[EMAIL]   Steps to fix:");
+            console.error("[EMAIL]     1. Go to https://myaccount.google.com/apppasswords");
+            console.error("[EMAIL]     2. Generate a new App Password");
+            console.error("[EMAIL]     3. Update EMAIL_PASSWORD in backend/.env");
+            console.error("[EMAIL]     4. Restart the server");
+        }
+
+        if (error.message.includes("ECONNREFUSED") || error.message.includes("ETIMEDOUT")) {
+            console.error("[EMAIL]   >>> CONNECTION FAILED <<<");
+            console.error("[EMAIL]   Cannot reach Gmail SMTP server.");
+            console.error("[EMAIL]   Check your internet connection and firewall settings.");
+        }
+        console.error("[EMAIL] ────────────────────────────────────────");
+        throw error;
+    }
 };

@@ -71,24 +71,33 @@ export const me = async (req, res) => {
 export const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
+        const timestamp = new Date().toISOString();
 
-        console.log("========================================");
-        console.log("Forgot password request received");
-        console.log("Searching user:", email);
+        console.log("══════════════════════════════════════════");
+        console.log(`[${timestamp}] FORGOT PASSWORD REQUEST`);
+        console.log(`[${timestamp}] Received email:`, email || "(empty)");
+        console.log(`[${timestamp}] Request IP:`, req.ip);
+        console.log(`[${timestamp}] Request body keys:`, Object.keys(req.body));
 
         if (!email) {
-            console.log("No email provided");
+            console.log(`[${timestamp}] VALIDATION FAILED: No email provided`);
+            console.log("══════════════════════════════════════════");
             return res.status(400).json({ message: "Email is required." });
         }
 
-        const user = await User.findOne({ email: email.toLowerCase().trim() });
-        console.log("User found:", user ? user.email : "not found");
+        const normalizedEmail = email.toLowerCase().trim();
+        console.log(`[${timestamp}] Searching MongoDB for email: "${normalizedEmail}"`);
+
+        const user = await User.findOne({ email: normalizedEmail });
 
         if (!user) {
-            console.log("No user with that email — returning generic message");
-            console.log("========================================");
+            console.log(`[${timestamp}] USER NOT FOUND in database for email: "${normalizedEmail}"`);
+            console.log(`[${timestamp}] Returning generic response (security measure)`);
+            console.log("══════════════════════════════════════════");
             return res.json({ message: "If the email exists, a recovery link has been sent." });
         }
+
+        console.log(`[${timestamp}] USER FOUND: id=${user._id}, name="${user.name}", email="${user.email}"`);
 
         const token = crypto.randomBytes(32).toString("hex");
         const expires = new Date(Date.now() + 15 * 60 * 1000);
@@ -96,27 +105,59 @@ export const forgotPassword = async (req, res) => {
         user.resetPasswordToken = token;
         user.resetPasswordExpires = expires;
         await user.save();
-        console.log("Reset token saved to DB");
+        console.log(`[${timestamp}] RESET TOKEN SAVED to MongoDB`);
+        console.log(`[${timestamp}]   Token (first 16 chars): ${token.substring(0, 16)}...`);
+        console.log(`[${timestamp}]   Token length: ${token.length} chars`);
+        console.log(`[${timestamp}]   Expires at: ${expires.toISOString()}`);
+        console.log(`[${timestamp}]   Time remaining: 15 minutes`);
 
         const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
         const resetUrl = `${frontendUrl}/reset-password/${token}`;
 
-        console.log("Reset URL:", resetUrl);
-        console.log("Sending email to:", user.email);
+        console.log(`[${timestamp}] RESET URL GENERATED:`);
+        console.log(`[${timestamp}]   ${resetUrl}`);
+        console.log(`[${timestamp}] FRONTEND_URL env:`, process.env.FRONTEND_URL || "(using default)");
+
+        console.log(`[${timestamp}] SENDING EMAIL to: ${user.email}`);
+
+        let emailSent = false;
+        let emailErrorDetails = null;
 
         try {
             const info = await sendResetEmail(user.email, token);
-            console.log("Email sent:", info.messageId);
+            emailSent = true;
+            console.log(`[${timestamp}] EMAIL SENT SUCCESSFULLY`);
+            console.log(`[${timestamp}]   Message ID: ${info.messageId}`);
+            console.log(`[${timestamp}]   Accepted: ${JSON.stringify(info.accepted)}`);
         } catch (emailError) {
-            console.error("Email sending FAILED:", emailError.message);
-            if (emailError.code) console.error("Error code:", emailError.code);
-            if (emailError.response) console.error("SMTP response:", emailError.response);
+            emailErrorDetails = {
+                message: emailError.message,
+                code: emailError.code,
+                response: emailError.response,
+            };
+            console.error(`[${timestamp}] EMAIL SENDING FAILED`);
+            console.error(`[${timestamp}]   Error: ${emailError.message}`);
+            if (emailError.code) console.error(`[${timestamp}]   Code: ${emailError.code}`);
+            if (emailError.response) console.error(`[${timestamp}]   SMTP response: ${emailError.response}`);
+            if (emailError.name) console.error(`[${timestamp}]   Error type: ${emailError.name}`);
         }
 
-        console.log("========================================");
+        console.log(`[${timestamp}] RESULT SUMMARY:`);
+        console.log(`[${timestamp}]   User found: YES`);
+        console.log(`[${timestamp}]   Token saved: YES`);
+        console.log(`[${timestamp}]   Email sent: ${emailSent ? "YES" : "NO"}`);
+        if (emailErrorDetails) {
+            console.log(`[${timestamp}]   Email error: ${emailErrorDetails.message}`);
+        }
+        console.log("══════════════════════════════════════════");
+
         res.json({ message: "If the email exists, a recovery link has been sent." });
     } catch (error) {
-        console.error("Forgot password error:", error);
+        const timestamp = new Date().toISOString();
+        console.error(`[${timestamp}] FORGOT PASSWORD FATAL ERROR:`, error);
+        console.error(`[${timestamp}]   Error name:`, error.name);
+        console.error(`[${timestamp}]   Error message:`, error.message);
+        if (error.stack) console.error(`[${timestamp}]   Stack trace:`, error.stack);
         res.status(500).json({ message: "Internal server error." });
     }
 };
