@@ -156,3 +156,19 @@
     color: #dc2626;
 
 }
+
+.launchs-status,
+.launchs-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 48px 16px;
+    background: white;
+    border-radius: 12px;
+    color: #8C8C8C;
+    font-size: 15px;
+}
+
+.launchs-error {
+    color: #dc2626;
+}

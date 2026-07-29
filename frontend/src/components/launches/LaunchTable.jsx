@@ -2,6 +2,14 @@ import LaunchRow from "./LaunchRow";
 
 function LaunchTable({ launches, onDelete }) {
 
+    if (launches.length === 0) {
+        return (
+            <div className="launchs-empty">
+                <p>No launches found.</p>
+            </div>
+        );
+    }
+
     return (
         <table className="launch-table">
 
