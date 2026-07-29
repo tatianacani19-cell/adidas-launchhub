@@ -1,6 +1,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
+import { formatDateTime } from "../../utils/formatDateTime";
 
 function LaunchRow({ launch, onDelete }) {
 
@@ -40,7 +41,7 @@ function LaunchRow({ launch, onDelete }) {
 
             <td>{launch.owner || "Marketing Team"}</td>
 
-            <td>{launch.updated || "-"}</td>
+            <td>{formatDateTime(launch.updatedAt)}</td>
 
             <td>
 
