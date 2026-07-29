@@ -1,0 +1,88 @@
+const calendarEvents = [
+    {
+        id: "1",
+        title: "Samba OG – Core Black",
+        date: "2026-07-15",
+        market: "Colombia",
+        status: "Launch",
+    },
+    {
+        id: "2",
+        title: "Runfalcon 3.0 Women",
+        date: "2026-07-16",
+        market: "Colombia",
+        status: "Review",
+    },
+    {
+        id: "3",
+        title: "Ultraboost 24",
+        date: "2026-07-18",
+        market: "Mexico",
+        status: "Approve",
+    },
+    {
+        id: "4",
+        title: "Stan Smith Lux",
+        date: "2026-07-20",
+        market: "Chile",
+        status: "Due",
+    },
+    {
+        id: "5",
+        title: "Gazelle Indoor",
+        date: "2026-07-22",
+        market: "Argentina",
+        status: "Meeting",
+    },
+    {
+        id: "6",
+        title: "Campus 00s",
+        date: "2026-07-25",
+        market: "Colombia",
+        status: "Launch",
+    },
+    {
+        id: "7",
+        title: "Adizero Adios Pro 4",
+        date: "2026-07-28",
+        market: "Mexico",
+        status: "Review",
+    },
+    {
+        id: "8",
+        title: "Forum Low CL",
+        date: "2026-08-01",
+        market: "Colombia",
+        status: "Approve",
+    },
+    {
+        id: "9",
+        title: "NMD R1 V3",
+        date: "2026-08-05",
+        market: "Chile",
+        status: "Due",
+    },
+    {
+        id: "10",
+        title: "Predator Edge",
+        date: "2026-08-10",
+        market: "Argentina",
+        status: "Meeting",
+    },
+    {
+        id: "11",
+        title: "Superturf Adventure",
+        date: "2026-08-15",
+        market: "Colombia",
+        status: "Launch",
+    },
+    {
+        id: "12",
+        title: "OZWEEGO",
+        date: "2026-08-18",
+        market: "Mexico",
+        status: "Review",
+    },
+];
+
+export default calendarEvents;
