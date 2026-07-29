@@ -1,5 +1,3 @@
-import "../../styles/dashboard.css";
-
 function StatCard({
     title,
     value,

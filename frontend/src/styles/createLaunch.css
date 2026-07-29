@@ -6,23 +6,25 @@
 
 .form-card {
     width: 900px;
-    background: #ffffff;
+    background: var(--bg-secondary);
     border-radius: 18px;
     padding: 40px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: background var(--transition-normal), border-color var(--transition-normal);
 }
 
 .form-card h1 {
     margin: 0;
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 700;
-    color: #111;
+    color: var(--text-primary);
 }
 
 .form-card p {
     margin-top: 8px;
     margin-bottom: 35px;
-    color: #6b7280;
+    color: var(--text-muted);
     font-size: 15px;
 }
 
@@ -36,25 +38,21 @@
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 8px;
-    color: #222;
+    color: var(--text-primary);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-
     width: 100%;
     box-sizing: border-box;
-
-    padding: 14px 16px;
-
-    border: 1px solid #d9d9d9;
-    border-radius: 10px;
-
-    font-size: 15px;
-
-    transition: .2s;
-    background: white;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .form-group textarea {
@@ -65,70 +63,48 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-
     outline: none;
-    border-color: #000;
-
-    box-shadow: 0 0 0 3px rgba(0, 0, 0, .08);
-
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
 }
 
 .form-buttons {
-
     display: flex;
     justify-content: flex-end;
-    gap: 15px;
-
+    gap: 12px;
     margin-top: 35px;
-
 }
 
 .cancel-btn {
-
-    background: white;
-
-    border: 1px solid #d9d9d9;
-
-    border-radius: 10px;
-
-    padding: 14px 28px;
-
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 24px;
     cursor: pointer;
-
     font-weight: 600;
-
-    transition: .2s;
-
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
 }
 
 .cancel-btn:hover {
-
-    background: #f4f4f4;
-
+    background: var(--bg-hover);
+    border-color: var(--accent);
+    color: var(--text-primary);
 }
 
 .save-btn {
-
-    background: #000;
-
-    color: white;
-
+    background: var(--accent);
+    color: #fff;
     border: none;
-
-    border-radius: 10px;
-
-    padding: 14px 28px;
-
+    border-radius: 8px;
+    padding: 12px 24px;
     cursor: pointer;
-
     font-weight: 600;
-
-    transition: .2s;
-
+    font-size: 14px;
+    transition: background var(--transition-fast);
 }
 
 .save-btn:hover {
-
-    background: #222;
-
+    background: var(--accent-hover);
 }

@@ -8,10 +8,10 @@ function LaunchRow({ launch, onDelete }) {
 
     return (
 
-        <tr>
+        <tr tabIndex={0} aria-label={`Launch: ${launch.title}`}>
 
             <td>
-                <input type="checkbox" />
+                <input type="checkbox" aria-label={`Select ${launch.title}`} />
             </td>
 
             <td>
@@ -49,23 +49,15 @@ function LaunchRow({ launch, onDelete }) {
                     <button
                         className="action-btn edit"
                         onClick={() => navigate(`/launches/edit/${launch.id}`)}
+                        aria-label={`Edit ${launch.title}`}
                     >
                         <Pencil size={16} />
                     </button>
 
                     <button
                         className="action-btn delete"
-                        onClick={async () => {
-
-                            const confirmDelete = window.confirm(
-                                "Are you sure you want to delete this launch?"
-                            );
-
-                            if (!confirmDelete) return;
-
-                            await onDelete(launch.id);
-
-                        }}
+                        onClick={() => onDelete(launch)}
+                        aria-label={`Delete ${launch.title}`}
                     >
                         <Trash2 size={16} />
                     </button>

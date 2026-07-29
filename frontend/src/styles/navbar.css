@@ -1,48 +1,75 @@
 .navbar {
-
-    height: 72px;
-
-    background: white;
-
-    border-bottom: 1px solid #ECECEC;
-
+    height: 64px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    transition: background var(--transition-normal), border-color var(--transition-normal);
 }
 
 .navbar h2 {
-    font-size: 24px;
-}
-
-.navbar p {
-    color: #888;
-    font-size: 14px;
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
 }
 
 .navbar-right {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 8px;
 }
 
-.notification-btn {
-    width: 42px;
-    height: 42px;
+.navbar-icon-btn {
+    width: 36px;
+    height: 36px;
     border: none;
-    border-radius: 50%;
-    background: #f3f3f3;
+    border-radius: 8px;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    color: var(--text-secondary);
+    transition: background var(--transition-fast), color var(--transition-fast);
 }
 
-.user-avatar {
-    width: 42px;
-    height: 42px;
+.navbar-icon-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.user-avatar-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
     border-radius: 50%;
-    background: black;
-    color: white;
+    background: var(--accent);
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity var(--transition-fast);
+}
+
+.user-avatar-btn:hover {
+    opacity: 0.85;
+}
+
+.nav-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
 }

@@ -1,6 +1,6 @@
 import StatCard from "./StatCard";
 
-function StatsGrid({ stats }) {
+function StatsGrid({ stats, analytics }) {
     return (
         <div className="stats-grid">
 
@@ -33,6 +33,22 @@ function StatsGrid({ stats }) {
                 value={stats.published}
                 subtitle="Live launches"
             />
+
+            {analytics && (
+                <>
+                    <StatCard
+                        title="Completion Rate"
+                        value={`${analytics.completionRate}%`}
+                        subtitle="Approved + Published"
+                    />
+
+                    <StatCard
+                        title="Markets"
+                        value={analytics.marketCount}
+                        subtitle="Active markets"
+                    />
+                </>
+            )}
 
         </div>
     );
