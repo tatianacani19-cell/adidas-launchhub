@@ -1,110 +1,129 @@
 .create-launch-page {
-
     display: flex;
-
     justify-content: center;
-
+    padding: 30px;
 }
 
 .form-card {
-
-    width: 850px;
-
-    background: white;
-
-    border-radius: 16px;
-
+    width: 900px;
+    background: #ffffff;
+    border-radius: 18px;
     padding: 40px;
-
     box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
-
 }
 
 .form-card h1 {
-
     margin: 0;
-
-    font-size: 34px;
-
+    font-size: 32px;
     font-weight: 700;
-
+    color: #111;
 }
 
 .form-card p {
-
-    color: #8C8C8C;
-
     margin-top: 8px;
-
     margin-bottom: 35px;
-
+    color: #6b7280;
+    font-size: 15px;
 }
 
 .form-group {
-
     display: flex;
-
     flex-direction: column;
-
     margin-bottom: 22px;
-
 }
 
 .form-group label {
-
+    font-size: 14px;
     font-weight: 600;
-
     margin-bottom: 8px;
-
+    color: #222;
 }
 
 .form-group input,
+.form-group select,
+.form-group textarea {
 
-.form-group textarea,
+    width: 100%;
+    box-sizing: border-box;
 
-.form-group select {
+    padding: 14px 16px;
 
-    padding: 14px;
-
-    border: 1px solid #D9D9D9;
-
+    border: 1px solid #d9d9d9;
     border-radius: 10px;
 
     font-size: 15px;
 
-    outline: none;
+    transition: .2s;
+    background: white;
+}
 
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
 }
 
 .form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
 
-.form-group textarea:focus,
+    outline: none;
+    border-color: #000;
 
-.form-group select:focus {
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, .08);
 
-    border-color: black;
+}
+
+.form-buttons {
+
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+
+    margin-top: 35px;
+
+}
+
+.cancel-btn {
+
+    background: white;
+
+    border: 1px solid #d9d9d9;
+
+    border-radius: 10px;
+
+    padding: 14px 28px;
+
+    cursor: pointer;
+
+    font-weight: 600;
+
+    transition: .2s;
+
+}
+
+.cancel-btn:hover {
+
+    background: #f4f4f4;
 
 }
 
 .save-btn {
 
-    margin-top: 15px;
-
-    background: black;
+    background: #000;
 
     color: white;
 
     border: none;
 
-    padding: 14px 28px;
-
     border-radius: 10px;
+
+    padding: 14px 28px;
 
     cursor: pointer;
 
-    font-size: 15px;
-
     font-weight: 600;
+
+    transition: .2s;
 
 }
 

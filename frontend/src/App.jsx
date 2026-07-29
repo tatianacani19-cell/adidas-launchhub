@@ -6,6 +6,7 @@ import Launches from "./pages/Launches";
 import CreateLaunch from "./pages/CreateLaunch";
 import Calendar from "./pages/Calendar";
 import Settings from "./pages/Settings";
+import EditLaunch from "./pages/EditLaunch";
 
 function App() {
   return (
@@ -17,13 +18,13 @@ function App() {
 
         <Route path="/launches" element={<Launches />} />
 
-        <Route path="/launches/new" element={<CreateLaunch />} />
+        <Route path="/launches/create" element={<CreateLaunch />} />
 
         <Route path="/calendar" element={<Calendar />} />
 
         <Route path="/settings" element={<Settings />} />
 
-        <Route path="/launches/create" element={<CreateLaunch />} />
+        <Route path="/launches/edit/:id" element={<EditLaunch />} />
       </Routes>
     </BrowserRouter>
   );

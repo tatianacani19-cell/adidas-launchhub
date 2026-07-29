@@ -1,7 +1,13 @@
+import { Pencil, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 
 function LaunchRow({ launch }) {
+
+    const navigate = useNavigate();
+
     return (
+
         <tr>
 
             <td>
@@ -32,12 +38,44 @@ function LaunchRow({ launch }) {
                 <StatusBadge status={launch.status} />
             </td>
 
-            <td>{launch.owner}</td>
+            <td>{launch.owner || "Marketing Team"}</td>
 
-            <td>{launch.updated}</td>
+            <td>{launch.updated || "-"}</td>
+
+            <td>
+
+                <div className="actions">
+
+                    <Pencil
+                        size={18}
+                        className="action-icon edit"
+                        onClick={() => navigate(`/launches/edit/${launch.id}`)}
+                    />
+
+                    <Trash2
+                        size={18}
+                        className="action-icon delete"
+                        onClick={async () => {
+
+                            const confirmDelete = window.confirm(
+                                "Are you sure you want to delete this launch?"
+                            );
+
+                            if (!confirmDelete) return;
+
+                            await onDelete(launch.id);
+
+                        }}
+                    />
+
+                </div>
+
+            </td>
 
         </tr>
+
     );
+
 }
 
 export default LaunchRow;

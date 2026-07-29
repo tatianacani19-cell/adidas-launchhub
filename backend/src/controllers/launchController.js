@@ -1,5 +1,6 @@
 import {
     getAllLaunches,
+    getLaunchById as getLaunchByIdService,
     createLaunch,
     updateLaunch,
     deleteLaunch
@@ -32,4 +33,20 @@ export const removeLaunch = (req, res) => {
     res.json({
         message: "Launch deleted"
     });
+};
+
+export const getLaunchById = (req, res) => {
+
+    const launch = getLaunchByIdService(req.params.id);
+
+    if (!launch) {
+
+        return res.status(404).json({
+            message: "Launch not found"
+        });
+
+    }
+
+    res.json(launch);
+
 };

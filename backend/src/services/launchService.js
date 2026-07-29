@@ -10,6 +10,11 @@ let launches = [
 ];
 
 export const getAllLaunches = () => launches;
+export const getLaunchById = (id) => {
+
+    return launches.find(launch => launch.id == id);
+
+};
 
 export const createLaunch = (launch) => {
     const newLaunch = {

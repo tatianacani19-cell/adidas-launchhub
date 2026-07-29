@@ -118,3 +118,41 @@
     background: #fafafa;
 
 }
+
+.actions {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+}
+
+.action-icon {
+
+    cursor: pointer;
+
+    color: #555;
+
+    transition: .2s;
+
+}
+
+.action-icon:hover {
+
+    transform: scale(1.15);
+
+}
+
+.action-icon.edit:hover {
+
+    color: #000;
+
+}
+
+.action-icon.delete:hover {
+
+    color: #dc2626;
+
+}
