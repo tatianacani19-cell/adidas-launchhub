@@ -46,15 +46,15 @@ function LaunchRow({ launch, onDelete }) {
 
                 <div className="actions">
 
-                    <Pencil
-                        size={18}
-                        className="action-icon edit"
+                    <button
+                        className="action-btn edit"
                         onClick={() => navigate(`/launches/edit/${launch.id}`)}
-                    />
+                    >
+                        <Pencil size={16} />
+                    </button>
 
-                    <Trash2
-                        size={18}
-                        className="action-icon delete"
+                    <button
+                        className="action-btn delete"
                         onClick={async () => {
 
                             const confirmDelete = window.confirm(
@@ -66,7 +66,9 @@ function LaunchRow({ launch, onDelete }) {
                             await onDelete(launch.id);
 
                         }}
-                    />
+                    >
+                        <Trash2 size={16} />
+                    </button>
 
                 </div>
 

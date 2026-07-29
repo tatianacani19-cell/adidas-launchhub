@@ -1,17 +1,20 @@
 function StatusBadge({ status }) {
 
-    const colors = {
-        Draft: "#E5E7EB",
-        "In Review": "#FDE68A",
-        Approved: "#BBF7D0",
-        Published: "#BFDBFE",
+    const styles = {
+        Draft: { background: "#F3F4F6", color: "#6B7280" },
+        "In Review": { background: "#FEF9C3", color: "#92400E" },
+        Approved: { background: "#DCFCE7", color: "#166534" },
+        Published: { background: "#DBEAFE", color: "#1E40AF" },
     };
+
+    const style = styles[status] || styles.Draft;
 
     return (
         <span
             className="status-badge"
             style={{
-                background: colors[status]
+                background: style.background,
+                color: style.color,
             }}
         >
             {status}

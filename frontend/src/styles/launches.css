@@ -1,12 +1,52 @@
 .launch-header {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+.launch-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.launch-header p {
+    color: #8C8C8C;
+    font-size: 14px;
+}
+
+.create-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 22px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+}
+
+.create-btn:hover {
+    background: #333;
+    transform: translateY(-1px);
+}
+
+.create-btn:active {
+    transform: translateY(0);
 }
 
 .filters-container {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     align-items: center;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
@@ -16,39 +56,65 @@
     gap: 10px;
     width: 300px;
     border: 1px solid #D9D9D9;
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 0 14px;
-    height: 46px;
+    height: 42px;
     background: white;
+    transition: border-color 0.2s;
+}
+
+.search-box:focus-within {
+    border-color: #000;
 }
 
 .search-box input {
     border: none;
     outline: none;
     flex: 1;
-    font-size: 15px;
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+.search-box input::placeholder {
+    color: #aaa;
 }
 
 .filters-container select {
-    height: 46px;
+    height: 42px;
     border: 1px solid #D9D9D9;
-    border-radius: 10px;
+    border-radius: 8px;
     padding: 0 14px;
-    min-width: 170px;
+    min-width: 160px;
     background: white;
+    font-size: 14px;
+    color: #1a1a1a;
     cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filters-container select:focus {
+    outline: none;
+    border-color: #000;
 }
 
 .clear-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    height: 46px;
-    padding: 0 18px;
+    gap: 6px;
+    height: 42px;
+    padding: 0 16px;
     border: 1px solid #D9D9D9;
-    border-radius: 10px;
+    border-radius: 8px;
     background: white;
+    font-size: 14px;
+    color: #555;
     cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+}
+
+.clear-btn:hover {
+    border-color: #000;
+    color: #000;
 }
 
 .launch-table {
@@ -57,104 +123,116 @@
     background: white;
     border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .launch-table th {
     background: #F5F5F5;
     text-align: left;
-    padding: 16px;
+    padding: 14px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #8C8C8C;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .launch-table td {
-    padding: 18px 16px;
+    padding: 16px;
     border-bottom: 1px solid #ECECEC;
+    font-size: 14px;
+    color: #333;
+    vertical-align: middle;
 }
 
-.status-badge {
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.launch-thumb {
-
-    width: 42px;
-
-    height: 42px;
-
-    background: #ECECEC;
-
-    border-radius: 8px;
-
-}
-
-.launch-title {
-
-    font-weight: 700;
-
-    margin-bottom: 4px;
-
-}
-
-.launch-description {
-
-    color: #8C8C8C;
-
-    font-size: 13px;
-
-}
-
-.launch-table input {
-
-    width: 16px;
-
-    height: 16px;
-
+.launch-table tbody tr {
+    transition: background 0.15s;
 }
 
 .launch-table tbody tr:hover {
+    background: #FAFAFA;
+}
 
-    background: #fafafa;
+.launch-table tbody tr:last-child td {
+    border-bottom: none;
+}
 
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+}
+
+.launch-thumb {
+    width: 40px;
+    height: 40px;
+    background: #ECECEC;
+    border-radius: 8px;
+}
+
+.launch-title {
+    font-weight: 600;
+    font-size: 14px;
+    color: #1a1a1a;
+    margin-bottom: 3px;
+}
+
+.launch-description {
+    color: #999;
+    font-size: 13px;
+    max-width: 260px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.launch-table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #000;
+    cursor: pointer;
 }
 
 .actions {
-
     display: flex;
-
     align-items: center;
-
-    gap: 14px;
-
+    gap: 6px;
 }
 
-.action-icon {
-
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
     cursor: pointer;
-
-    color: #555;
-
-    transition: .2s;
-
+    transition: background 0.2s, color 0.2s;
 }
 
-.action-icon:hover {
-
-    transform: scale(1.15);
-
+.action-btn.edit {
+    color: #888;
 }
 
-.action-icon.edit:hover {
-
+.action-btn.edit:hover {
+    background: #F0F0F0;
     color: #000;
-
 }
 
-.action-icon.delete:hover {
+.action-btn.delete {
+    color: #888;
+}
 
+.action-btn.delete:hover {
+    background: #FEF2F2;
     color: #dc2626;
-
 }
 
 .launchs-status,
@@ -162,7 +240,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 48px 16px;
+    padding: 60px 16px;
     background: white;
     border-radius: 12px;
     color: #8C8C8C;
@@ -171,4 +249,52 @@
 
 .launchs-error {
     color: #dc2626;
+}
+
+@media (max-width: 1024px) {
+    .launch-table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    .launch-description {
+        max-width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .launch-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .filters-container {
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .filters-container select {
+        min-width: 0;
+        flex: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters-container {
+        flex-direction: column;
+    }
+
+    .search-box,
+    .filters-container select,
+    .clear-btn {
+        width: 100%;
+    }
+
+    .clear-btn {
+        justify-content: center;
+    }
 }
