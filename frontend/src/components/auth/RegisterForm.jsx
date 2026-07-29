@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { User, Lock } from "lucide-react";
+import { User, Lock, Mail } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 
-function LoginForm() {
+function RegisterForm() {
 
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { register } = useAuth();
     const { addToast } = useToast();
 
     const [form, setForm] = useState({
+        name: "",
         email: "",
         password: "",
     });
@@ -29,11 +30,11 @@ function LoginForm() {
 
         try {
             setSubmitting(true);
-            await login(form.email, form.password);
-            addToast("Welcome back!", "success");
+            await register(form.name, form.email, form.password);
+            addToast("Account created successfully!", "success");
             navigate("/dashboard");
         } catch (err) {
-            const message = err.response?.data?.message || "Login failed. Please try again.";
+            const message = err.response?.data?.message || "Registration failed. Please try again.";
             addToast(message, "error");
         } finally {
             setSubmitting(false);
@@ -49,16 +50,31 @@ function LoginForm() {
                 Internal Product Launch Management Platform
             </p>
 
-            <h2>Welcome back</h2>
+            <h2>Create account</h2>
 
             <p className="signin">
-                Sign in to continue to your account
+                Sign up to get started
             </p>
+
+            <label>Full name</label>
+
+            <div className="input-group">
+                <User size={18} />
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your full name"
+                    value={form.name}
+                    onChange={handleChange}
+                    required
+                />
+            </div>
 
             <label>Email</label>
 
             <div className="input-group">
-                <User size={18} />
+                <Mail size={18} />
 
                 <input
                     type="email"
@@ -78,22 +94,12 @@ function LoginForm() {
                 <input
                     type="password"
                     name="password"
-                    placeholder="Enter your password"
+                    placeholder="Create a password"
                     value={form.password}
                     onChange={handleChange}
                     required
+                    minLength={6}
                 />
-            </div>
-
-            <div className="login-options">
-
-                <label className="remember">
-                    <input type="checkbox" />
-                    Remember me
-                </label>
-
-                <a href="/">Forgot password?</a>
-
             </div>
 
             <button
@@ -101,24 +107,11 @@ function LoginForm() {
                 className="login-btn"
                 disabled={submitting}
             >
-                {submitting ? "Signing in..." : "Login"}
-            </button>
-
-            <div className="divider">
-                <span></span>
-                <p>or</p>
-                <span></span>
-            </div>
-
-            <button
-                type="button"
-                className="sso-btn"
-            >
-                Login with SSO
+                {submitting ? "Creating account..." : "Register"}
             </button>
 
             <p className="signin" style={{ marginTop: 16 }}>
-                Don't have an account? <Link to="/register" style={{ color: "var(--text-primary)", fontWeight: 600 }}>Sign up</Link>
+                Already have an account? <Link to="/" style={{ color: "var(--text-primary)", fontWeight: 600 }}>Sign in</Link>
             </p>
 
             <footer>
@@ -129,4 +122,4 @@ function LoginForm() {
     );
 }
 
-export default LoginForm;
+export default RegisterForm;

@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import Launch from "../models/Launch.js";
+import Launch from "./models/Launch.js";
+import User from "./models/User.js";
+import bcrypt from "bcryptjs";
 
 dotenv.config();
 
@@ -9,8 +11,8 @@ async function seed() {
         await mongoose.connect(process.env.MONGO_URI);
         console.log("Connected to MongoDB");
 
-        const count = await Launch.countDocuments();
-        if (count === 0) {
+        const launchCount = await Launch.countDocuments();
+        if (launchCount === 0) {
             await Launch.create({
                 title: "Ultraboost 2026",
                 description: "New running shoe",
@@ -20,7 +22,29 @@ async function seed() {
             });
             console.log("Seeded 1 launch");
         } else {
-            console.log(`Database already has ${count} launches, skipping seed.`);
+            console.log(`Database already has ${launchCount} launches, skipping seed.`);
+        }
+
+        const userCount = await User.countDocuments();
+        if (userCount === 0) {
+            const hashedPassword = await bcrypt.hash("password123", 10);
+            await User.insertMany([
+                {
+                    name: "Tatiana C.",
+                    email: "tatiana@adidas.com",
+                    password: hashedPassword,
+                    role: "Marketing User",
+                },
+                {
+                    name: "Daniel H.",
+                    email: "daniel@adidas.com",
+                    password: hashedPassword,
+                    role: "Marketing Manager",
+                },
+            ]);
+            console.log("Seeded 2 users");
+        } else {
+            console.log(`Database already has ${userCount} users, skipping seed.`);
         }
     } catch (error) {
         console.error("Seed error:", error);
