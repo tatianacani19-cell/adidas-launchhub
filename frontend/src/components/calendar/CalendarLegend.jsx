@@ -4,7 +4,7 @@ function CalendarLegend() {
         { label: "Launch", color: "#DCFCE7", textColor: "#166534" },
         { label: "Review", color: "#FEF9C3", textColor: "#92400E" },
         { label: "Approve", color: "#DBEAFE", textColor: "#1E40AF" },
-        { label: "Due", color: "#FEE2E2", textColor: "#991B1B" },
+        { label: "Draft", color: "#FEE2E2", textColor: "#991B1B" },
         { label: "Meeting", color: "#F3F4F6", textColor: "#374151" },
     ];
 

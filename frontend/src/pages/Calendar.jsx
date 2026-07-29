@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -10,11 +10,12 @@ import CalendarHeader from "../components/calendar/CalendarHeader";
 import UpcomingEvents from "../components/calendar/UpcomingEvents";
 import CalendarLegend from "../components/calendar/CalendarLegend";
 
-import calendarEvents from "../data/calendarEvents";
+import api from "../services/api";
 
 import "../styles/calendar.css";
 
 const STATUS_COLORS = {
+    Draft: { bg: "#FEE2E2", color: "#991B1B" },
     Launch: { bg: "#DCFCE7", color: "#166534" },
     Review: { bg: "#FEF9C3", color: "#92400E" },
     Approve: { bg: "#DBEAFE", color: "#1E40AF" },
@@ -26,24 +27,42 @@ function Calendar() {
 
     const [currentView, setCurrentView] = useState("dayGridMonth");
     const calendarRef = useRef(null);
+    const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const events = useMemo(() => {
-        return calendarEvents.map((event) => {
-            const style = STATUS_COLORS[event.status] || STATUS_COLORS.Meeting;
+    useEffect(() => {
+        loadEvents();
+    }, []);
+
+    async function loadEvents() {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await api.get("/calendar");
+            setEvents(response.data);
+        } catch (err) {
+            console.error("Error loading calendar events:", err);
+            setError("Failed to load calendar data.");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const styledEvents = useMemo(() => {
+        return events.map((event) => {
+            const style = STATUS_COLORS[event.extendedProps.status] || STATUS_COLORS.Meeting;
             return {
                 id: event.id,
                 title: event.title,
-                date: event.date,
+                start: event.start,
                 backgroundColor: style.bg,
                 textColor: style.color,
                 borderColor: "transparent",
-                extendedProps: {
-                    market: event.market,
-                    status: event.status,
-                },
+                extendedProps: event.extendedProps,
             };
         });
-    }, []);
+    }, [events]);
 
     function handleToday() {
         calendarRef.current?.getApi().today();
@@ -68,6 +87,25 @@ function Calendar() {
         alert(`${title}\nMarket: ${extendedProps.market}\nStatus: ${extendedProps.status}`);
     }
 
+    if (loading) {
+        return (
+            <MainLayout title="Calendar">
+                <div className="calendar-status" aria-busy="true">Loading calendar...</div>
+            </MainLayout>
+        );
+    }
+
+    if (error) {
+        return (
+            <MainLayout title="Calendar">
+                <div className="calendar-status">
+                    <p>{error}</p>
+                    <button onClick={loadEvents}>Retry</button>
+                </div>
+            </MainLayout>
+        );
+    }
+
     return (
         <MainLayout title="Calendar">
 
@@ -87,7 +125,7 @@ function Calendar() {
                         plugins={[dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin]}
                         initialView="dayGridMonth"
                         headerToolbar={false}
-                        events={events}
+                        events={styledEvents}
                         eventClick={handleEventClick}
                         height="auto"
                         dayMaxEvents={3}
@@ -102,7 +140,7 @@ function Calendar() {
                 </div>
 
                 <div className="calendar-sidebar">
-                    <UpcomingEvents events={calendarEvents} />
+                    <UpcomingEvents events={events} />
                     <CalendarLegend />
                 </div>
 

@@ -1,7 +1,7 @@
 function StatusBadge({ status }) {
 
     const styles = {
-        Draft: { background: "#F3F4F6", color: "#6B7280" },
+        Draft: { background: "#FEE2E2", color: "#991B1B" },
         "In Review": { background: "#FEF9C3", color: "#92400E" },
         Approved: { background: "#DCFCE7", color: "#166534" },
         Published: { background: "#DBEAFE", color: "#1E40AF" },

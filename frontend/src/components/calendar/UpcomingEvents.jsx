@@ -9,11 +9,15 @@ function UpcomingEvents({ events }) {
         const limit = nextWeek.toISOString().split("T")[0];
 
         return events
-            .filter((e) => e.date >= today && e.date <= limit)
-            .sort((a, b) => a.date.localeCompare(b.date));
+            .filter((e) => {
+                const date = e.start;
+                return date >= today && date <= limit;
+            })
+            .sort((a, b) => a.start.localeCompare(b.start));
     }, [events]);
 
     const statusColors = {
+        Draft: { bg: "#FEE2E2", color: "#991B1B" },
         Launch: { bg: "#DCFCE7", color: "#166534" },
         Review: { bg: "#FEF9C3", color: "#92400E" },
         Approve: { bg: "#DBEAFE", color: "#1E40AF" },
@@ -44,18 +48,20 @@ function UpcomingEvents({ events }) {
                 )}
 
                 {upcoming.map((event) => {
-                    const style = statusColors[event.status] || statusColors.Meeting;
+                    const status = event.extendedProps.status;
+                    const market = event.extendedProps.market;
+                    const style = statusColors[status] || statusColors.Meeting;
                     return (
                         <div key={event.id} className="upcoming-item">
                             <div className="upcoming-info">
                                 <h4>{event.title}</h4>
-                                <span>{formatDate(event.date)} &middot; {event.market}</span>
+                                <span>{formatDate(event.start)} &middot; {market}</span>
                             </div>
                             <span
                                 className="upcoming-badge"
                                 style={{ background: style.bg, color: style.color }}
                             >
-                                {event.status}
+                                {status}
                             </span>
                         </div>
                     );

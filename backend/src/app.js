@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import launchRoutes from "./routes/launchRoutes.js";
+import calendarRoutes from "./routes/calendarRoutes.js";
 import { authenticateToken } from "./middleware/auth.js";
 
 const app = express();
@@ -18,5 +19,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/launches", authenticateToken, launchRoutes);
+app.use("/api/calendar", authenticateToken, calendarRoutes);
 
 export default app;
