@@ -2,7 +2,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 
-function LaunchRow({ launch }) {
+function LaunchRow({ launch, onDelete }) {
 
     const navigate = useNavigate();
 

@@ -1,23 +1,6 @@
-import { useEffect, useState } from "react";
-import api from "../../services/api";
 import LaunchRow from "./LaunchRow";
 
-function LaunchTable({ onDelete }) {
-
-    const [launches, setLaunches] = useState([]);
-
-    useEffect(() => {
-        loadLaunches();
-    }, []);
-
-    async function loadLaunches() {
-        try {
-            const response = await api.get("/launches");
-            setLaunches(response.data);
-        } catch (error) {
-            console.error("Error loading launches:", error);
-        }
-    }
+function LaunchTable({ launches, onDelete }) {
 
     return (
         <table className="launch-table">
@@ -46,27 +29,7 @@ function LaunchTable({ onDelete }) {
                             owner: launch.owner || "Marketing Team",
                             updated: launch.updated || "-",
                         }}
-                        onDelete={async (id) => {
-
-                            console.log("Eliminando:", id);
-
-                            try {
-
-                                await api.delete(`/launches/${id}`);
-
-                                console.log("Eliminado correctamente");
-
-                                setLaunches(
-                                    launches.filter(l => l.id !== id)
-                                );
-
-                            } catch (error) {
-
-                                console.error(error);
-
-                            }
-
-                        }}
+                        onDelete={onDelete}
                     />
                 ))}
 
