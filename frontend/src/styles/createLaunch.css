@@ -1,0 +1,115 @@
+.create-launch-page {
+
+    display: flex;
+
+    justify-content: center;
+
+}
+
+.form-card {
+
+    width: 850px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 40px;
+
+    box-shadow: 0 8px 30px rgba(0, 0, 0, .08);
+
+}
+
+.form-card h1 {
+
+    margin: 0;
+
+    font-size: 34px;
+
+    font-weight: 700;
+
+}
+
+.form-card p {
+
+    color: #8C8C8C;
+
+    margin-top: 8px;
+
+    margin-bottom: 35px;
+
+}
+
+.form-group {
+
+    display: flex;
+
+    flex-direction: column;
+
+    margin-bottom: 22px;
+
+}
+
+.form-group label {
+
+    font-weight: 600;
+
+    margin-bottom: 8px;
+
+}
+
+.form-group input,
+
+.form-group textarea,
+
+.form-group select {
+
+    padding: 14px;
+
+    border: 1px solid #D9D9D9;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    outline: none;
+
+}
+
+.form-group input:focus,
+
+.form-group textarea:focus,
+
+.form-group select:focus {
+
+    border-color: black;
+
+}
+
+.save-btn {
+
+    margin-top: 15px;
+
+    background: black;
+
+    color: white;
+
+    border: none;
+
+    padding: 14px 28px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+}
+
+.save-btn:hover {
+
+    background: #222;
+
+}

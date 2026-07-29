@@ -1,0 +1,48 @@
+.navbar {
+
+    height: 72px;
+
+    background: white;
+
+    border-bottom: 1px solid #ECECEC;
+
+}
+
+.navbar h2 {
+    font-size: 24px;
+}
+
+.navbar p {
+    color: #888;
+    font-size: 14px;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.notification-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: #f3f3f3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.user-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}

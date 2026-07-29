@@ -1,0 +1,152 @@
+.login-page {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    font-family: Inter, sans-serif;
+}
+
+.login-left {
+    width: 30%;
+    background: #d9d9d9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-left img {
+    width: 260px;
+}
+
+.login-right {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+}
+
+.language {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+}
+
+.language button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #d0d0d0;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.login-box {
+    width: 420px;
+}
+
+.login-box h1 {
+    text-align: center;
+    font-size: 46px;
+    font-weight: 700;
+}
+
+.subtitle {
+    text-align: center;
+    color: #8b8b8b;
+    margin-top: 10px;
+}
+
+.login-box h2 {
+    margin-top: 55px;
+    text-align: center;
+    font-size: 34px;
+}
+
+.signin {
+    text-align: center;
+    color: #888;
+    margin: 10px 0 35px;
+}
+
+.login-box label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 22px;
+}
+
+.input-group input {
+    border: none;
+    outline: none;
+    margin-left: 10px;
+    width: 100%;
+    font-size: 15px;
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.remember {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    font-weight: 400 !important;
+}
+
+.login-btn,
+.sso-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    background: black;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: .25s;
+}
+
+.login-btn:hover,
+.sso-btn:hover {
+    background: #2b2b2b;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.divider span {
+    flex: 1;
+    height: 1px;
+    background: #ddd;
+}
+
+.divider p {
+    margin: 0 15px;
+    color: #666;
+}
+
+footer {
+    text-align: center;
+    color: #9b9b9b;
+    margin-top: 60px;
+    font-size: 14px;
+}
