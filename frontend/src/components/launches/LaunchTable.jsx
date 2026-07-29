@@ -49,7 +49,7 @@ function LaunchTable({ launches, sortField, sortDir, onSort, onDelete, ...props 
             <tbody>
                 {launches.map((launch) => (
                     <LaunchRow
-                        key={launch.id}
+                        key={launch._id}
                         launch={{
                             ...launch,
                             owner: launch.owner || "Marketing Team",

@@ -48,7 +48,7 @@ function LaunchRow({ launch, onDelete }) {
 
                     <button
                         className="action-btn edit"
-                        onClick={() => navigate(`/launches/edit/${launch.id}`)}
+                        onClick={() => navigate(`/launches/edit/${launch._id}`)}
                         aria-label={`Edit ${launch.title}`}
                     >
                         <Pencil size={16} />

@@ -56,8 +56,8 @@ function Launches() {
     const handleDelete = useCallback(async () => {
         if (!deleteTarget) return;
         try {
-            await api.delete(`/launches/${deleteTarget.id}`);
-            setLaunches((prev) => prev.filter((l) => l.id !== deleteTarget.id));
+            await api.delete(`/launches/${deleteTarget._id}`);
+            setLaunches((prev) => prev.filter((l) => l._id !== deleteTarget.id));
             addToast("Launch deleted successfully.", "success");
         } catch (err) {
             console.error("Error deleting launch:", err);

@@ -52,7 +52,7 @@ function LaunchForm({ mode = "create", initialData = null }) {
 
             } else {
 
-                await api.put(`/launches/${form.id}`, form);
+                await api.put(`/launches/${form._id}`, form);
 
             }
 

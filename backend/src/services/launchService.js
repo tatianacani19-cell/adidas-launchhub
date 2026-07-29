@@ -1,45 +1,33 @@
-let launches = [
-    {
-        id: 1,
-        title: "Ultraboost 2026",
-        description: "New running shoe",
-        market: "Colombia",
-        launchDate: "2026-08-15",
-        status: "Draft"
+import Launch from "../models/Launch.js";
+
+export const getAllLaunches = async () => {
+    return Launch.find().sort({ createdAt: -1 });
+};
+
+export const getLaunchById = async (id) => {
+    try {
+        return await Launch.findById(id);
+    } catch {
+        return null;
     }
-];
-
-export const getAllLaunches = () => launches;
-export const getLaunchById = (id) => {
-
-    return launches.find(launch => launch.id == id);
-
 };
 
-export const createLaunch = (launch) => {
-    const newLaunch = {
-        id: launches.length + 1,
-        ...launch
-    };
-
-    launches.push(newLaunch);
-
-    return newLaunch;
+export const createLaunch = async (data) => {
+    return Launch.create(data);
 };
 
-export const updateLaunch = (id, data) => {
-    const index = launches.findIndex(l => l.id == id);
-
-    if (index === -1) return null;
-
-    launches[index] = {
-        ...launches[index],
-        ...data
-    };
-
-    return launches[index];
+export const updateLaunch = async (id, data) => {
+    try {
+        return await Launch.findByIdAndUpdate(id, data, { new: true });
+    } catch {
+        return null;
+    }
 };
 
-export const deleteLaunch = (id) => {
-    launches = launches.filter(l => l.id != id);
+export const deleteLaunch = async (id) => {
+    try {
+        return await Launch.findByIdAndDelete(id);
+    } catch {
+        return null;
+    }
 };

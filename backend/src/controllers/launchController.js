@@ -6,47 +6,67 @@ import {
     deleteLaunch
 } from "../services/launchService.js";
 
-export const getLaunches = (req, res) => {
-    res.json(getAllLaunches());
-};
-
-export const addLaunch = (req, res) => {
-    const launch = createLaunch(req.body);
-    res.status(201).json(launch);
-};
-
-export const editLaunch = (req, res) => {
-    const launch = updateLaunch(req.params.id, req.body);
-
-    if (!launch) {
-        return res.status(404).json({
-            message: "Launch not found"
-        });
+export const getLaunches = async (req, res) => {
+    try {
+        const launches = await getAllLaunches();
+        res.json(launches);
+    } catch (error) {
+        console.error("Error fetching launches:", error);
+        res.status(500).json({ message: "Failed to fetch launches." });
     }
-
-    res.json(launch);
 };
 
-export const removeLaunch = (req, res) => {
-    deleteLaunch(req.params.id);
+export const getLaunchById = async (req, res) => {
+    try {
+        const launch = await getLaunchByIdService(req.params.id);
 
-    res.json({
-        message: "Launch deleted"
-    });
-};
+        if (!launch) {
+            return res.status(404).json({ message: "Launch not found" });
+        }
 
-export const getLaunchById = (req, res) => {
-
-    const launch = getLaunchByIdService(req.params.id);
-
-    if (!launch) {
-
-        return res.status(404).json({
-            message: "Launch not found"
-        });
-
+        res.json(launch);
+    } catch (error) {
+        console.error("Error fetching launch:", error);
+        res.status(500).json({ message: "Failed to fetch launch." });
     }
+};
 
-    res.json(launch);
+export const addLaunch = async (req, res) => {
+    try {
+        const launch = await createLaunch(req.body);
+        res.status(201).json(launch);
+    } catch (error) {
+        console.error("Error creating launch:", error);
+        res.status(500).json({ message: "Failed to create launch." });
+    }
+};
 
+export const editLaunch = async (req, res) => {
+    try {
+        const launch = await updateLaunch(req.params.id, req.body);
+
+        if (!launch) {
+            return res.status(404).json({ message: "Launch not found" });
+        }
+
+        res.json(launch);
+    } catch (error) {
+        console.error("Error updating launch:", error);
+        res.status(500).json({ message: "Failed to update launch." });
+    }
+};
+
+export const removeLaunch = async (req, res) => {
+    try {
+        const launch = await deleteLaunch(req.params.id);
+
+        if (!launch) {
+            return res.status(404).json({ message: "Launch not found" });
+        }
+
+        res.json({ message: "Launch deleted" });
+    } catch (error) {
+        console.error("Error deleting launch:", error);
+        res.status(500).json({ message: "Failed to delete launch." });
+    }
 };
