@@ -31,3 +31,11 @@ export const deleteLaunch = async (id) => {
         return null;
     }
 };
+
+export const updateLaunchStatus = async (id, status) => {
+    try {
+        return await Launch.findByIdAndUpdate(id, { status }, { new: true });
+    } catch {
+        return null;
+    }
+};

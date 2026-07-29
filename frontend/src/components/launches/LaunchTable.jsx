@@ -7,7 +7,7 @@ function SortIcon({ field, sortField, sortDir }) {
     return sortDir === "asc" ? <ChevronUp size={14} /> : <ChevronDown size={14} />;
 }
 
-function LaunchTable({ launches, sortField, sortDir, onSort, onDelete, ...props }) {
+function LaunchTable({ launches, sortField, sortDir, onSort, onDelete, onStatusChange, ...props }) {
 
     if (launches.length === 0) {
         return <EmptyState title="No launches found" message="Try adjusting your search or filters." />;
@@ -56,6 +56,7 @@ function LaunchTable({ launches, sortField, sortDir, onSort, onDelete, ...props 
                             updated: launch.updated || "-",
                         }}
                         onDelete={onDelete}
+                        onStatusChange={onStatusChange}
                     />
                 ))}
             </tbody>

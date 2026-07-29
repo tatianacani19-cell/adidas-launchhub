@@ -3,7 +3,8 @@ import {
     getLaunchById as getLaunchByIdService,
     createLaunch,
     updateLaunch,
-    deleteLaunch
+    deleteLaunch,
+    updateLaunchStatus,
 } from "../services/launchService.js";
 
 export const getLaunches = async (req, res) => {
@@ -68,5 +69,27 @@ export const removeLaunch = async (req, res) => {
     } catch (error) {
         console.error("Error deleting launch:", error);
         res.status(500).json({ message: "Failed to delete launch." });
+    }
+};
+
+export const updateLaunchStatusController = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const validStatuses = ["Draft", "In Review", "Approved", "Published"];
+
+        if (!status || !validStatuses.includes(status)) {
+            return res.status(400).json({ message: "Invalid status." });
+        }
+
+        const launch = await updateLaunchStatus(req.params.id, status);
+
+        if (!launch) {
+            return res.status(404).json({ message: "Launch not found" });
+        }
+
+        res.json(launch);
+    } catch (error) {
+        console.error("Error updating launch status:", error);
+        res.status(500).json({ message: "Failed to update launch status." });
     }
 };

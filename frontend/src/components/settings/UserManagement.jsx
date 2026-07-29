@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "../../services/api";
 import { useToast } from "../../context/ToastContext";
 
-const ROLES = ["ADMIN", "MARKETING", "REVIEWER", "VIEWER"];
+const ROLES = ["ADMIN", "CREATOR", "APPROVER"];
 
 function UserManagement() {
 
@@ -10,7 +10,7 @@ function UserManagement() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
-    const [form, setForm] = useState({ name: "", email: "", password: "", role: "MARKETING" });
+    const [form, setForm] = useState({ name: "", email: "", password: "", role: "CREATOR" });
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
@@ -37,7 +37,7 @@ function UserManagement() {
             setSubmitting(true);
             await api.post("/users", form);
             addToast("User created successfully.", "success");
-            setForm({ name: "", email: "", password: "", role: "MARKETING" });
+            setForm({ name: "", email: "", password: "", role: "CREATOR" });
             setShowForm(false);
             loadUsers();
         } catch (err) {
@@ -82,9 +82,8 @@ function UserManagement() {
 
     const roleColors = {
         ADMIN: { bg: "#FEE2E2", color: "#991B1B" },
-        MARKETING: { bg: "#DBEAFE", color: "#1E40AF" },
-        REVIEWER: { bg: "#FEF9C3", color: "#92400E" },
-        VIEWER: { bg: "#F3F4F6", color: "#374151" },
+        CREATOR: { bg: "#DBEAFE", color: "#1E40AF" },
+        APPROVER: { bg: "#FEF9C3", color: "#92400E" },
     };
 
     return (
@@ -141,7 +140,7 @@ function UserManagement() {
             ) : (
                 <div className="user-list">
                     {users.map((u) => {
-                        const style = roleColors[u.role] || roleColors.VIEWER;
+                        const style = roleColors[u.role] || roleColors.CREATOR;
                         return (
                             <div key={u._id} className="user-row">
                                 <div className="user-info">

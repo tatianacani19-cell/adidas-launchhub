@@ -40,11 +40,11 @@ async function seed() {
                     name: "Daniel H.",
                     email: "daniel@adidas.com",
                     password: hashedPassword,
-                    role: "MARKETING",
+                    role: "CREATOR",
                     status: "active",
                 },
             ]);
-            console.log("Seeded 2 users (1 ADMIN, 1 MARKETING)");
+            console.log("Seeded 2 users (1 ADMIN, 1 CREATOR)");
         } else {
             console.log(`Database already has ${userCount} users, skipping seed.`);
         }

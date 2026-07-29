@@ -1,9 +1,12 @@
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 function LaunchHeader() {
 
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const canCreate = user?.role === "CREATOR" || user?.role === "ADMIN";
 
     return (
 
@@ -17,16 +20,18 @@ function LaunchHeader() {
 
             </div>
 
-            <button
-                className="create-btn"
-                onClick={() => navigate("/launches/create")}
-            >
+            {canCreate && (
+                <button
+                    className="create-btn"
+                    onClick={() => navigate("/launches/create")}
+                >
 
-                <Plus size={18} />
+                    <Plus size={18} />
 
-                Create Launch
+                    Create Launch
 
-            </button>
+                </button>
+            )}
 
         </div>
 

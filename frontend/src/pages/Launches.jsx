@@ -53,6 +53,13 @@ function Launches() {
         }
     }
 
+    const handleStatusChange = useCallback(async (id, status) => {
+        await api.put(`/launches/${id}/status`, { status });
+        setLaunches((prev) =>
+            prev.map((l) => (l._id === id ? { ...l, status } : l))
+        );
+    }, []);
+
     const handleDelete = useCallback(async () => {
         if (!deleteTarget) return;
         try {
@@ -181,6 +188,7 @@ function Launches() {
                         sortDir={sortDir}
                         onSort={handleSort}
                         onDelete={(launch) => setDeleteTarget(launch)}
+                        onStatusChange={handleStatusChange}
                     />
                     {filteredLaunches.length > ITEMS_PER_PAGE && (
                         <Pagination

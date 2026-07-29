@@ -56,9 +56,8 @@ function Settings() {
 
     const roleLabels = {
         ADMIN: "Administrator",
-        MARKETING: "Marketing",
-        REVIEWER: "Reviewer",
-        VIEWER: "Viewer",
+        CREATOR: "Creator",
+        APPROVER: "Approver",
     };
 
     return (

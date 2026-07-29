@@ -5,16 +5,21 @@ import {
     getLaunchById,
     addLaunch,
     editLaunch,
-    removeLaunch
+    removeLaunch,
+    updateLaunchStatusController,
 } from "../controllers/launchController.js";
+
+import { authenticateToken, authorizeRoles } from "../middleware/auth.js";
 
 const router = Router();
 
 router.get("/", getLaunches);
 router.get("/:id", getLaunchById);
 
-router.post("/", addLaunch);
-router.put("/:id", editLaunch);
-router.delete("/:id", removeLaunch);
+router.post("/", authorizeRoles("CREATOR", "ADMIN"), addLaunch);
+router.put("/:id", authorizeRoles("CREATOR", "ADMIN"), editLaunch);
+router.delete("/:id", authorizeRoles("CREATOR", "ADMIN"), removeLaunch);
+
+router.put("/:id/status", authorizeRoles("APPROVER", "ADMIN"), updateLaunchStatusController);
 
 export default router;

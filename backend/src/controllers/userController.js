@@ -42,8 +42,8 @@ export const createUser = async (req, res) => {
             return res.status(409).json({ message: "Email already registered." });
         }
 
-        const validRoles = ["ADMIN", "MARKETING", "REVIEWER", "VIEWER"];
-        const userRole = validRoles.includes(role) ? role : "MARKETING";
+        const validRoles = ["ADMIN", "CREATOR", "APPROVER"];
+        const userRole = validRoles.includes(role) ? role : "CREATOR";
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await User.create({
@@ -75,7 +75,7 @@ export const updateUser = async (req, res) => {
         if (name) updates.name = name;
         if (email) updates.email = email.toLowerCase().trim();
         if (role) {
-            const validRoles = ["ADMIN", "MARKETING", "REVIEWER", "VIEWER"];
+            const validRoles = ["ADMIN", "CREATOR", "APPROVER"];
             if (validRoles.includes(role)) updates.role = role;
         }
         if (status) {
