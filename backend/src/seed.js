@@ -31,18 +31,20 @@ async function seed() {
             await User.insertMany([
                 {
                     name: "Tatiana C.",
-                    email: "tatiana@adidas.com",
+                    email: "tatianacani19@gmail.com",
                     password: hashedPassword,
-                    role: "Marketing User",
+                    role: "ADMIN",
+                    status: "active",
                 },
                 {
                     name: "Daniel H.",
                     email: "daniel@adidas.com",
                     password: hashedPassword,
-                    role: "Marketing Manager",
+                    role: "MARKETING",
+                    status: "active",
                 },
             ]);
-            console.log("Seeded 2 users");
+            console.log("Seeded 2 users (1 ADMIN, 1 MARKETING)");
         } else {
             console.log(`Database already has ${userCount} users, skipping seed.`);
         }

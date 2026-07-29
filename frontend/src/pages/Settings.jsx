@@ -3,6 +3,7 @@ import MainLayout from "../components/layout/MainLayout";
 import SettingsCard from "../components/settings/SettingsCard";
 import SettingsToggle from "../components/settings/SettingsToggle";
 import SettingsInput from "../components/settings/SettingsInput";
+import UserManagement from "../components/settings/UserManagement";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { useToast } from "../context/ToastContext";
@@ -17,7 +18,7 @@ function Settings() {
 
     const [fullName, setFullName] = useState(user?.name || "");
     const [email, setEmail] = useState(user?.email || "");
-    const [role] = useState(user?.role || "Marketing Manager");
+    const [role] = useState(user?.role || "");
     const [department] = useState("Marketing");
 
     const [notifications, setNotifications] = useState({
@@ -30,6 +31,8 @@ function Settings() {
 
     const [language, setLanguage] = useState("en");
     const [defaultView, setDefaultView] = useState("dashboard");
+
+    const isAdmin = user?.role === "ADMIN";
 
     function handleNotificationChange(key, value) {
         setNotifications((prev) => ({ ...prev, [key]: value }));
@@ -50,6 +53,13 @@ function Settings() {
     const initials = user?.name
         ? user.name.split(" ").map((n) => n[0]).join("").toUpperCase()
         : "U";
+
+    const roleLabels = {
+        ADMIN: "Administrator",
+        MARKETING: "Marketing",
+        REVIEWER: "Reviewer",
+        VIEWER: "Viewer",
+    };
 
     return (
         <MainLayout title="Settings">
@@ -75,7 +85,7 @@ function Settings() {
                                 <div className="settings-readonly">
                                     <SettingsInput
                                         label="Role"
-                                        value={role}
+                                        value={roleLabels[role] || role}
                                         onChange={() => {}}
                                         disabled
                                     />
@@ -218,6 +228,12 @@ function Settings() {
                             </div>
                         </div>
                     </SettingsCard>
+
+                    {isAdmin && (
+                        <SettingsCard title="User Management">
+                            <UserManagement />
+                        </SettingsCard>
+                    )}
 
                 </div>
 

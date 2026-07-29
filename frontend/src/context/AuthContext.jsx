@@ -39,16 +39,6 @@ export function AuthProvider({ children }) {
         return userData;
     }
 
-    async function register(name, email, password) {
-        const response = await api.post("/auth/register", { name, email, password });
-        const { token: newToken, user: userData } = response.data;
-        localStorage.setItem("token", newToken);
-        api.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
-        setToken(newToken);
-        setUser(userData);
-        return userData;
-    }
-
     function logout() {
         localStorage.removeItem("token");
         delete api.defaults.headers.common["Authorization"];
@@ -57,7 +47,7 @@ export function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{ user, token, loading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, token, loading, login, logout }}>
             {children}
         </AuthContext.Provider>
     );

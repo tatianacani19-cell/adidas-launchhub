@@ -117,10 +117,6 @@ function LoginForm() {
                 Login with SSO
             </button>
 
-            <p className="signin" style={{ marginTop: 16 }}>
-                Don't have an account? <Link to="/register" style={{ color: "var(--text-primary)", fontWeight: 600 }}>Sign up</Link>
-            </p>
-
             <footer>
                 © 2026 Adidas. All rights reserved.
             </footer>
