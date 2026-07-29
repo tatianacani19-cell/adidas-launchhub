@@ -92,7 +92,7 @@ function LoginForm() {
                     Remember me
                 </label>
 
-                <a href="/">Forgot password?</a>
+                <Link to="/forgot-password">Forgot password?</Link>
 
             </div>
 

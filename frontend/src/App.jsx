@@ -4,6 +4,8 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Launches = lazy(() => import("./pages/Launches"));
 const CreateLaunch = lazy(() => import("./pages/CreateLaunch"));
@@ -26,6 +28,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/launches" element={<ProtectedRoute><Launches /></ProtectedRoute>} />
           <Route path="/launches/create" element={<ProtectedRoute><CreateLaunch /></ProtectedRoute>} />
