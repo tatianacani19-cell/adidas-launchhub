@@ -34,6 +34,7 @@ const server = app.listen(PORT, () => {
     console.log("[SERVER] ────────────────────────────────────────");
 });
 
+console.log("[SERVER] Email service initialized (lazy, no blocking verify)");
 console.log("[SERVER] Connecting to MongoDB (non-blocking)...");
 connectDB()
     .then((connected) => {
