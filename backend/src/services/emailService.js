@@ -1,12 +1,13 @@
-import * as Brevo from '@getbrevo/brevo';
+import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys, SendSmtpEmail } from '@getbrevo/brevo';
 
 export const sendResetEmail = async (email, token) => {
     try {
         console.log("[EMAIL] Preparing to send reset email via Brevo API...");
 
-        const apiInstance = new Brevo.TransactionalEmailsApi();
+        // Instancia directa de la API en la v6 de Brevo
+        const apiInstance = new TransactionalEmailsApi();
         apiInstance.setApiKey(
-            Brevo.TransactionalEmailsApiApiKeys.apiKey,
+            TransactionalEmailsApiApiKeys.apiKey,
             process.env.BREVO_API_KEY
         );
 
@@ -17,7 +18,7 @@ export const sendResetEmail = async (email, token) => {
         console.log("[EMAIL]   To:", email);
         console.log("[EMAIL]   Reset link:", resetLink);
 
-        const sendSmtpEmail = new Brevo.SendSmtpEmail();
+        const sendSmtpEmail = new SendSmtpEmail();
         sendSmtpEmail.subject = "LaunchHub - Restablecer Contraseña";
         sendSmtpEmail.htmlContent = `
             <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
@@ -38,7 +39,7 @@ export const sendResetEmail = async (email, token) => {
             </div>
         `;
 
-        // Usa el correo que registraste en Brevo como remitente
+        // El email remitente debe ser la cuenta que registraste en Brevo
         sendSmtpEmail.sender = {
             name: "Adidas LaunchHub",
             email: process.env.EMAIL_USER || "tatianacani19@gmail.com"
@@ -55,4 +56,5 @@ export const sendResetEmail = async (email, token) => {
     }
 };
 
+// Alias de compatibilidad por si tu controller importa con otro nombre
 export const sendResetPasswordEmail = sendResetEmail;
