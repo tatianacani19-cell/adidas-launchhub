@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, MoreVertical, Edit3, Trash2, FileText, MessageCircle } from "lucide-react";
+import {
+    ArrowLeft, MoreVertical, Edit3, Trash2,
+    FileText, FileImage, FileSpreadsheet, FileArchive,
+    Video, File as FileIcon, Download, Upload,
+    MessageCircle, Loader2,
+} from "lucide-react";
 
 import MainLayout from "../components/layout/MainLayout";
 import StatusBadge from "../components/launches/StatusBadge";
@@ -24,12 +29,97 @@ function LaunchDetail() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [uploading, setUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [dragOver, setDragOver] = useState(false);
+    const fileInputRef = useRef(null);
 
     const canEdit = user?.role === "CREATOR" || user?.role === "ADMIN";
+    const canDelete = canEdit;
 
     useEffect(() => {
         loadLaunch();
     }, [id]);
+
+    const API_BASE = import.meta.env.VITE_API_URL
+        ? import.meta.env.VITE_API_URL
+        : "http://localhost:3000";
+
+    async function handleUpload(file) {
+        if (!file || uploading) return;
+        try {
+            setUploading(true);
+            setUploadProgress(0);
+            const formData = new FormData();
+            formData.append("file", file);
+            await api.post(`/launches/${id}/assets`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (e) => {
+                    if (e.total) setUploadProgress(Math.round((e.loaded * 100) / e.total));
+                },
+            });
+            addToast("File uploaded.", "success");
+            loadLaunch();
+        } catch (err) {
+            const msg = err.response?.data?.message || "Failed to upload file.";
+            addToast(msg, "error");
+        } finally {
+            setUploading(false);
+            setUploadProgress(0);
+        }
+    }
+
+    async function handleDeleteAsset(assetId) {
+        try {
+            await api.delete(`/launches/${id}/assets/${assetId}`);
+            addToast("Asset deleted.", "success");
+            loadLaunch();
+        } catch {
+            addToast("Failed to delete asset.", "error");
+        }
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragOver(true);
+    }
+
+    function handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragOver(false);
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setDragOver(false);
+        const files = e.dataTransfer.files;
+        if (files.length > 0) handleUpload(files[0]);
+    }
+
+    function handleFileSelect(e) {
+        const files = e.target.files;
+        if (files.length > 0) handleUpload(files[0]);
+        e.target.value = "";
+    }
+
+    function formatSize(bytes) {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+        return (bytes / 1048576).toFixed(1) + " MB";
+    }
+
+    function getAssetIcon(mimeType) {
+        if (!mimeType) return FileIcon;
+        if (mimeType.startsWith("image/")) return FileImage;
+        if (mimeType.startsWith("video/")) return Video;
+        if (mimeType.includes("spreadsheet") || mimeType.includes("excel") || mimeType.includes("csv")) return FileSpreadsheet;
+        if (mimeType.includes("zip") || mimeType.includes("rar") || mimeType.includes("tar") || mimeType.includes("7z")) return FileArchive;
+        if (mimeType.includes("pdf") || mimeType.includes("word") || mimeType.includes("document")) return FileText;
+        return FileIcon;
+    }
 
     async function loadLaunch() {
         try {
@@ -284,16 +374,102 @@ function LaunchDetail() {
             </div>
 
             <div className="detail-section">
-                <h2>Assets</h2>
+                <div className="detail-section-header">
+                    <h2>Assets</h2>
+                    {canEdit && (
+                        <button
+                            className="detail-upload-btn"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={uploading}
+                        >
+                            <Upload size={16} />
+                            Upload Asset
+                        </button>
+                    )}
+                </div>
                 <div className="detail-assets">
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        style={{ display: "none" }}
+                        onChange={handleFileSelect}
+                    />
+
+                    {canEdit && (
+                        <div
+                            className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${uploading ? "uploading" : ""}`}
+                            onDragOver={handleDragOver}
+                            onDragLeave={handleDragLeave}
+                            onDrop={handleDrop}
+                            onClick={() => !uploading && fileInputRef.current?.click()}
+                        >
+                            {uploading ? (
+                                <div className="asset-upload-progress">
+                                    <Loader2 size={24} className="spin" />
+                                    <span>Uploading... {uploadProgress}%</span>
+                                    <div className="progress-bar">
+                                        <div className="progress-fill" style={{ width: `${uploadProgress}%` }} />
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="asset-dropzone-text">
+                                    <Upload size={24} />
+                                    <span>Drop files here or click to upload</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {launch.assets && launch.assets.length > 0 ? (
                         <div className="assets-list">
-                            {launch.assets.map((asset, index) => (
-                                <div key={index} className="asset-item">
-                                    <FileText size={18} className="asset-icon" />
-                                    <span className="asset-name">{asset}</span>
-                                </div>
-                            ))}
+                            {launch.assets.map((asset) => {
+                                const AssetIcon = getAssetIcon(asset.mimeType);
+                                const isImage = asset.mimeType?.startsWith("image/");
+                                return (
+                                    <div key={asset._id} className="asset-item">
+                                        {isImage ? (
+                                            <img
+                                                src={`${API_BASE}${asset.url}`}
+                                                alt={asset.originalName}
+                                                className="asset-thumb"
+                                            />
+                                        ) : (
+                                            <AssetIcon size={20} className="asset-icon" />
+                                        )}
+                                        <div className="asset-info">
+                                            <span className="asset-name" title={asset.originalName}>
+                                                {asset.originalName}
+                                            </span>
+                                            <span className="asset-meta">
+                                                {formatSize(asset.size)}
+                                                {" \u00B7 "}
+                                                {formatDateTime(asset.uploadedAt)}
+                                            </span>
+                                        </div>
+                                        <div className="asset-actions">
+                                            <a
+                                                href={`${API_BASE}${asset.url}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="asset-action-btn"
+                                                title="Download"
+                                                download={asset.originalName}
+                                            >
+                                                <Download size={16} />
+                                            </a>
+                                            {canDelete && (
+                                                <button
+                                                    className="asset-action-btn danger"
+                                                    onClick={() => handleDeleteAsset(asset._id)}
+                                                    title="Delete"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="assets-empty">
