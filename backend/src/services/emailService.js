@@ -62,5 +62,5 @@ export const sendResetEmail = async (email, token) => {
     }
 };
 
-// Alias de seguridad
+// Alias de compatibilidad
 export const sendResetPasswordEmail = sendResetEmail;
