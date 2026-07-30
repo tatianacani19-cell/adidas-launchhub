@@ -145,7 +145,7 @@ function UserManagement() {
                             <div key={u._id} className="user-row">
                                 <div className="user-info">
                                     <div className="user-avatar">
-                                        {u.name.split(" ").map((n) => n[0]).join("").toUpperCase()}
+                                        {(u.name || "U").split(" ").map((n) => n[0]).join("").toUpperCase()}
                                     </div>
                                     <div>
                                         <h4>{u.name}</h4>
