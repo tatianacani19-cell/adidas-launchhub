@@ -7,14 +7,12 @@ export const sendResetEmail = async (email, token) => {
         console.log("[EMAIL] Preparing to send reset email via Resend API...");
 
         const frontendUrl = process.env.FRONTEND_URL || 'https://adidas-launchhub.vercel.app';
-        // Limpiamos barras inclinadas finales duplicadas si existen
         const cleanBaseUrl = frontendUrl.replace(/\/+$/, '');
         const resetLink = `${cleanBaseUrl}/reset-password/${token}`;
 
         console.log("[EMAIL]   To:", email);
         console.log("[EMAIL]   Reset link:", resetLink);
 
-        // Enviamos la petición HTTP a través de la API de Resend
         const response = await resend.emails.send({
             from: 'Adidas LaunchHub <onboarding@resend.dev>',
             to: [email],
@@ -22,9 +20,6 @@ export const sendResetEmail = async (email, token) => {
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
                     <h2 style="color: #1a1a1a;">Password Reset Request</h2>
-                    <p style="color: #555; font-size: 14px; line-height: 1.6;">
-                        Hello,
-                    </p>
                     <p style="color: #555; font-size: 14px; line-height: 1.6;">
                         You requested a password reset. Click the button below to create a new password:
                     </p>
@@ -34,9 +29,6 @@ export const sendResetEmail = async (email, token) => {
                     <p style="color: #555; font-size: 14px; line-height: 1.6;">
                         This link expires in 15 minutes.
                     </p>
-                    <p style="color: #888; font-size: 13px; line-height: 1.6;">
-                        If you did not request this, please ignore this email.
-                    </p>
                     <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
                     <p style="color: #888; font-size: 12px;">
                         Adidas LaunchHub - Internal Product Launch Management Platform
@@ -45,7 +37,6 @@ export const sendResetEmail = async (email, token) => {
             `
         });
 
-        // Resend no lanza excepción automática si la API responde un error de dominio/correo
         if (response.error) {
             console.error("[EMAIL] Resend returned an error:", response.error);
             throw new Error(response.error.message);
@@ -55,11 +46,10 @@ export const sendResetEmail = async (email, token) => {
         return response.data;
 
     } catch (error) {
-        console.error("[EMAIL] FAILED to send email via Resend API:");
-        console.error("[EMAIL]   Error message:", error.message);
+        console.error("[EMAIL] FAILED to send email via Resend API:", error.message);
         throw error;
     }
 };
 
-// Exportamos también como alias por si tu controlador importa 'sendResetPasswordEmail'
+// Alias para evitar errores si tu controller importa con otro nombre
 export const sendResetPasswordEmail = sendResetEmail;
