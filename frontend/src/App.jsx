@@ -7,6 +7,7 @@ const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Launches = lazy(() => import("./pages/Launches"));
+const LaunchDetail = lazy(() => import("./pages/LaunchDetail"));
 const CreateLaunch = lazy(() => import("./pages/CreateLaunch"));
 const EditLaunch = lazy(() => import("./pages/EditLaunch"));
 const Calendar = lazy(() => import("./pages/Calendar"));
@@ -30,6 +31,7 @@ function App() {
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/launches" element={<ProtectedRoute><Launches /></ProtectedRoute>} />
+          <Route path="/launches/:id" element={<ProtectedRoute><LaunchDetail /></ProtectedRoute>} />
           <Route path="/launches/create" element={<ProtectedRoute><CreateLaunch /></ProtectedRoute>} />
           <Route path="/launches/edit/:id" element={<ProtectedRoute><EditLaunch /></ProtectedRoute>} />
           <Route path="/calendar" element={<ProtectedRoute><Calendar /></ProtectedRoute>} />

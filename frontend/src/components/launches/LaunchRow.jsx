@@ -47,7 +47,15 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
 
             <td>
 
-                <div className="launch-title">
+                <div
+                    className="launch-title"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => navigate(`/launches/${launch._id}`)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") navigate(`/launches/${launch._id}`);
+                    }}
+                >
                     {launch.title}
                 </div>
 

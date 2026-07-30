@@ -232,6 +232,12 @@
     font-size: 14px;
     color: var(--text-primary);
     margin-bottom: 3px;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.launch-title:hover {
+    color: var(--accent);
 }
 
 .launch-description {
