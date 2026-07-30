@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
 import SettingsCard from "../components/settings/SettingsCard";
@@ -301,7 +300,7 @@ function Settings() {
                                 placeholder="Confirm new password"
                             />
                         </div>
-                        <div className="settings-card-footer" style={{ flexDirection: "column", gap: 12 }}>
+                        <div className="settings-card-footer">
                             <button
                                 className="settings-btn primary"
                                 onClick={handleChangePassword}
@@ -311,12 +310,6 @@ function Settings() {
                                 {passwordSubmitting && <Loader2 size={16} className="spin" />}
                                 {passwordSubmitting ? "Updating..." : "Update Password"}
                             </button>
-                            <Link
-                                to="/forgot-password"
-                                className="settings-forgot-link"
-                            >
-                                Forgot your password?
-                            </Link>
                         </div>
                     </SettingsCard>
 
