@@ -61,6 +61,16 @@ export const me = async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            avatar: user.avatar || "",
+            department: user.department || "",
+            language: user.language || "en",
+            dateFormat: user.dateFormat || "MM/DD/YYYY",
+            timeFormat: user.timeFormat || "12h",
+            timezone: user.timezone || "America/Bogota",
+            notifications: user.notifications || {
+                emailNotifications: true,
+                marketingNotifications: false,
+            },
         });
     } catch (error) {
         console.error("Me error:", error);

@@ -307,6 +307,12 @@
     border-color: var(--accent-hover);
 }
 
+.settings-btn.primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .settings-btn.outline {
     background: var(--bg-secondary);
     color: var(--text-primary);

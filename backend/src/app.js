@@ -4,6 +4,7 @@ import authRoutes from "./routes/authRoutes.js";
 import launchRoutes from "./routes/launchRoutes.js";
 import calendarRoutes from "./routes/calendarRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 import { authenticateToken } from "./middleware/auth.js";
 
 const app = express();
@@ -22,5 +23,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/launches", authenticateToken, launchRoutes);
 app.use("/api/calendar", authenticateToken, calendarRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/users/profile", profileRoutes);
 
 export default app;

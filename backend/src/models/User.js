@@ -27,6 +27,40 @@ const userSchema = new mongoose.Schema({
         enum: ["active", "inactive"],
         default: "active",
     },
+    avatar: {
+        type: String,
+        default: "",
+    },
+    department: {
+        type: String,
+        default: "",
+    },
+    language: {
+        type: String,
+        default: "en",
+    },
+    dateFormat: {
+        type: String,
+        default: "MM/DD/YYYY",
+    },
+    timeFormat: {
+        type: String,
+        default: "12h",
+    },
+    timezone: {
+        type: String,
+        default: "America/Bogota",
+    },
+    notifications: {
+        emailNotifications: {
+            type: Boolean,
+            default: true,
+        },
+        marketingNotifications: {
+            type: Boolean,
+            default: false,
+        },
+    },
     resetPasswordToken: {
         type: String,
         default: null,
