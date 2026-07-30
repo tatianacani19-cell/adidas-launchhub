@@ -496,3 +496,30 @@
         text-align: center;
     }
 }
+
+/* ── Spinner ── */
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+/* ── Forgot Password Link ── */
+
+.settings-forgot-link {
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.settings-forgot-link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}

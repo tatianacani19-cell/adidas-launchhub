@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
 import SettingsCard from "../components/settings/SettingsCard";
 import SettingsToggle from "../components/settings/SettingsToggle";
@@ -110,7 +112,7 @@ function Settings() {
         }
         try {
             setPasswordSubmitting(true);
-            await api.put("/users/change-password", {
+            await api.put("/users/profile/change-password", {
                 currentPassword,
                 newPassword,
                 confirmPassword,
@@ -299,14 +301,22 @@ function Settings() {
                                 placeholder="Confirm new password"
                             />
                         </div>
-                        <div className="settings-card-footer">
+                        <div className="settings-card-footer" style={{ flexDirection: "column", gap: 12 }}>
                             <button
                                 className="settings-btn primary"
                                 onClick={handleChangePassword}
                                 disabled={passwordSubmitting}
+                                style={{ display: "inline-flex", alignItems: "center", gap: 8, justifyContent: "center" }}
                             >
+                                {passwordSubmitting && <Loader2 size={16} className="spin" />}
                                 {passwordSubmitting ? "Updating..." : "Update Password"}
                             </button>
+                            <Link
+                                to="/forgot-password"
+                                className="settings-forgot-link"
+                            >
+                                Forgot your password?
+                            </Link>
                         </div>
                     </SettingsCard>
 
