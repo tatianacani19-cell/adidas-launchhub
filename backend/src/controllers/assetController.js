@@ -1,6 +1,7 @@
 import path from "path";
 import fs from "fs";
 import Launch from "../models/Launch.js";
+import { addActivityLog, ACTIVITY_ACTIONS } from "../utils/activityLog.js";
 
 export const uploadAsset = async (req, res) => {
     try {
@@ -30,6 +31,8 @@ export const uploadAsset = async (req, res) => {
         launch.assets.push(asset);
         await launch.save();
 
+        await addActivityLog(launch._id, ACTIVITY_ACTIONS.ASSET_UPLOADED, `Uploaded ${file.originalname}`, req.user);
+
         res.status(201).json(asset);
     } catch (error) {
         console.error("Upload asset error:", error);
@@ -57,8 +60,12 @@ export const deleteAsset = async (req, res) => {
         const filePath = path.join(process.cwd(), "uploads", asset.fileName);
         try { fs.unlinkSync(filePath); } catch {}
 
+        const assetName = asset.originalName;
+
         launch.assets.pull(assetId);
         await launch.save();
+
+        await addActivityLog(launch._id, ACTIVITY_ACTIONS.ASSET_DELETED, `Deleted ${assetName}`, req.user);
 
         res.json({ message: "Asset deleted." });
     } catch (error) {
@@ -82,6 +89,8 @@ export const uploadProductImage = async (req, res) => {
             return res.status(404).json({ message: "Launch not found." });
         }
 
+        const isReplace = !!launch.productImage?.fileName;
+
         if (launch.productImage?.fileName) {
             const oldFilePath = path.join(process.cwd(), "uploads", launch.productImage.fileName);
             try { fs.unlinkSync(oldFilePath); } catch {}
@@ -98,6 +107,12 @@ export const uploadProductImage = async (req, res) => {
         };
 
         await launch.save();
+
+        if (isReplace) {
+            await addActivityLog(launch._id, ACTIVITY_ACTIONS.PRODUCT_IMAGE_REPLACED, `Replaced product image with ${file.originalname}`, req.user);
+        } else {
+            await addActivityLog(launch._id, ACTIVITY_ACTIONS.PRODUCT_IMAGE_UPLOADED, `Uploaded product image ${file.originalname}`, req.user);
+        }
 
         res.status(201).json(launch.productImage);
     } catch (error) {
@@ -128,6 +143,8 @@ export const deleteProductImage = async (req, res) => {
         const filePath = path.join(process.cwd(), "uploads", launch.productImage.fileName);
         try { fs.unlinkSync(filePath); } catch {}
 
+        const imageName = launch.productImage.originalName;
+
         launch.productImage = {
             fileName: "",
             originalName: "",
@@ -139,6 +156,8 @@ export const deleteProductImage = async (req, res) => {
         };
 
         await launch.save();
+
+        await addActivityLog(launch._id, ACTIVITY_ACTIONS.PRODUCT_IMAGE_DELETED, `Deleted product image ${imageName}`, req.user);
 
         res.json({ message: "Product image deleted." });
     } catch (error) {

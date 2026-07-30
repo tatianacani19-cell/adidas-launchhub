@@ -5,13 +5,14 @@ import {
     FileText, FileImage, FileSpreadsheet, FileArchive,
     Video, File as FileIcon, Download, Upload,
     MessageCircle, Loader2, Image as ImageIcon,
-    X as XIcon,
+    X as XIcon, FilePlus, ArrowRightLeft, CheckCircle, Globe, Archive,
+    Clock, User,
 } from "lucide-react";
 
 import MainLayout from "../components/layout/MainLayout";
 import StatusBadge from "../components/launches/StatusBadge";
 import CategoryBadge from "../components/launches/CategoryBadge";
-import { formatDateTime } from "../utils/formatDateTime";
+import { formatDateTime, formatDate, formatTime, getActivityIcon } from "../utils/formatDateTime";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import api from "../services/api";
@@ -20,6 +21,19 @@ import "../styles/launchDetail.css";
 
 const STATUS_ORDER = ["Draft", "In Review", "Approved", "Published"];
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+
+const ICON_COMPONENTS = {
+    FilePlus,
+    Edit3,
+    ArrowRightLeft,
+    Upload,
+    Trash2,
+    Image: ImageIcon,
+    CheckCircle,
+    Globe,
+    Archive,
+    Activity: FileText,
+};
 
 function LaunchDetail() {
     const { id } = useParams();
@@ -350,30 +364,45 @@ function LaunchDetail() {
             </div>
 
             <div className="detail-section">
-                <h2>Status Timeline</h2>
+                <h2>Activity Log</h2>
                 <div className="detail-timeline">
-                    <div className="timeline-steps">
-                        {STATUS_ORDER.map((status, index) => {
-                            const isCompleted = index < currentStatusIndex;
-                            const isActive = index === currentStatusIndex;
-                            return (
-                                <div key={status} className="timeline-step">
-                                    <div
-                                        className={`timeline-dot${isActive ? " active" : ""}${isCompleted ? " completed" : ""}`}
-                                    />
-                                    <span
-                                        className={`timeline-label${isActive ? " active" : ""}${isCompleted ? " completed" : ""}`}
-                                    >
-                                        {status}
-                                    </span>
-                                    {index < STATUS_ORDER.length - 1 && (
-                                        <div
-                                            className={`timeline-connector${isCompleted ? " completed" : ""}`}
-                                        />
-                                    )}
-                                </div>
-                            );
-                        })}
+                    <div className="activity-timeline">
+                        {launch.activityLog && launch.activityLog.length > 0 ? (
+                            [...launch.activityLog].reverse().map((activity, index) => {
+                                const IconComponent = ICON_COMPONENTS[getActivityIcon(activity.action)] || ICON_COMPONENTS.Activity;
+                                return (
+                                    <div key={activity._id || index} className="activity-item">
+                                        <div className="activity-marker">
+                                            <IconComponent size={16} className="activity-icon" />
+                                        </div>
+                                        <div className="activity-content">
+                                            <div className="activity-header">
+                                                <span className="activity-action">{activity.action}</span>
+                                                <span className="activity-description">{activity.description}</span>
+                                            </div>
+                                            <div className="activity-meta">
+                                                <span className="activity-user">
+                                                    <User size={12} />
+                                                    {activity.performedBy?.name || "Unknown User"}
+                                                </span>
+                                                <span className="activity-time">
+                                                    <Clock size={12} />
+                                                    {formatDate(activity.createdAt)} \u00B7 {formatTime(activity.createdAt)}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {index < (launch.activityLog?.length || 0) - 1 && (
+                                            <div className="activity-connector" />
+                                        )}
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <div className="activity-empty">
+                                <FileText size={32} />
+                                <span>No activity recorded yet</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

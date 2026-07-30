@@ -161,7 +161,7 @@
     white-space: pre-wrap;
 }
 
-/* ── Status Timeline ── */
+/* ── Activity Timeline ── */
 
 .detail-timeline {
     background: var(--bg-secondary);
@@ -171,75 +171,118 @@
     box-shadow: var(--shadow-sm);
 }
 
-.timeline-steps {
+.activity-timeline {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding-bottom: 24px;
+    position: relative;
+}
+
+.activity-item:last-child {
+    padding-bottom: 0;
+}
+
+.activity-marker {
     display: flex;
     align-items: center;
-    gap: 0;
-}
-
-.timeline-step {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-}
-
-.timeline-step:last-child {
-    flex: 0;
-}
-
-.timeline-dot {
-    width: 14px;
-    height: 14px;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    flex-shrink: 0;
-    border: 2px solid var(--border-color);
-    background: var(--bg-secondary);
-    transition: all var(--transition-normal);
-}
-
-.timeline-dot.active {
     background: var(--accent);
-    border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.08);
+    color: #fff;
+    flex-shrink: 0;
+    z-index: 1;
+    box-shadow: 0 0 0 4px var(--bg-secondary);
 }
 
-[data-theme="dark"] .timeline-dot.active {
-    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.12);
+.activity-icon {
+    color: #fff;
 }
 
-.timeline-dot.completed {
-    background: #16a34a;
-    border-color: #16a34a;
+.activity-connector {
+    position: absolute;
+    left: 17px;
+    top: 36px;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+    z-index: 0;
 }
 
-.timeline-label {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-muted);
+.activity-content {
+    flex: 1;
+    min-width: 0;
+    padding-top: 2px;
+}
+
+.activity-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.activity-action {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
     white-space: nowrap;
 }
 
-.timeline-label.active {
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.timeline-label.completed {
-    color: #16a34a;
-}
-
-.timeline-connector {
+.activity-description {
+    font-size: 14px;
+    color: var(--text-secondary);
     flex: 1;
-    height: 2px;
-    background: var(--border-color);
-    margin: 0 8px;
-    min-width: 20px;
-    transition: background var(--transition-normal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.timeline-connector.completed {
-    background: #16a34a;
+.activity-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.activity-user,
+.activity-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.activity-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    color: var(--text-muted);
+    font-size: 14px;
+    gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .activity-header {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .activity-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
 }
 
 /* ── Key Info ── */

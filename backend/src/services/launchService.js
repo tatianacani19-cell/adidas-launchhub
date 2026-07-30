@@ -1,4 +1,5 @@
 import Launch from "../models/Launch.js";
+import { addActivityLog, ACTIVITY_ACTIONS } from "../utils/activityLog.js";
 
 export const getAllLaunches = async () => {
     return Launch.find().sort({ createdAt: -1 });
@@ -12,29 +13,40 @@ export const getLaunchById = async (id) => {
     }
 };
 
-export const createLaunch = async (data) => {
-    return Launch.create(data);
+export const createLaunch = async (data, user) => {
+    const launch = await Launch.create(data);
+    await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_CREATED, "Launch created", user);
+    return launch;
 };
 
-export const updateLaunch = async (id, data) => {
+export const updateLaunch = async (id, data, user) => {
     try {
-        return await Launch.findByIdAndUpdate(id, data, { new: true });
+        const launch = await Launch.findByIdAndUpdate(id, data, { new: true });
+        if (launch) {
+            await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_UPDATED, "Launch details updated", user);
+        }
+        return launch;
     } catch {
         return null;
     }
 };
 
-export const deleteLaunch = async (id) => {
+export const deleteLaunch = async (id, user) => {
     try {
+        await addActivityLog(id, ACTIVITY_ACTIONS.LAUNCH_DELETED, "Launch deleted", user);
         return await Launch.findByIdAndDelete(id);
     } catch {
         return null;
     }
 };
 
-export const updateLaunchStatus = async (id, status) => {
+export const updateLaunchStatus = async (id, status, user) => {
     try {
-        return await Launch.findByIdAndUpdate(id, { status }, { new: true });
+        const launch = await Launch.findByIdAndUpdate(id, { status }, { new: true });
+        if (launch) {
+            await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_STATUS_CHANGED, `Status changed to ${status}`, user);
+        }
+        return launch;
     } catch {
         return null;
     }

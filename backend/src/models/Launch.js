@@ -99,6 +99,18 @@ const launchSchema = new mongoose.Schema({
         }],
         default: [],
     },
+    activityLog: {
+        type: [{
+            action: { type: String, required: true },
+            description: { type: String, required: true },
+            performedBy: {
+                _id: { type: String, default: "" },
+                name: { type: String, default: "" },
+            },
+            createdAt: { type: Date, default: Date.now },
+        }],
+        default: [],
+    },
 }, {
     timestamps: true,
 });

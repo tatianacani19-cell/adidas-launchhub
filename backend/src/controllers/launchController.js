@@ -34,7 +34,7 @@ export const getLaunchById = async (req, res) => {
 
 export const addLaunch = async (req, res) => {
     try {
-        const launch = await createLaunch(req.body);
+        const launch = await createLaunch(req.body, req.user);
         res.status(201).json(launch);
     } catch (error) {
         console.error("Error creating launch:", error);
@@ -44,7 +44,7 @@ export const addLaunch = async (req, res) => {
 
 export const editLaunch = async (req, res) => {
     try {
-        const launch = await updateLaunch(req.params.id, req.body);
+        const launch = await updateLaunch(req.params.id, req.body, req.user);
 
         if (!launch) {
             return res.status(404).json({ message: "Launch not found" });
@@ -59,7 +59,7 @@ export const editLaunch = async (req, res) => {
 
 export const removeLaunch = async (req, res) => {
     try {
-        const launch = await deleteLaunch(req.params.id);
+        const launch = await deleteLaunch(req.params.id, req.user);
 
         if (!launch) {
             return res.status(404).json({ message: "Launch not found" });
@@ -81,7 +81,7 @@ export const updateLaunchStatusController = async (req, res) => {
             return res.status(400).json({ message: "Invalid status." });
         }
 
-        const launch = await updateLaunchStatus(req.params.id, status);
+        const launch = await updateLaunchStatus(req.params.id, status, req.user);
 
         if (!launch) {
             return res.status(404).json({ message: "Launch not found" });
