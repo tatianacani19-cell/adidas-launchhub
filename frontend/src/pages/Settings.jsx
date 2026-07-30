@@ -465,7 +465,7 @@ function Settings() {
 
                     {isAdmin && (
                         <SettingsCard title="User Management">
-                            <UserManagement />
+                            <UserManagement isAdmin={isAdmin} />
                         </SettingsCard>
                     )}
 

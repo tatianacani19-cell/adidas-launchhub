@@ -4,7 +4,7 @@ import { useToast } from "../../context/ToastContext";
 
 const ROLES = ["ADMIN", "CREATOR", "APPROVER"];
 
-function UserManagement() {
+function UserManagement({ isAdmin = false }) {
 
     const { addToast } = useToast();
     const [users, setUsers] = useState([]);
@@ -90,12 +90,14 @@ function UserManagement() {
         <div className="user-management">
             <div className="user-management-header">
                 <span className="user-count">{users.length} users</span>
-                <button className="settings-btn primary" onClick={() => setShowForm(!showForm)}>
-                    {showForm ? "Cancel" : "Add User"}
-                </button>
+                {isAdmin && (
+                    <button className="settings-btn primary" onClick={() => setShowForm(!showForm)}>
+                        {showForm ? "Cancel" : "Add User"}
+                    </button>
+                )}
             </div>
 
-            {showForm && (
+            {isAdmin && showForm && (
                 <form className="user-form" onSubmit={handleCreate}>
                     <div className="user-form-grid">
                         <input
@@ -153,15 +155,27 @@ function UserManagement() {
                                     </div>
                                 </div>
                                 <div className="user-actions">
-                                    <select
-                                        value={u.role}
-                                        onChange={(e) => handleRoleChange(u._id, e.target.value)}
-                                        className="user-role-select"
-                                    >
-                                        {ROLES.map((r) => (
-                                            <option key={r} value={r}>{r}</option>
-                                        ))}
-                                    </select>
+                                    {isAdmin ? (
+                                        <select
+                                            value={u.role}
+                                            onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                                            className="user-role-select"
+                                        >
+                                            {ROLES.map((r) => (
+                                                <option key={r} value={r}>{r}</option>
+                                            ))}
+                                        </select>
+                                    ) : (
+                                        <span
+                                            className="settings-badge"
+                                            style={{
+                                                background: u.role === "ADMIN" ? "#FEE2E2" : u.role === "CREATOR" ? "#DBEAFE" : "#FEF9C3",
+                                                color: u.role === "ADMIN" ? "#991B1B" : u.role === "CREATOR" ? "#1E40AF" : "#92400E",
+                                            }}
+                                        >
+                                            {u.role}
+                                        </span>
+                                    )}
                                     <span
                                         className="settings-badge"
                                         style={{
@@ -171,18 +185,22 @@ function UserManagement() {
                                     >
                                         {u.status}
                                     </span>
-                                    <button
-                                        className="settings-btn outline small"
-                                        onClick={() => handleStatusToggle(u._id, u.status)}
-                                    >
-                                        {u.status === "active" ? "Deactivate" : "Activate"}
-                                    </button>
-                                    <button
-                                        className="settings-btn outline small danger"
-                                        onClick={() => handleDelete(u._id)}
-                                    >
-                                        Delete
-                                    </button>
+                                    {isAdmin && (
+                                        <>
+                                            <button
+                                                className="settings-btn outline small"
+                                                onClick={() => handleStatusToggle(u._id, u.status)}
+                                            >
+                                                {u.status === "active" ? "Deactivate" : "Activate"}
+                                            </button>
+                                            <button
+                                                className="settings-btn outline small danger"
+                                                onClick={() => handleDelete(u._id)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         );
