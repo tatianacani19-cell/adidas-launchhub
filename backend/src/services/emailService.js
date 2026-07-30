@@ -1,38 +1,46 @@
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 
-let transporter = null;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-import nodemailer from "nodemailer";
+export const sendResetPasswordEmail = async (toEmail, resetToken) => {
+    try {
+        console.log("[EMAIL] Preparing to send reset email via Resend API...");
 
-function getTransporter() {
-    console.log("[EMAIL] Creating fresh SMTP transporter (SSL)...");
+        const frontendUrl = process.env.FRONTEND_URL || 'https://adidas-launchhub.vercel.app';
+        // Limpiamos barras duplicadas por seguridad
+        const cleanBaseUrl = frontendUrl.replace(/\/+$/, '');
+        const resetUrl = `${cleanBaseUrl}/reset-password/${resetToken}`;
 
-    // Forzamos el puerto 465 y secure: true para evitar el bloqueo del puerto 587
-    const port = parseInt(process.env.EMAIL_PORT, 10) || 465;
+        console.log("[EMAIL]   To:", toEmail);
+        console.log("[EMAIL]   Reset link:", resetUrl);
 
-    console.log("[EMAIL]   Host:", process.env.EMAIL_HOST || "smtp.gmail.com");
-    console.log("[EMAIL]   Port:", port);
-    console.log("[EMAIL]   Secure:", true);
+        // Resend te permite enviar desde 'onboarding@resend.dev' en modo prueba sin configurar dominio
+        const data = await resend.emails.send({
+            from: 'Adidas LaunchHub <onboarding@resend.dev>',
+            to: [toEmail],
+            subject: 'LaunchHub - Restablecer Contraseña',
+            html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>Restablecer Contraseña</h2>
+                    <p>Has solicitado restablecer tu contraseña para Adidas LaunchHub.</p>
+                    <p>Haz clic en el siguiente enlace para continuar:</p>
+                    <a href="${resetUrl}" style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; display: inline-block; margin: 15px 0;">
+                        Restablecer Contraseña
+                    </a>
+                    <p>Este enlace expirará en 15 minutos.</p>
+                </div>
+            `
+        });
 
-    const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST || "smtp.gmail.com",
-        port: 465,             // Puerto SSL directo
-        secure: true,           // OBLIGATORIO true para el puerto 465
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD,
-        },
-        family: 4,              // Mantiene la fuerza de IPv4
-        connectionTimeout: 15000,
-        greetingTimeout: 15000,
-        socketTimeout: 15000,
-        tls: {
-            rejectUnauthorized: false
-        }
-    });
+        console.log("[EMAIL] Email sent successfully via Resend API! ID:", data.id);
+        return { success: true, data };
 
-    return transporter;
-}
+    } catch (error) {
+        console.error("[EMAIL] FAILED to send email via Resend API:");
+        console.error("[EMAIL]   Error message:", error.message);
+        throw error;
+    }
+};
 
 export const sendResetEmail = async (email, token) => {
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
