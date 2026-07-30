@@ -1,11 +1,14 @@
 import * as Brevo from '@getbrevo/brevo';
 
-const apiInstance = new Brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(Brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
-
 export const sendResetEmail = async (email, token) => {
     try {
         console.log("[EMAIL] Preparing to send reset email via Brevo API...");
+
+        const apiInstance = new Brevo.TransactionalEmailsApi();
+        apiInstance.setApiKey(
+            Brevo.TransactionalEmailsApiApiKeys.apiKey,
+            process.env.BREVO_API_KEY
+        );
 
         const frontendUrl = process.env.FRONTEND_URL || 'https://adidas-launchhub.vercel.app';
         const cleanBaseUrl = frontendUrl.replace(/\/+$/, '');
@@ -34,11 +37,16 @@ export const sendResetEmail = async (email, token) => {
                 </p>
             </div>
         `;
-        sendSmtpEmail.sender = { "name": "Adidas LaunchHub", "email": process.env.EMAIL_USER || "tatianacani19@gmail.com" };
-        sendSmtpEmail.to = [{ "email": email }];
+
+        // Usa el correo que registraste en Brevo como remitente
+        sendSmtpEmail.sender = {
+            name: "Adidas LaunchHub",
+            email: process.env.EMAIL_USER || "tatianacani19@gmail.com"
+        };
+        sendSmtpEmail.to = [{ email: email }];
 
         const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log("[EMAIL] Email sent successfully via Brevo API! MessageId:", data.body.messageId);
+        console.log("[EMAIL] Email sent successfully via Brevo API! MessageId:", data.body?.messageId || "OK");
         return data;
 
     } catch (error) {
