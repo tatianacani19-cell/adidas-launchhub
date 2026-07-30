@@ -1,15 +1,6 @@
-import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from '@getbrevo/brevo';
-
 export const sendResetEmail = async (email, token) => {
     try {
-        console.log("[EMAIL] Preparing to send reset email via Brevo API...");
-
-        // Instanciamos la API de Brevo
-        const apiInstance = new TransactionalEmailsApi();
-        apiInstance.setApiKey(
-            TransactionalEmailsApiApiKeys.apiKey,
-            process.env.BREVO_API_KEY
-        );
+        console.log("[EMAIL] Preparing to send reset email via Brevo REST API...");
 
         const frontendUrl = process.env.FRONTEND_URL || 'https://adidas-launchhub.vercel.app';
         const cleanBaseUrl = frontendUrl.replace(/\/+$/, '');
@@ -18,8 +9,12 @@ export const sendResetEmail = async (email, token) => {
         console.log("[EMAIL]   To:", email);
         console.log("[EMAIL]   Reset link:", resetLink);
 
-        // Creamos el objeto plano directamente para evitar problemas de exportación en la librería
-        const sendSmtpEmail = {
+        const payload = {
+            sender: {
+                name: "Adidas LaunchHub",
+                email: process.env.EMAIL_USER || "tatianacani19@gmail.com"
+            },
+            to: [{ email: email }],
             subject: "LaunchHub - Restablecer Contraseña",
             htmlContent: `
                 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
@@ -38,16 +33,27 @@ export const sendResetEmail = async (email, token) => {
                         Adidas LaunchHub - Internal Product Launch Management Platform
                     </p>
                 </div>
-            `,
-            sender: {
-                name: "Adidas LaunchHub",
-                email: process.env.EMAIL_USER || "tatianacani19@gmail.com"
-            },
-            to: [{ email: email }]
+            `
         };
 
-        const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log("[EMAIL] Email sent successfully via Brevo API! MessageId:", data.body?.messageId || "OK");
+        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "api-key": process.env.BREVO_API_KEY,
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("[EMAIL] Brevo API Error response:", data);
+            throw new Error(data.message || "Failed to send email via Brevo API");
+        }
+
+        console.log("[EMAIL] Email sent successfully via Brevo API! MessageId:", data.messageId);
         return data;
 
     } catch (error) {
