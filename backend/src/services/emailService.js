@@ -3,37 +3,35 @@ import nodemailer from "nodemailer";
 let transporter = null;
 
 function getTransporter() {
-    if (!transporter) {
-        try {
-            console.log("[EMAIL] Creating SMTP transporter...");
+    // Si ya existe pero queremos asegurar la nueva configuración, reiniciamos
+    console.log("[EMAIL] Creating fresh SMTP transporter...");
 
-            const port = parseInt(process.env.EMAIL_PORT, 10) || 465;
-            const isSecure = port === 465;
+    const port = parseInt(process.env.EMAIL_PORT, 10) || 587;
+    const isSecure = port === 465;
 
-            console.log("[EMAIL]   Host:", process.env.EMAIL_HOST || "smtp.gmail.com");
-            console.log("[EMAIL]   Port:", port);
-            console.log("[EMAIL]   Secure:", isSecure);
+    console.log("[EMAIL]   Host:", process.env.EMAIL_HOST || "smtp.gmail.com");
+    console.log("[EMAIL]   Port:", port);
+    console.log("[EMAIL]   Secure:", isSecure);
 
-            transporter = nodemailer.createTransport({
-                host: process.env.EMAIL_HOST || "smtp.gmail.com",
-                port: port,
-                secure: isSecure, // true para 465, false para 587
-                auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASSWORD,
-                },
-                family: 4, // Forzar uso de IPv4
-                connectionTimeout: 15000,
-                greetingTimeout: 15000,
-                socketTimeout: 15000,
-            });
+    transporter = nodemailer.createTransport({
+        host: process.env.EMAIL_HOST || "smtp.gmail.com",
+        port: port,
+        secure: isSecure, // false para 587, true para 465
+        requireTLS: port === 587,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
+        },
+        family: 4, // 👈 FUERZA IPv4 EN CADA PETICIÓN
+        dnsTimeout: 10000,
+        tls: {
+            rejectUnauthorized: false
+        },
+        connectionTimeout: 15000,
+        greetingTimeout: 15000,
+        socketTimeout: 15000,
+    });
 
-            console.log("[EMAIL] SMTP transporter created successfully");
-        } catch (error) {
-            console.error("[EMAIL] Failed to create SMTP transporter:", error.message);
-            throw error;
-        }
-    }
     return transporter;
 }
 
