@@ -4,7 +4,8 @@ import {
     ArrowLeft, MoreVertical, Edit3, Trash2,
     FileText, FileImage, FileSpreadsheet, FileArchive,
     Video, File as FileIcon, Download, Upload,
-    MessageCircle, Loader2,
+    MessageCircle, Loader2, Image as ImageIcon,
+    X as XIcon,
 } from "lucide-react";
 
 import MainLayout from "../components/layout/MainLayout";
@@ -18,6 +19,7 @@ import api from "../services/api";
 import "../styles/launchDetail.css";
 
 const STATUS_ORDER = ["Draft", "In Review", "Approved", "Published"];
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 
 function LaunchDetail() {
     const { id } = useParams();
@@ -32,18 +34,38 @@ function LaunchDetail() {
     const [uploading, setUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const [dragOver, setDragOver] = useState(false);
+    const [productImageUploading, setProductImageUploading] = useState(false);
+    const [productImageProgress, setProductImageProgress] = useState(0);
     const fileInputRef = useRef(null);
+    const productImageInputRef = useRef(null);
 
     const canEdit = user?.role === "CREATOR" || user?.role === "ADMIN";
     const canDelete = canEdit;
+
+    const API_BASE = import.meta.env.VITE_API_URL
+        ? import.meta.env.VITE_API_URL
+        : "http://localhost:3000";
 
     useEffect(() => {
         loadLaunch();
     }, [id]);
 
-    const API_BASE = import.meta.env.VITE_API_URL
-        ? import.meta.env.VITE_API_URL
-        : "http://localhost:3000";
+    async function loadLaunch() {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await api.get(`/launches/${id}`);
+            setLaunch(response.data);
+        } catch (err) {
+            if (err.response?.status === 404) {
+                setError("Launch not found.");
+            } else {
+                setError("Failed to load launch details.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
 
     async function handleUpload(file) {
         if (!file || uploading) return;
@@ -69,6 +91,36 @@ function LaunchDetail() {
         }
     }
 
+    async function handleProductImageUpload(file) {
+        if (!file || productImageUploading) return;
+
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+            addToast("Only JPG, JPEG and PNG images are allowed.", "error");
+            return;
+        }
+
+        try {
+            setProductImageUploading(true);
+            setProductImageProgress(0);
+            const formData = new FormData();
+            formData.append("file", file);
+            await api.post(`/launches/${id}/assets/product-image`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (e) => {
+                    if (e.total) setProductImageProgress(Math.round((e.loaded * 100) / e.total));
+                },
+            });
+            addToast("Product image uploaded.", "success");
+            loadLaunch();
+        } catch (err) {
+            const msg = err.response?.data?.message || "Failed to upload product image.";
+            addToast(msg, "error");
+        } finally {
+            setProductImageUploading(false);
+            setProductImageProgress(0);
+        }
+    }
+
     async function handleDeleteAsset(assetId) {
         try {
             await api.delete(`/launches/${id}/assets/${assetId}`);
@@ -76,6 +128,16 @@ function LaunchDetail() {
             loadLaunch();
         } catch {
             addToast("Failed to delete asset.", "error");
+        }
+    }
+
+    async function handleDeleteProductImage() {
+        try {
+            await api.delete(`/launches/${id}/assets/product-image`);
+            addToast("Product image deleted.", "success");
+            loadLaunch();
+        } catch {
+            addToast("Failed to delete product image.", "error");
         }
     }
 
@@ -105,6 +167,12 @@ function LaunchDetail() {
         e.target.value = "";
     }
 
+    function handleProductImageSelect(e) {
+        const files = e.target.files;
+        if (files.length > 0) handleProductImageUpload(files[0]);
+        e.target.value = "";
+    }
+
     function formatSize(bytes) {
         if (bytes < 1024) return bytes + " B";
         if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
@@ -121,22 +189,7 @@ function LaunchDetail() {
         return FileIcon;
     }
 
-    async function loadLaunch() {
-        try {
-            setLoading(true);
-            setError(null);
-            const response = await api.get(`/launches/${id}`);
-            setLaunch(response.data);
-        } catch (err) {
-            if (err.response?.status === 404) {
-                setError("Launch not found.");
-            } else {
-                setError("Failed to load launch details.");
-            }
-        } finally {
-            setLoading(false);
-        }
-    }
+    const currentStatusIndex = STATUS_ORDER.indexOf(launch?.status);
 
     if (loading) {
         return (
@@ -165,7 +218,9 @@ function LaunchDetail() {
         );
     }
 
-    const currentStatusIndex = STATUS_ORDER.indexOf(launch.status);
+    const productImageUrl = launch.productImage?.url
+        ? `${API_BASE}${launch.productImage.url}`
+        : null;
 
     return (
         <MainLayout title={launch.title}>
@@ -247,6 +302,12 @@ function LaunchDetail() {
 
                 {launch.description && (
                     <p className="detail-desc">{launch.description}</p>
+                )}
+
+                {productImageUrl && (
+                    <div className="detail-product-image">
+                        <img src={productImageUrl} alt={launch.title} className="product-image-main" />
+                    </div>
                 )}
             </div>
 
@@ -478,6 +539,83 @@ function LaunchDetail() {
                         </div>
                     )}
                 </div>
+
+                {canEdit && (
+                    <div className="detail-product-image-section">
+                        <div className="detail-section-header">
+                            <h2>Product Image</h2>
+                        </div>
+                        <div className="detail-assets">
+                            <input
+                                ref={productImageInputRef}
+                                type="file"
+                                accept="image/jpeg,image/jpg,image/png"
+                                style={{ display: "none" }}
+                                onChange={handleProductImageSelect}
+                            />
+
+                            {productImageUrl ? (
+                                <div className="product-image-preview">
+                                    <img src={productImageUrl} alt={launch.title} className="product-image-thumb" />
+                                    <div className="product-image-info">
+                                        <span className="product-image-name">{launch.productImage?.originalName || "Product Image"}</span>
+                                        <span className="product-image-meta">
+                                            {launch.productImage?.size ? formatSize(launch.productImage.size) : ""}
+                                            {launch.productImage?.size && launch.productImage?.uploadedAt ? " \u00B7 " : ""}
+                                            {launch.productImage?.uploadedAt ? formatDateTime(launch.productImage.uploadedAt) : ""}
+                                        </span>
+                                    </div>
+                                    <div className="product-image-actions">
+                                        <button
+                                            className="asset-action-btn"
+                                            onClick={() => productImageInputRef.current?.click()}
+                                            title="Replace Product Image"
+                                        >
+                                            <Upload size={16} />
+                                        </button>
+                                        <button
+                                            className="asset-action-btn danger"
+                                            onClick={handleDeleteProductImage}
+                                            title="Delete Product Image"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div
+                                    className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${productImageUploading ? "uploading" : ""}`}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setDragOver(false);
+                                        const files = e.dataTransfer.files;
+                                        if (files.length > 0) handleProductImageUpload(files[0]);
+                                    }}
+                                    onClick={() => !productImageUploading && productImageInputRef.current?.click()}
+                                >
+                                    {productImageUploading ? (
+                                        <div className="asset-upload-progress">
+                                            <Loader2 size={24} className="spin" />
+                                            <span>Uploading... {productImageProgress}%</span>
+                                            <div className="progress-bar">
+                                                <div className="progress-fill" style={{ width: `${productImageProgress}%` }} />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="asset-dropzone-text">
+                                            <ImageIcon size={24} />
+                                            <span>Drop product image here or click to upload</span>
+                                            <small>Only JPG, JPEG and PNG images allowed</small>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="detail-section">

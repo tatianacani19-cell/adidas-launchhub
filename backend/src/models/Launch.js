@@ -67,6 +67,15 @@ const launchSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
+    productImage: {
+        fileName: { type: String, default: "" },
+        originalName: { type: String, default: "" },
+        mimeType: { type: String, default: "" },
+        size: { type: Number, default: 0 },
+        url: { type: String, default: "" },
+        uploadedBy: { type: String, default: "" },
+        uploadedAt: { type: Date, default: null },
+    },
     assets: {
         type: [{
             fileName: { type: String, required: true },

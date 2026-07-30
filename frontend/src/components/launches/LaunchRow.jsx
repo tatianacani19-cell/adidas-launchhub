@@ -1,4 +1,4 @@
-import { Pencil, Trash2, Check, X } from "lucide-react";
+import { Pencil, Trash2, Check, X, Image as ImageIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 import { formatDateTime } from "../../utils/formatDateTime";
@@ -14,6 +14,14 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
     const canEdit = user?.role === "CREATOR" || user?.role === "ADMIN";
     const canApprove = user?.role === "APPROVER" || user?.role === "ADMIN";
     const isInReview = launch.status === "In Review";
+
+    const API_BASE = import.meta.env.VITE_API_URL
+        ? import.meta.env.VITE_API_URL
+        : "http://localhost:3000";
+
+    const productImageUrl = launch.productImage?.url
+        ? `${API_BASE}${launch.productImage.url}`
+        : null;
 
     async function handleApprove() {
         try {
@@ -42,7 +50,15 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
             </td>
 
             <td>
-                <div className="launch-thumb"></div>
+                {productImageUrl ? (
+                    <img
+                        src={productImageUrl}
+                        alt={launch.title}
+                        className="launch-thumb-img"
+                    />
+                ) : (
+                    <div className="launch-thumb"></div>
+                )}
             </td>
 
             <td>
