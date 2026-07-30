@@ -2,34 +2,33 @@ import nodemailer from "nodemailer";
 
 let transporter = null;
 
-function getTransporter() {
-    // Si ya existe pero queremos asegurar la nueva configuración, reiniciamos
-    console.log("[EMAIL] Creating fresh SMTP transporter...");
+import nodemailer from "nodemailer";
 
-    const port = parseInt(process.env.EMAIL_PORT, 10) || 587;
-    const isSecure = port === 465;
+function getTransporter() {
+    console.log("[EMAIL] Creating fresh SMTP transporter (SSL)...");
+
+    // Forzamos el puerto 465 y secure: true para evitar el bloqueo del puerto 587
+    const port = parseInt(process.env.EMAIL_PORT, 10) || 465;
 
     console.log("[EMAIL]   Host:", process.env.EMAIL_HOST || "smtp.gmail.com");
     console.log("[EMAIL]   Port:", port);
-    console.log("[EMAIL]   Secure:", isSecure);
+    console.log("[EMAIL]   Secure:", true);
 
-    transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST || "smtp.gmail.com",
-        port: port,
-        secure: isSecure, // false para 587, true para 465
-        requireTLS: port === 587,
+        port: 465,             // Puerto SSL directo
+        secure: true,           // OBLIGATORIO true para el puerto 465
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASSWORD,
         },
-        family: 4, // 👈 FUERZA IPv4 EN CADA PETICIÓN
-        dnsTimeout: 10000,
-        tls: {
-            rejectUnauthorized: false
-        },
+        family: 4,              // Mantiene la fuerza de IPv4
         connectionTimeout: 15000,
         greetingTimeout: 15000,
         socketTimeout: 15000,
+        tls: {
+            rejectUnauthorized: false
+        }
     });
 
     return transporter;
