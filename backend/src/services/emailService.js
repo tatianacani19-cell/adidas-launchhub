@@ -6,23 +6,28 @@ function getTransporter() {
     if (!transporter) {
         try {
             console.log("[EMAIL] Creating SMTP transporter...");
-            console.log("[EMAIL]   Host:", process.env.EMAIL_HOST || "(undefined)");
-            console.log("[EMAIL]   Port:", process.env.EMAIL_PORT || "(undefined)");
-            console.log("[EMAIL]   User:", process.env.EMAIL_USER || "(undefined)");
-            console.log("[EMAIL]   Secure:", false);
+
+            const port = parseInt(process.env.EMAIL_PORT, 10) || 465;
+            const isSecure = port === 465;
+
+            console.log("[EMAIL]   Host:", process.env.EMAIL_HOST || "smtp.gmail.com");
+            console.log("[EMAIL]   Port:", port);
+            console.log("[EMAIL]   Secure:", isSecure);
 
             transporter = nodemailer.createTransport({
-                host: process.env.EMAIL_HOST,
-                port: parseInt(process.env.EMAIL_PORT, 10) || 587,
-                secure: false,
+                host: process.env.EMAIL_HOST || "smtp.gmail.com",
+                port: port,
+                secure: isSecure, // true para 465, false para 587
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASSWORD,
                 },
-                connectionTimeout: 10000,
-                greetingTimeout: 10000,
-                socketTimeout: 10000,
+                family: 4, // Forzar uso de IPv4
+                connectionTimeout: 15000,
+                greetingTimeout: 15000,
+                socketTimeout: 15000,
             });
+
             console.log("[EMAIL] SMTP transporter created successfully");
         } catch (error) {
             console.error("[EMAIL] Failed to create SMTP transporter:", error.message);
