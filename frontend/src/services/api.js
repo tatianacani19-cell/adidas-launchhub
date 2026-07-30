@@ -3,7 +3,7 @@ import axios from "axios";
 // Usa la variable de entorno de Vite o cae de vuelta a localhost si estás en local
 const API_BASE_URL = import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL}/api`
-    : "http://localhost:5173"; // O el puerto que uses localmente
+    : "http://localhost:3000/api"; // O el puerto que uses localmente
 
 const api = axios.create({
     baseURL: API_BASE_URL
