@@ -22,6 +22,17 @@ import "../styles/launchDetail.css";
 const STATUS_ORDER = ["Draft", "In Review", "Approved", "Published"];
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 
+const KEY_INFO_FIELDS = [
+    { key: "tagline", label: "Tagline" },
+    { key: "season", label: "Season" },
+    { key: "productCategory", label: "Product Category" },
+    { key: "subcategory", label: "Subcategory" },
+    { key: "distributionChannels", label: "Distribution Channels" },
+    { key: "pricePoint", label: "Price Point" },
+    { key: "targetAudience", label: "Target Audience" },
+    { key: "region", label: "Regions" },
+];
+
 const ICON_COMPONENTS = {
     FilePlus,
     Edit3,
@@ -50,6 +61,12 @@ function LaunchDetail() {
     const [dragOver, setDragOver] = useState(false);
     const [productImageUploading, setProductImageUploading] = useState(false);
     const [productImageProgress, setProductImageProgress] = useState(0);
+    const [keyInfoEdit, setKeyInfoEdit] = useState(false);
+    const [keyInfoForm, setKeyInfoForm] = useState({
+        tagline: "", season: "", productCategory: "", subcategory: "",
+        distributionChannels: "", pricePoint: "", targetAudience: "", region: "",
+    });
+    const [keyInfoSaving, setKeyInfoSaving] = useState(false);
     const fileInputRef = useRef(null);
     const productImageInputRef = useRef(null);
 
@@ -187,6 +204,42 @@ function LaunchDetail() {
         e.target.value = "";
     }
 
+    function startKeyInfoEdit() {
+        setKeyInfoForm({
+            tagline: launch.tagline || "",
+            season: launch.season || "",
+            productCategory: launch.productCategory || "",
+            subcategory: launch.subcategory || "",
+            distributionChannels: launch.distributionChannels || "",
+            pricePoint: launch.pricePoint || "",
+            targetAudience: launch.targetAudience || "",
+            region: launch.market || launch.region || "",
+        });
+        setKeyInfoEdit(true);
+    }
+
+    function cancelKeyInfoEdit() {
+        setKeyInfoEdit(false);
+    }
+
+    function handleKeyInfoChange(field, value) {
+        setKeyInfoForm(prev => ({ ...prev, [field]: value }));
+    }
+
+    async function saveKeyInfo() {
+        try {
+            setKeyInfoSaving(true);
+            await api.put(`/launches/${id}`, keyInfoForm);
+            addToast("Key information updated.", "success");
+            setKeyInfoEdit(false);
+            loadLaunch();
+        } catch {
+            addToast("Failed to save key information.", "error");
+        } finally {
+            setKeyInfoSaving(false);
+        }
+    }
+
     function formatSize(bytes) {
         if (bytes < 1024) return bytes + " B";
         if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
@@ -317,46 +370,41 @@ function LaunchDetail() {
                 {launch.description && (
                     <p className="detail-desc">{launch.description}</p>
                 )}
-
-                {productImageUrl && (
-                    <div className="detail-product-image">
-                        <img src={productImageUrl} alt={launch.title} className="product-image-main" />
-                    </div>
-                )}
             </div>
-            <div className="detail-body">
-                <div className="detail-body-left">
-                    <div className="detail-section">
-                        <div className="detail-info-grid">
-                            <div className="detail-card">
-                                <div className="detail-card-label">Status</div>
-                                <div className="detail-card-value">
-                                    <StatusBadge status={launch.status} />
-                                </div>
-                            </div>
-                            <div className="detail-card">
-                                <div className="detail-card-label">Market</div>
-                                <div className="detail-card-value">{launch.market}</div>
-                            </div>
-                            <div className="detail-card">
-                                <div className="detail-card-label">Launch Date</div>
-                                <div className="detail-card-value">{launch.launchDate}</div>
-                            </div>
-                            <div className="detail-card">
-                                <div className="detail-card-label">Owner</div>
-                                <div className="detail-card-value">{launch.owner || "Marketing Team"}</div>
-                            </div>
-                            <div className="detail-card">
-                                <div className="detail-card-label">Last Updated</div>
-                                <div className="detail-card-value">{formatDateTime(launch.updatedAt)}</div>
-                            </div>
-                            <div className="detail-card">
-                                <div className="detail-card-label">Current Step</div>
-                                <div className="detail-card-value">{launch.currentStep || "\u2014"}</div>
-                            </div>
+
+            <div className="detail-info-row">
+                <div className="detail-info-grid">
+                    <div className="detail-card">
+                        <div className="detail-card-label">Status</div>
+                        <div className="detail-card-value">
+                            <StatusBadge status={launch.status} />
                         </div>
                     </div>
+                    <div className="detail-card">
+                        <div className="detail-card-label">Market</div>
+                        <div className="detail-card-value">{launch.market}</div>
+                    </div>
+                    <div className="detail-card">
+                        <div className="detail-card-label">Launch Date</div>
+                        <div className="detail-card-value">{launch.launchDate}</div>
+                    </div>
+                    <div className="detail-card">
+                        <div className="detail-card-label">Owner</div>
+                        <div className="detail-card-value">{launch.owner || "Marketing Team"}</div>
+                    </div>
+                    <div className="detail-card">
+                        <div className="detail-card-label">Last Updated</div>
+                        <div className="detail-card-value">{formatDateTime(launch.updatedAt)}</div>
+                    </div>
+                    <div className="detail-card">
+                        <div className="detail-card-label">Current Step</div>
+                        <div className="detail-card-value">{launch.currentStep || "\u2014"}</div>
+                    </div>
+                </div>
+            </div>
 
+            <div className="detail-body">
+                <div className="detail-body-left">
                     <div className="detail-section">
                         <h2>Description</h2>
                         <div className="detail-desc-card">
@@ -364,6 +412,54 @@ function LaunchDetail() {
                         </div>
                     </div>
 
+                    <div className="detail-section">
+                        <div className="detail-section-header">
+                            <h2>Key Information</h2>
+                            {canEdit && !keyInfoEdit && (
+                                <button className="key-info-edit-btn" onClick={startKeyInfoEdit}>
+                                    <Edit3 size={14} />
+                                    Edit
+                                </button>
+                            )}
+                        </div>
+                        <div className="detail-key-info">
+                            <div className="key-info-grid">
+                                {KEY_INFO_FIELDS.map(field => (
+                                    <div key={field.key} className="key-info-item">
+                                        <span className="key-info-label">{field.label}</span>
+                                        {keyInfoEdit ? (
+                                            <input
+                                                type="text"
+                                                className="key-info-input"
+                                                value={keyInfoForm[field.key]}
+                                                onChange={e => handleKeyInfoChange(field.key, e.target.value)}
+                                                disabled={field.key === "region"}
+                                                placeholder={field.key === "region" ? "Auto-filled from market" : `Enter ${field.label.toLowerCase()}`}
+                                            />
+                                        ) : (
+                                            <span className={`key-info-value ${!launch[field.key] ? "empty" : ""}`}>
+                                                {launch[field.key] || "\u2014"}
+                                            </span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                            {keyInfoEdit && (
+                                <div className="key-info-actions">
+                                    <button className="key-info-save-btn" onClick={saveKeyInfo} disabled={keyInfoSaving}>
+                                        {keyInfoSaving && <Loader2 size={14} className="spin" />}
+                                        {keyInfoSaving ? "Saving..." : "Save"}
+                                    </button>
+                                    <button className="key-info-cancel-btn" onClick={cancelKeyInfoEdit} disabled={keyInfoSaving}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="detail-body-right">
                     <div className="detail-section">
                         <h2>Activity Log</h2>
                         <div className="detail-timeline">
@@ -407,94 +503,87 @@ function LaunchDetail() {
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div className="detail-body-right">
                     <div className="detail-section">
-                        {!canEdit && productImageUrl && (
-                            <>
-                                <h2>Product Image</h2>
-                                <div className="detail-assets">
-                                    <img src={productImageUrl} alt={launch.title} className="product-image-main" />
+                        <div className="detail-section-header">
+                            <h2>Product Image</h2>
+                            {canEdit && productImageUrl && (
+                                <div className="product-image-actions-header">
+                                    <button
+                                        className="asset-action-btn"
+                                        onClick={() => productImageInputRef.current?.click()}
+                                        title="Replace Product Image"
+                                    >
+                                        <Upload size={14} />
+                                    </button>
+                                    <button
+                                        className="asset-action-btn danger"
+                                        onClick={handleDeleteProductImage}
+                                        title="Delete Product Image"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
                                 </div>
-                            </>
-                        )}
-                        {canEdit && (
-                            <div className="detail-product-image-section">
-                                <div className="detail-section-header">
-                                    <h2>Product Image</h2>
-                                </div>
-                                <div className="detail-assets">
-                                    <input
-                                        ref={productImageInputRef}
-                                        type="file"
-                                        accept="image/jpeg,image/jpg,image/png"
-                                        style={{ display: "none" }}
-                                        onChange={handleProductImageSelect}
-                                    />
+                            )}
+                        </div>
+                        <div className="detail-assets">
+                            <input
+                                ref={productImageInputRef}
+                                type="file"
+                                accept="image/jpeg,image/jpg,image/png"
+                                style={{ display: "none" }}
+                                onChange={handleProductImageSelect}
+                            />
 
-                                    {productImageUrl ? (
-                                        <div className="product-image-preview">
-                                            <img src={productImageUrl} alt={launch.title} className="product-image-thumb" />
-                                            <div className="product-image-info">
-                                                <span className="product-image-name">{launch.productImage?.originalName || "Product Image"}</span>
-                                                <span className="product-image-meta">
-                                                    {launch.productImage?.size ? formatSize(launch.productImage.size) : ""}
-                                                    {launch.productImage?.size && launch.productImage?.uploadedAt ? " \u00B7 " : ""}
-                                                    {launch.productImage?.uploadedAt ? formatDateTime(launch.productImage.uploadedAt) : ""}
-                                                </span>
-                                            </div>
-                                            <div className="product-image-actions">
-                                                <button
-                                                    className="asset-action-btn"
-                                                    onClick={() => productImageInputRef.current?.click()}
-                                                    title="Replace Product Image"
-                                                >
-                                                    <Upload size={16} />
-                                                </button>
-                                                <button
-                                                    className="asset-action-btn danger"
-                                                    onClick={handleDeleteProductImage}
-                                                    title="Delete Product Image"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
+                            {productImageUrl ? (
+                                <div className="product-image-preview">
+                                    <img src={productImageUrl} alt={launch.title} className="product-image-thumb" />
+                                    <div className="product-image-info">
+                                        <span className="product-image-name">{launch.productImage?.originalName || "Product Image"}</span>
+                                        <span className="product-image-meta">
+                                            {launch.productImage?.size ? formatSize(launch.productImage.size) : ""}
+                                            {launch.productImage?.size && launch.productImage?.uploadedAt ? " \u00B7 " : ""}
+                                            {launch.productImage?.uploadedAt ? formatDateTime(launch.productImage.uploadedAt) : ""}
+                                        </span>
+                                    </div>
+                                </div>
+                            ) : canEdit ? (
+                                <div
+                                    className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${productImageUploading ? "uploading" : ""}`}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setDragOver(false);
+                                        const files = e.dataTransfer.files;
+                                        if (files.length > 0) handleProductImageUpload(files[0]);
+                                    }}
+                                    onClick={() => !productImageUploading && productImageInputRef.current?.click()}
+                                >
+                                    {productImageUploading ? (
+                                        <div className="asset-upload-progress">
+                                            <Loader2 size={24} className="spin" />
+                                            <span>Uploading... {productImageProgress}%</span>
+                                            <div className="progress-bar">
+                                                <div className="progress-fill" style={{ width: `${productImageProgress}%` }} />
                                             </div>
                                         </div>
                                     ) : (
-                                        <div
-                                            className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${productImageUploading ? "uploading" : ""}`}
-                                            onDragOver={handleDragOver}
-                                            onDragLeave={handleDragLeave}
-                                            onDrop={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                setDragOver(false);
-                                                const files = e.dataTransfer.files;
-                                                if (files.length > 0) handleProductImageUpload(files[0]);
-                                            }}
-                                            onClick={() => !productImageUploading && productImageInputRef.current?.click()}
-                                        >
-                                            {productImageUploading ? (
-                                                <div className="asset-upload-progress">
-                                                    <Loader2 size={24} className="spin" />
-                                                    <span>Uploading... {productImageProgress}%</span>
-                                                    <div className="progress-bar">
-                                                        <div className="progress-fill" style={{ width: `${productImageProgress}%` }} />
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="asset-dropzone-text">
-                                                    <ImageIcon size={24} />
-                                                    <span>Upload Product Image (JPG, JPEG, PNG)</span>
-                                                    <small>Click or drag & drop</small>
-                                                </div>
-                                            )}
+                                        <div className="asset-dropzone-text">
+                                            <ImageIcon size={24} />
+                                            <span>Upload Product Image (JPG, JPEG, PNG)</span>
+                                            <small>Click or drag & drop</small>
                                         </div>
                                     )}
                                 </div>
-                            </div>
-                        )}
+                            ) : (
+                                <div className="assets-empty">
+                                    <ImageIcon size={32} />
+                                    <span>No product image</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="detail-section">

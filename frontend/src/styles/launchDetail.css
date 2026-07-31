@@ -818,6 +818,124 @@
     background: #3b1111;
 }
 
+/* ── Info Row (full-width cards above the two-column body) ── */
+
+.detail-info-row {
+    margin-bottom: 28px;
+}
+
+/* ── Key Information Inline Editing ── */
+
+.key-info-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 14px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.key-info-edit-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-hover);
+}
+
+.key-info-input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    transition: border-color var(--transition-fast);
+    box-sizing: border-box;
+}
+
+.key-info-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+.key-info-input:disabled {
+    background: var(--bg-skeleton);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+.key-info-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.key-info-save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.key-info-save-btn:hover {
+    background: var(--accent-hover);
+}
+
+.key-info-save-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.key-info-cancel-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 38px;
+    padding: 0 20px;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.key-info-cancel-btn:hover {
+    border-color: var(--text-muted);
+    color: var(--text-primary);
+}
+
+.key-info-cancel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.product-image-actions-header {
+    display: flex;
+    gap: 4px;
+}
+
 /* ── Two-column layout ── */
 
 .detail-body {
