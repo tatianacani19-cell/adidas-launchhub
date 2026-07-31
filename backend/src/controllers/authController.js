@@ -102,9 +102,7 @@ export const forgotPassword = async (req, res) => {
 
         if (!user) {
             console.log(`[${timestamp}] USER NOT FOUND in database for email: "${normalizedEmail}"`);
-            console.log(`[${timestamp}] Returning generic response (security measure)`);
-            console.log("══════════════════════════════════════════");
-            return res.json({ message: "If the email exists, a recovery link has been sent." });
+            return res.status(404).json({ message: "No account found with this email address." });
         }
 
         console.log(`[${timestamp}] USER FOUND: id=${user._id}, name="${user.name}", email="${user.email}"`);
