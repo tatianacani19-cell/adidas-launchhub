@@ -1,4 +1,4 @@
-import { Pencil, Trash2, Check, X, Image as ImageIcon } from "lucide-react";
+import { Pencil, Trash2, Check, X, Send, Globe } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import StatusBadge from "./StatusBadge";
 import { formatDateTime } from "../../utils/formatDateTime";
@@ -13,12 +13,23 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
 
     const canEdit = user?.role === "CREATOR" || user?.role === "ADMIN";
     const canApprove = user?.role === "APPROVER" || user?.role === "ADMIN";
+    const isDraft = launch.status === "Draft";
     const isInReview = launch.status === "In Review";
+    const isApproved = launch.status === "Approved";
 
     const productImageUrl = launch.productImage?.url || null;
     const lastActivity = launch.activityLog?.length
         ? launch.activityLog[launch.activityLog.length - 1]
         : null;
+
+    async function handleSubmitForReview() {
+        try {
+            await onStatusChange(launch._id, "In Review");
+            addToast("Launch submitted for review.", "success");
+        } catch (err) {
+            addToast(err.response?.data?.message || "Failed to submit launch.", "error");
+        }
+    }
 
     async function handleApprove() {
         try {
@@ -35,6 +46,15 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
             addToast("Launch sent back to Draft.", "info");
         } catch (err) {
             addToast(err.response?.data?.message || "Failed to reject launch.", "error");
+        }
+    }
+
+    async function handlePublish() {
+        try {
+            await onStatusChange(launch._id, "Published");
+            addToast("Launch published.", "success");
+        } catch (err) {
+            addToast(err.response?.data?.message || "Failed to publish launch.", "error");
         }
     }
 
@@ -100,6 +120,17 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
 
                 <div className="actions">
 
+                    {canEdit && isDraft && (
+                        <button
+                            className="action-btn submit"
+                            onClick={handleSubmitForReview}
+                            aria-label={`Submit ${launch.title} for review`}
+                            title="Submit for Review"
+                        >
+                            <Send size={16} />
+                        </button>
+                    )}
+
                     {canApprove && isInReview && (
                         <>
                             <button
@@ -120,6 +151,17 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
                                 <X size={16} />
                             </button>
                         </>
+                    )}
+
+                    {user?.role === "ADMIN" && isApproved && (
+                        <button
+                            className="action-btn publish"
+                            onClick={handlePublish}
+                            aria-label={`Publish ${launch.title}`}
+                            title="Publish"
+                        >
+                            <Globe size={16} />
+                        </button>
                     )}
 
                     {canEdit && (

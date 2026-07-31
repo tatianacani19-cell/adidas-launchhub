@@ -331,6 +331,26 @@
     color: #4ade80;
 }
 
+.action-btn.submit:hover {
+    background: #DBEAFE;
+    color: #1e40af;
+}
+
+[data-theme="dark"] .action-btn.submit:hover {
+    background: #1e3a8a;
+    color: #60a5fa;
+}
+
+.action-btn.publish:hover {
+    background: #E0E7FF;
+    color: #3730a3;
+}
+
+[data-theme="dark"] .action-btn.publish:hover {
+    background: #312e81;
+    color: #818cf8;
+}
+
 .action-btn.reject:hover {
     background: #FEF9C3;
     color: #92400E;

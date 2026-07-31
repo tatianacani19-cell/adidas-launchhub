@@ -14,6 +14,7 @@ export const getLaunchById = async (id) => {
 };
 
 export const createLaunch = async (data, user) => {
+    data.status = "Draft";
     const launch = await Launch.create(data);
     await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_CREATED, "Launch created", user);
     return Launch.findById(launch._id);
@@ -21,6 +22,9 @@ export const createLaunch = async (data, user) => {
 
 export const updateLaunch = async (id, data, user) => {
     try {
+        if (data && typeof data === "object") {
+            delete data.status;
+        }
         const launch = await Launch.findByIdAndUpdate(id, data, { new: true });
         if (launch) {
             await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_UPDATED, "Launch details updated", user);
@@ -61,6 +65,12 @@ export const updateLaunchStatus = async (id, status, user) => {
 
     if (user?.role === "APPROVER" && launch.status !== "In Review") {
         const error = new Error("Approvers can only approve or reject launches that are In Review.");
+        error.status = 403;
+        throw error;
+    }
+
+    if (user?.role === "CREATOR" && !(launch.status === "Draft" && status === "In Review")) {
+        const error = new Error("Creators can only submit Draft launches for review.");
         error.status = 403;
         throw error;
     }

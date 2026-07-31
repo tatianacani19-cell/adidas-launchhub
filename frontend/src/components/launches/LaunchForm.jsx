@@ -122,19 +122,6 @@ function LaunchForm({ mode = "create", initialData = null }) {
                     required
                 />
 
-                <SelectInput
-                    label="Status"
-                    name="status"
-                    value={form.status}
-                    onChange={handleChange}
-                    options={[
-                        "Draft",
-                        "In Review",
-                        "Approved",
-                        "Published"
-                    ]}
-                />
-
                 <div className="form-buttons">
 
                     <button

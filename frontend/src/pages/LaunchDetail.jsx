@@ -11,6 +11,7 @@ import {
 
 import MainLayout from "../components/layout/MainLayout";
 import StatusBadge from "../components/launches/StatusBadge";
+import StatusWorkflow from "../components/launches/StatusWorkflow";
 import CategoryBadge from "../components/launches/CategoryBadge";
 import { formatDateTime, formatDate, formatTime, getActivityIcon } from "../utils/formatDateTime";
 import { useAuth } from "../context/AuthContext";
@@ -399,6 +400,7 @@ function LaunchDetail() {
                         <div className="detail-card-value">
                             <StatusBadge status={launch.status} />
                         </div>
+                        <StatusWorkflow launch={launch} onStatusChanged={loadLaunch} />
                     </div>
                     <div className="detail-card">
                         <div className="detail-card-label">Market</div>

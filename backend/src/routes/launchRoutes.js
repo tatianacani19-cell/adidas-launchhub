@@ -22,7 +22,7 @@ router.post("/", authorizeRoles("CREATOR", "ADMIN"), addLaunch);
 router.put("/:id", authorizeRoles("CREATOR", "ADMIN"), editLaunch);
 router.delete("/:id", authorizeRoles("CREATOR", "ADMIN"), removeLaunch);
 
-router.put("/:id/status", authorizeRoles("APPROVER", "ADMIN"), updateLaunchStatusController);
+router.put("/:id/status", authorizeRoles("CREATOR", "APPROVER", "ADMIN"), updateLaunchStatusController);
 router.post("/:id/comments", authorizeRoles("CREATOR", "ADMIN"), addComment);
 
 router.post("/migrate-activity", migrateActivityLog);
