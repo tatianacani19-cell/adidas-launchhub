@@ -73,6 +73,7 @@ function StatusChart({ stats }) {
                             <Tooltip
                                 trigger="click"
                                 cursor={false}
+                                position={{ x: 165, y: 80 }}
                                 content={({ active, payload }) => {
                                     if (!active || !payload || !payload.length) {
                                         return null;
