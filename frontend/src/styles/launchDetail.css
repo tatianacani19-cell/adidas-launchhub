@@ -1268,6 +1268,97 @@
     color: #d6d3d1;
 }
 
+/* ── Status Timeline ── */
+
+.status-timeline-wrapper {
+    width: 100%;
+}
+
+.status-timeline {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 8px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    text-align: center;
+}
+
+.timeline-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-hover);
+    border: 2px solid var(--border-color);
+    color: var(--text-muted);
+    z-index: 1;
+    transition: all var(--transition-fast);
+}
+
+.timeline-step.done .timeline-dot {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #ffffff;
+}
+
+[data-theme="dark"] .timeline-step.done .timeline-dot {
+    background: #22c55e;
+    border-color: #22c55e;
+    color: #052e16;
+}
+
+.timeline-step.current .timeline-dot {
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2);
+}
+
+.timeline-label {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color var(--transition-fast);
+}
+
+.timeline-step.done .timeline-label {
+    color: var(--text-primary);
+}
+
+.timeline-connector {
+    position: absolute;
+    top: 13px;
+    left: calc(50% + 13px);
+    width: calc(100% - 26px);
+    height: 3px;
+    background: var(--border-color);
+    z-index: 0;
+}
+
+.timeline-connector.done {
+    background: #16a34a;
+}
+
+[data-theme="dark"] .timeline-connector.done {
+    background: #22c55e;
+}
+
+@media (max-width: 480px) {
+    .timeline-label {
+        font-size: 10px;
+    }
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 1200px) {

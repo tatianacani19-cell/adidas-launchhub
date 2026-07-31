@@ -5,13 +5,14 @@ import {
     FileText, FileImage, FileSpreadsheet, FileArchive,
     Video, File as FileIcon, Download, Upload,
     MessageCircle, Loader2, Image as ImageIcon,
-    X as XIcon, FilePlus, ArrowRightLeft, CheckCircle, Globe, Archive,
+    FilePlus, ArrowRightLeft, CheckCircle, Globe, Archive,
     Clock, User,
 } from "lucide-react";
 
 import MainLayout from "../components/layout/MainLayout";
 import StatusBadge from "../components/launches/StatusBadge";
 import StatusWorkflow from "../components/launches/StatusWorkflow";
+import StatusTimeline from "../components/launches/StatusTimeline";
 import CategoryBadge from "../components/launches/CategoryBadge";
 import { formatDateTime, formatDate, formatTime, getActivityIcon } from "../utils/formatDateTime";
 import { useAuth } from "../context/AuthContext";
@@ -20,7 +21,6 @@ import api from "../services/api";
 
 import "../styles/launchDetail.css";
 
-const STATUS_ORDER = ["Draft", "In Review", "Approved", "Published"];
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
 
 const KEY_INFO_FIELDS = [
@@ -58,7 +58,6 @@ function LaunchDetail() {
     const [error, setError] = useState(null);
     const [menuOpen, setMenuOpen] = useState(false);
     const [uploading, setUploading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0);
     const [dragOver, setDragOver] = useState(false);
     const [productImageUploading, setProductImageUploading] = useState(false);
     const [productImageProgress, setProductImageProgress] = useState(0);
@@ -102,14 +101,10 @@ function LaunchDetail() {
         if (!file || uploading) return;
         try {
             setUploading(true);
-            setUploadProgress(0);
             const formData = new FormData();
             formData.append("file", file);
             await api.post(`/launches/${id}/assets`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
-                onUploadProgress: (e) => {
-                    if (e.total) setUploadProgress(Math.round((e.loaded * 100) / e.total));
-                },
             });
             addToast("File uploaded.", "success");
             loadLaunch();
@@ -118,7 +113,6 @@ function LaunchDetail() {
             addToast(msg, "error");
         } finally {
             setUploading(false);
-            setUploadProgress(0);
         }
     }
 
@@ -182,14 +176,6 @@ function LaunchDetail() {
         e.preventDefault();
         e.stopPropagation();
         setDragOver(false);
-    }
-
-    function handleDrop(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragOver(false);
-        const files = e.dataTransfer.files;
-        if (files.length > 0) handleUpload(files[0]);
     }
 
     function handleFileSelect(e) {
@@ -272,8 +258,6 @@ function LaunchDetail() {
         if (mimeType.includes("pdf") || mimeType.includes("word") || mimeType.includes("document")) return FileText;
         return FileIcon;
     }
-
-    const currentStatusIndex = STATUS_ORDER.indexOf(launch?.status);
 
     if (loading) {
         return (
@@ -428,6 +412,11 @@ function LaunchDetail() {
             <div className="detail-body">
                 <div className="detail-row-main">
                     <div className="detail-left-col">
+                        <div className="detail-section">
+                            <div className="status-timeline-wrapper">
+                                <StatusTimeline status={launch.status} />
+                            </div>
+                        </div>
                         <div className="detail-section">
                             <div className="detail-desc-card">
                                 <h2>Description</h2>
