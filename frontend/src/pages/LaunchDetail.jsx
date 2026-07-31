@@ -315,55 +315,57 @@ function LaunchDetail() {
                                 Edit Launch
                             </button>
                         )}
-                        <div className="more-actions-wrapper">
-                            <button
-                                className="detail-more-btn"
-                                onClick={() => setMenuOpen(!menuOpen)}
-                            >
-                                <MoreVertical size={16} />
-                                More Actions
-                            </button>
-                            {menuOpen && (
-                                <>
-                                    <div
-                                        style={{
-                                            position: "fixed",
-                                            inset: 0,
-                                            zIndex: 99,
-                                        }}
-                                        onClick={() => setMenuOpen(false)}
-                                    />
-                                    <div className="more-actions-menu">
-                                        <button
-                                            className="more-actions-item"
-                                            onClick={() => {
-                                                setMenuOpen(false);
-                                                navigate(`/launches/edit/${launch._id}`);
+                        {canEdit && (
+                            <div className="more-actions-wrapper">
+                                <button
+                                    className="detail-more-btn"
+                                    onClick={() => setMenuOpen(!menuOpen)}
+                                >
+                                    <MoreVertical size={16} />
+                                    More Actions
+                                </button>
+                                {menuOpen && (
+                                    <>
+                                        <div
+                                            style={{
+                                                position: "fixed",
+                                                inset: 0,
+                                                zIndex: 99,
                                             }}
-                                        >
-                                            <Edit3 size={16} />
-                                            Edit Launch
-                                        </button>
-                                        <button
-                                            className="more-actions-item danger"
-                                            onClick={async () => {
-                                                setMenuOpen(false);
-                                                try {
-                                                    await api.delete(`/launches/${launch._id}`);
-                                                    addToast("Launch deleted.", "success");
-                                                    navigate("/launches");
-                                                } catch {
-                                                    addToast("Failed to delete launch.", "error");
-                                                }
-                                            }}
-                                        >
-                                            <Trash2 size={16} />
-                                            Delete Launch
-                                        </button>
-                                    </div>
-                                </>
-                            )}
-                        </div>
+                                            onClick={() => setMenuOpen(false)}
+                                        />
+                                        <div className="more-actions-menu">
+                                            <button
+                                                className="more-actions-item"
+                                                onClick={() => {
+                                                    setMenuOpen(false);
+                                                    navigate(`/launches/edit/${launch._id}`);
+                                                }}
+                                            >
+                                                <Edit3 size={16} />
+                                                Edit Launch
+                                            </button>
+                                            <button
+                                                className="more-actions-item danger"
+                                                onClick={async () => {
+                                                    setMenuOpen(false);
+                                                    try {
+                                                        await api.delete(`/launches/${launch._id}`);
+                                                        addToast("Launch deleted.", "success");
+                                                        navigate("/launches");
+                                                    } catch {
+                                                        addToast("Failed to delete launch.", "error");
+                                                    }
+                                                }}
+                                            >
+                                                <Trash2 size={16} />
+                                                Delete Launch
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
 
