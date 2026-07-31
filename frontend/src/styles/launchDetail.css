@@ -2,6 +2,27 @@
     margin-bottom: 28px;
 }
 
+.detail-back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: all var(--transition-fast);
+}
+
+.detail-back-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-hover);
+}
+
 .detail-breadcrumb {
     display: flex;
     align-items: center;

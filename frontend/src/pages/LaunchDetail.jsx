@@ -306,6 +306,10 @@ function LaunchDetail() {
     return (
         <MainLayout title={launch.title}>
             <div className="detail-header">
+                <button className="detail-back-btn" onClick={() => navigate("/launches")} aria-label="Back to Launches">
+                    <ArrowLeft size={18} />
+                </button>
+
                 <div className="detail-breadcrumb">
                     <Link to="/launches">Launches</Link>
                     <span>/</span>
