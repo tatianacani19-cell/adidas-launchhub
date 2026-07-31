@@ -292,6 +292,12 @@
     gap: 14px;
     padding: 8px 0;
     border-bottom: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.launch-item:hover {
+    background: var(--bg-hover);
 }
 
 .launch-item:last-child {

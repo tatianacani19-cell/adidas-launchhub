@@ -22,6 +22,14 @@ function UpcomingLaunches({ launches }) {
                     <div
                         key={launch.id}
                         className="launch-item"
+                        onClick={() => navigate(`/launches/${launch._id}`)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                                navigate(`/launches/${launch._id}`);
+                            }
+                        }}
                     >
 
                         {launch.productImage?.url ? (
