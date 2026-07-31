@@ -5,10 +5,10 @@ import RecentLaunches from "./RecentLaunches";
 import RecentActivity from "./RecentActivity";
 import CalendarPreview from "./CalendarPreview";
 
-function DashboardContent({ stats, byMarket, upcoming, recent, recentActivities }) {
+function DashboardContent({ stats, byMarket, upcoming, recent, recentActivities, selectedStatus }) {
     return (
         <div className="dashboard-content">
-            <StatusChart stats={stats} />
+            <StatusChart stats={stats} selectedStatus={selectedStatus} />
             <MarketChart byMarket={byMarket} />
             <UpcomingLaunches launches={upcoming} />
             <RecentLaunches launches={recent} />

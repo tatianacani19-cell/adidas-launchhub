@@ -17,6 +17,7 @@ function Dashboard() {
     const [launches, setLaunches] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedStatus, setSelectedStatus] = useState(null);
 
     useEffect(() => {
         loadLaunches();
@@ -135,7 +136,12 @@ function Dashboard() {
                 onExportPDF={exportDashboardPDF}
             />
 
-            <StatsGrid stats={stats} analytics={analytics} />
+            <StatsGrid
+                stats={stats}
+                analytics={analytics}
+                selectedStatus={selectedStatus}
+                onStatusSelect={setSelectedStatus}
+            />
 
             <DashboardContent
                 stats={stats}
@@ -143,6 +149,7 @@ function Dashboard() {
                 upcoming={upcoming}
                 recent={recent}
                 recentActivities={recentActivities}
+                selectedStatus={selectedStatus}
             />
         </MainLayout>
     );

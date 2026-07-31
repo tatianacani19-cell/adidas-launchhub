@@ -64,6 +64,22 @@
     box-shadow: var(--shadow-sm);
 }
 
+.stat-card.clickable {
+    cursor: pointer;
+}
+
+.stat-card.active {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-card.active .stat-icon {
+    background: var(--icon-hover-bg, var(--bg-skeleton));
+    color: var(--icon-hover-color, var(--accent));
+    transform: scale(1.08);
+    box-shadow: var(--shadow-sm);
+}
+
 .stat-icon {
     width: 42px;
     height: 42px;

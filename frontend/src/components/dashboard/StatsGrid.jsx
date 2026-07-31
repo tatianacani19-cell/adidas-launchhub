@@ -1,7 +1,7 @@
 import StatCard from "./StatCard";
 import { Rocket, FileText, Clock, CheckCircle, Globe, TrendingUp, MapPin } from "lucide-react";
 
-function StatsGrid({ stats, analytics }) {
+function StatsGrid({ stats, analytics, selectedStatus, onStatusSelect }) {
     return (
         <div className="stats-grid">
 
@@ -19,6 +19,8 @@ function StatsGrid({ stats, analytics }) {
                 icon={FileText}
                 iconBg="#FEE2E2"
                 iconColor="#991B1B"
+                active={selectedStatus === "Draft"}
+                onClick={() => onStatusSelect(selectedStatus === "Draft" ? null : "Draft")}
             />
 
             <StatCard
@@ -28,6 +30,8 @@ function StatsGrid({ stats, analytics }) {
                 icon={Clock}
                 iconBg="#FEF9C3"
                 iconColor="#92400E"
+                active={selectedStatus === "In Review"}
+                onClick={() => onStatusSelect(selectedStatus === "In Review" ? null : "In Review")}
             />
 
             <StatCard
@@ -37,6 +41,8 @@ function StatsGrid({ stats, analytics }) {
                 icon={CheckCircle}
                 iconBg="#DCFCE7"
                 iconColor="#166534"
+                active={selectedStatus === "Approved"}
+                onClick={() => onStatusSelect(selectedStatus === "Approved" ? null : "Approved")}
             />
 
             <StatCard
@@ -46,6 +52,8 @@ function StatsGrid({ stats, analytics }) {
                 icon={Globe}
                 iconBg="#DBEAFE"
                 iconColor="#1E40AF"
+                active={selectedStatus === "Published"}
+                onClick={() => onStatusSelect(selectedStatus === "Published" ? null : "Published")}
             />
 
             {analytics && (

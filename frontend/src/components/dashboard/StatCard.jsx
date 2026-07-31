@@ -4,10 +4,15 @@ function StatCard({
     subtitle,
     icon: Icon,
     iconBg,
-    iconColor
+    iconColor,
+    active = false,
+    onClick
 }) {
     return (
-        <div className="stat-card">
+        <div
+            className={`stat-card ${active ? "active" : ""} ${onClick ? "clickable" : ""}`}
+            onClick={onClick}
+        >
 
             <div
                 className="stat-icon"

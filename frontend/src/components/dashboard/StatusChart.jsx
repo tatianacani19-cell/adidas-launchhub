@@ -22,7 +22,7 @@ const STATUS_COLORS = [
     "#BFDBFE",
 ];
 
-function StatusChart({ stats }) {
+function StatusChart({ stats, selectedStatus }) {
 
     const [hovered, setHovered] = useState(false);
     const [clickedIndex, setClickedIndex] = useState(null);
@@ -33,6 +33,17 @@ function StatusChart({ stats }) {
         { name: "Approved", value: stats.approved },
         { name: "Published", value: stats.published },
     ];
+
+    const selectedIndex = selectedStatus
+        ? data.findIndex((d) => d.name === selectedStatus)
+        : null;
+
+    function getFill(index) {
+        if (selectedIndex !== null) {
+            return index === selectedIndex ? STATUS_COLORS[index] : COLORS[index];
+        }
+        return hovered ? STATUS_COLORS[index] : COLORS[index];
+    }
 
     return (
         <div
@@ -73,7 +84,7 @@ function StatusChart({ stats }) {
                                 {data.map((entry, index) => (
                                     <Cell
                                         key={index}
-                                        fill={hovered ? STATUS_COLORS[index] : COLORS[index]}
+                                        fill={getFill(index)}
                                     />
                                 ))}
                             </Pie>
@@ -103,7 +114,7 @@ function StatusChart({ stats }) {
                             <span
                                 className="legend-dot"
                                 style={{
-                                    background: hovered ? STATUS_COLORS[index] : COLORS[index]
+                                    background: getFill(index)
                                 }}
                             />
 
