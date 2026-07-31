@@ -366,9 +366,7 @@
 }
 
 .back-menu {
-    position: absolute;
-    right: 0;
-    top: 38px;
+    position: fixed;
     z-index: 100;
     min-width: 160px;
     padding: 6px;

@@ -1,6 +1,6 @@
 import { Pencil, Trash2, Check, X, Send, Globe, Undo2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import StatusBadge from "./StatusBadge";
 import { formatDateTime } from "../../utils/formatDateTime";
 import { useAuth } from "../../context/AuthContext";
@@ -14,6 +14,8 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
     const { user } = useAuth();
     const { addToast } = useToast();
     const [backMenuOpen, setBackMenuOpen] = useState(false);
+    const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+    const backBtnRef = useRef(null);
 
     const canEdit = user?.role === "CREATOR" || user?.role === "ADMIN";
     const canApprove = user?.role === "APPROVER" || user?.role === "ADMIN";
@@ -22,6 +24,18 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
     const isApproved = launch.status === "Approved";
     const currentIndex = STATUS_ORDER.indexOf(launch.status);
     const previousStatuses = currentIndex > 0 ? STATUS_ORDER.slice(0, currentIndex) : [];
+
+    function toggleBackMenu() {
+        if (backMenuOpen) {
+            setBackMenuOpen(false);
+            return;
+        }
+        const rect = backBtnRef.current?.getBoundingClientRect();
+        if (rect) {
+            setMenuPos({ top: rect.bottom + 6, left: rect.right - 160 });
+        }
+        setBackMenuOpen(true);
+    }
 
     const productImageUrl = launch.productImage?.url || null;
     const lastActivity = launch.activityLog?.length
@@ -184,10 +198,12 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
                     {user?.role === "ADMIN" && previousStatuses.length > 0 && (
                         <div className="back-menu-wrapper">
                             <button
+                                ref={backBtnRef}
                                 className="action-btn back"
-                                onClick={() => setBackMenuOpen(!backMenuOpen)}
+                                onClick={toggleBackMenu}
                                 aria-label={`Move ${launch.title} back a step`}
                                 title="Move back"
+                                aria-haspopup="menu"
                                 aria-expanded={backMenuOpen}
                             >
                                 <Undo2 size={16} />
@@ -198,7 +214,7 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
                                         style={{ position: "fixed", inset: 0, zIndex: 99 }}
                                         onClick={() => setBackMenuOpen(false)}
                                     />
-                                    <div className="back-menu">
+                                    <div className="back-menu" style={{ position: "fixed", top: menuPos.top, left: menuPos.left }}>
                                         {previousStatuses.map((target) => (
                                             <button
                                                 key={target}
