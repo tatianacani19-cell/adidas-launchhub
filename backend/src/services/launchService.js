@@ -59,6 +59,12 @@ export const updateLaunchStatus = async (id, status, user) => {
         return launch;
     }
 
+    if (user?.role === "APPROVER" && launch.status !== "In Review") {
+        const error = new Error("Approvers can only approve or reject launches that are In Review.");
+        error.status = 403;
+        throw error;
+    }
+
     const currentIndex = STATUS_FLOW.indexOf(launch.status);
     const isNextStep = targetIndex === currentIndex + 1;
     const isRevertToDraft = status === "Draft" && launch.status !== "Published";
