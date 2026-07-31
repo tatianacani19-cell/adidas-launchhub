@@ -409,23 +409,23 @@ function LaunchDetail() {
                 <div className="detail-row-main">
                     <div className="detail-left-col">
                         <div className="detail-section">
-                            <h2>Description</h2>
                             <div className="detail-desc-card">
+                                <h2>Description</h2>
                                 <p>{launch.description || "No description provided."}</p>
                             </div>
                         </div>
 
                         <div className="detail-section fill-grow">
-                            <div className="detail-section-header">
-                                <h2>Key Information</h2>
-                                {canEdit && !keyInfoEdit && (
-                                    <button className="key-info-edit-btn" onClick={startKeyInfoEdit}>
-                                        <Edit3 size={14} />
-                                        Edit
-                                    </button>
-                                )}
-                            </div>
                             <div className="detail-key-info fill-child">
+                                <div className="detail-section-header">
+                                    <h2>Key Information</h2>
+                                    {canEdit && !keyInfoEdit && (
+                                        <button className="key-info-edit-btn" onClick={startKeyInfoEdit}>
+                                            <Edit3 size={14} />
+                                            Edit
+                                        </button>
+                                    )}
+                                </div>
                                 <div className="key-info-grid">
                                     {KEY_INFO_FIELDS.map(field => (
                                         <div key={field.key} className="key-info-item">
@@ -464,8 +464,8 @@ function LaunchDetail() {
 
                     <div className="detail-right-col">
                         <div className="detail-section fill-grow-2">
-                            <h2>Activity Log</h2>
                             <div className="detail-timeline fill-child">
+                                <h2>Activity Log</h2>
                                 <div className="activity-timeline">
                                     {launch.activityLog && launch.activityLog.length > 0 ? (
                                         [...launch.activityLog].reverse().map((activity, index) => {
@@ -508,8 +508,8 @@ function LaunchDetail() {
                         </div>
 
                         <div className="detail-section fill-grow-1">
-                            <h2>Assets</h2>
                             <div className="detail-assets-wrapper fill-child">
+                                <h2>Assets</h2>
                                 <div className="detail-section-header">
                                     <h2>Product Image</h2>
                                     {canEdit && productImageUrl && (
