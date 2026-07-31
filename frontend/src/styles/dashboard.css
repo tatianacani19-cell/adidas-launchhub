@@ -496,13 +496,13 @@
 
 .cal-preview-day.today {
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     font-weight: 700;
     border-radius: 6px;
 }
 
 .cal-preview-day.today .cal-preview-dot {
-    background: #fff !important;
+    background: var(--on-accent) !important;
 }
 
 .cal-preview-day.has-events {

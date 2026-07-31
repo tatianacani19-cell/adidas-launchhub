@@ -25,7 +25,7 @@
     height: 42px;
     padding: 0 22px;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     border: none;
     border-radius: 8px;
     font-size: 14px;
@@ -352,7 +352,7 @@
 
 .pagination-btn.active {
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     border-color: var(--accent);
 }
 

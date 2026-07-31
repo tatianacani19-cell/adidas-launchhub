@@ -103,7 +103,7 @@
 
 .cal-view-btn.active {
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
 }
 
 .calendar-header-right {
@@ -266,7 +266,7 @@
 
 .fc .fc-button-active {
     background: var(--accent) !important;
-    color: #fff !important;
+    color: var(--on-accent) !important;
     border-color: var(--accent) !important;
 }
 
