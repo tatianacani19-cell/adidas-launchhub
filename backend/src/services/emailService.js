@@ -1,8 +1,8 @@
-import nodemailer from "nodemailer";
+import { Resend } from 'resend';
 
 export const sendResetEmail = async (email, token) => {
     try {
-        console.log("[EMAIL] Preparing to send reset email via Gmail SMTP...");
+        console.log("[EMAIL] Preparing to send reset email via Resend API...");
 
         const frontendUrl = process.env.FRONTEND_URL || 'https://adidas-launchhub.vercel.app';
         const cleanBaseUrl = frontendUrl.replace(/\/+$/, '');
@@ -11,23 +11,12 @@ export const sendResetEmail = async (email, token) => {
         console.log("[EMAIL]   To:", email);
         console.log("[EMAIL]   Reset link:", resetLink);
 
-        const transporter = nodemailer.createTransport({
-            host: process.env.EMAIL_HOST || "smtp.gmail.com",
-            port: 587,
-            secure: false, // true for 465, false for other ports
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASSWORD,
-            },
-            connectionTimeout: 10000, // 10 segundos máximo
-            greetingTimeout: 10000,
-            socketTimeout: 10000,
-        });
+        const resend = new Resend(process.env.RESEND_API_KEY);
 
-        const mailOptions = {
-            from: `"Adidas LaunchHub" <${process.env.EMAIL_USER}>`,
+        const data = await resend.emails.send({
+            from: 'Adidas LaunchHub <onboarding@resend.dev>',
             to: email,
-            subject: "LaunchHub - Restablecer Contraseña",
+            subject: 'LaunchHub - Restablecer Contraseña',
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
                     <h2 style="color: #1a1a1a;">Password Reset Request</h2>
@@ -46,15 +35,18 @@ export const sendResetEmail = async (email, token) => {
                     </p>
                 </div>
             `
-        };
+        });
 
-        const info = await transporter.sendMail(mailOptions);
+        if (data.error) {
+            console.error("[EMAIL] Resend API Error:", data.error);
+            throw new Error(data.error.message || "Failed to send email via Resend API");
+        }
 
-        console.log("[EMAIL] Email sent successfully via Gmail SMTP! MessageId:", info.messageId);
-        return info;
+        console.log("[EMAIL] Email sent successfully via Resend API! ID:", data.data?.id);
+        return data;
 
     } catch (error) {
-        console.error("[EMAIL] FAILED to send email via Gmail SMTP:", error.message);
+        console.error("[EMAIL] FAILED to send email via Resend API:", error.message);
         throw error;
     }
 };
