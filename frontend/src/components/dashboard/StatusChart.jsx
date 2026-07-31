@@ -24,7 +24,7 @@ const STATUS_COLORS = [
 
 function StatusChart({ stats }) {
 
-    const [activeIndex, setActiveIndex] = useState(null);
+    const [hovered, setHovered] = useState(false);
 
     const data = [
         { name: "Draft", value: stats.draft },
@@ -34,7 +34,11 @@ function StatusChart({ stats }) {
     ];
 
     return (
-        <div className="dashboard-card">
+        <div
+            className="dashboard-card status-chart-card"
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
 
             <div className="card-header">
                 <h3>Launches by Status</h3>
@@ -42,35 +46,37 @@ function StatusChart({ stats }) {
 
             <div className="chart-wrapper">
 
-                <ResponsiveContainer
-                    width={180}
-                    height={180}
-                >
-                    <PieChart>
+                <div className="chart-area">
 
-                        <Pie
-                            data={data}
-                            innerRadius={50}
-                            outerRadius={75}
-                            dataKey="value"
-                            stroke="none"
-                        >
-                            {data.map((entry, index) => (
-                                <Cell
-                                    key={index}
-                                    fill={activeIndex === index ? STATUS_COLORS[index] : COLORS[index]}
-                                    onMouseEnter={() => setActiveIndex(index)}
-                                    onMouseLeave={() => setActiveIndex(null)}
-                                />
-                            ))}
-                        </Pie>
+                    <ResponsiveContainer
+                        width={180}
+                        height={180}
+                    >
+                        <PieChart>
 
-                    </PieChart>
-                </ResponsiveContainer>
+                            <Pie
+                                data={data}
+                                innerRadius={50}
+                                outerRadius={75}
+                                dataKey="value"
+                                stroke="none"
+                            >
+                                {data.map((entry, index) => (
+                                    <Cell
+                                        key={index}
+                                        fill={hovered ? STATUS_COLORS[index] : COLORS[index]}
+                                    />
+                                ))}
+                            </Pie>
 
-                <div className="chart-center">
-                    <h2>{stats.total}</h2>
-                    <span>Total</span>
+                        </PieChart>
+                    </ResponsiveContainer>
+
+                    <div className="chart-center">
+                        <h2>{stats.total}</h2>
+                        <span>Total</span>
+                    </div>
+
                 </div>
 
                 <div className="chart-legend">
@@ -82,7 +88,7 @@ function StatusChart({ stats }) {
                             <span
                                 className="legend-dot"
                                 style={{
-                                    background: COLORS[index]
+                                    background: hovered ? STATUS_COLORS[index] : COLORS[index]
                                 }}
                             />
 
