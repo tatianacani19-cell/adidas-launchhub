@@ -1,6 +1,8 @@
+import nodemailer from "nodemailer";
+
 export const sendResetEmail = async (email, token) => {
     try {
-        console.log("[EMAIL] Preparing to send reset email via Brevo REST API...");
+        console.log("[EMAIL] Preparing to send reset email via Gmail SMTP...");
 
         const frontendUrl = process.env.FRONTEND_URL || 'https://adidas-launchhub.vercel.app';
         const cleanBaseUrl = frontendUrl.replace(/\/+$/, '');
@@ -9,14 +11,21 @@ export const sendResetEmail = async (email, token) => {
         console.log("[EMAIL]   To:", email);
         console.log("[EMAIL]   Reset link:", resetLink);
 
-        const payload = {
-            sender: {
-                name: "Adidas LaunchHub",
-                email: process.env.EMAIL_USER || "tatianacani19@gmail.com"
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST || "smtp.gmail.com",
+            port: process.env.EMAIL_PORT || 465,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
             },
-            to: [{ email: email }],
+        });
+
+        const mailOptions = {
+            from: `"Adidas LaunchHub" <${process.env.EMAIL_USER}>`,
+            to: email,
             subject: "LaunchHub - Restablecer Contraseña",
-            htmlContent: `
+            html: `
                 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
                     <h2 style="color: #1a1a1a;">Password Reset Request</h2>
                     <p style="color: #555; font-size: 14px; line-height: 1.6;">
@@ -36,31 +45,15 @@ export const sendResetEmail = async (email, token) => {
             `
         };
 
-        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-            method: "POST",
-            headers: {
-                "accept": "application/json",
-                "api-key": process.env.BREVO_API_KEY,
-                "content-type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
+        const info = await transporter.sendMail(mailOptions);
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            console.error("[EMAIL] Brevo API Error response:", data);
-            throw new Error(data.message || "Failed to send email via Brevo API");
-        }
-
-        console.log("[EMAIL] Email sent successfully via Brevo API! MessageId:", data.messageId);
-        return data;
+        console.log("[EMAIL] Email sent successfully via Gmail SMTP! MessageId:", info.messageId);
+        return info;
 
     } catch (error) {
-        console.error("[EMAIL] FAILED to send email via Brevo API:", error.message);
+        console.error("[EMAIL] FAILED to send email via Gmail SMTP:", error.message);
         throw error;
     }
 };
 
-// Alias de compatibilidad
 export const sendResetPasswordEmail = sendResetEmail;
