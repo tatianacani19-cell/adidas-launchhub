@@ -404,14 +404,60 @@ function LaunchDetail() {
             </div>
 
             <div className="detail-body">
-                <div className="detail-body-left">
-                    <div className="detail-section">
+                <div className="detail-row">
+                    <div className="detail-section detail-section-fill">
                         <h2>Description</h2>
-                        <div className="detail-desc-card">
+                        <div className="detail-desc-card detail-card-fill">
                             <p>{launch.description || "No description provided."}</p>
                         </div>
                     </div>
 
+                    <div className="detail-section detail-section-fill">
+                        <h2>Activity Log</h2>
+                        <div className="detail-timeline detail-card-fill">
+                            <div className="activity-timeline">
+                                {launch.activityLog && launch.activityLog.length > 0 ? (
+                                    [...launch.activityLog].reverse().map((activity, index) => {
+                                        const IconComponent = ICON_COMPONENTS[getActivityIcon(activity.action)] || ICON_COMPONENTS.Activity;
+                                        return (
+                                            <div key={activity._id || index} className="activity-item">
+                                                <div className="activity-marker">
+                                                    <IconComponent size={16} className="activity-icon" />
+                                                </div>
+                                                <div className="activity-content">
+                                                    <div className="activity-header">
+                                                        <span className="activity-action">{activity.action}</span>
+                                                        <span className="activity-description">{activity.description}</span>
+                                                    </div>
+                                                    <div className="activity-meta">
+                                                        <span className="activity-user">
+                                                            <User size={12} />
+                                                            {activity.performedBy?.name || "Unknown User"}
+                                                        </span>
+                                                        <span className="activity-time">
+                                                            <Clock size={12} />
+                                                            {formatDate(activity.createdAt)} \u00B7 {formatTime(activity.createdAt)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                {index < (launch.activityLog?.length || 0) - 1 && (
+                                                    <div className="activity-connector" />
+                                                )}
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <div className="activity-empty">
+                                        <FileText size={32} />
+                                        <span>No activity recorded yet</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="detail-row">
                     <div className="detail-section">
                         <div className="detail-section-header">
                             <h2>Key Information</h2>
@@ -457,268 +503,224 @@ function LaunchDetail() {
                             )}
                         </div>
                     </div>
-                </div>
 
-                <div className="detail-body-right">
-                    <div className="detail-section">
-                        <h2>Activity Log</h2>
-                        <div className="detail-timeline">
-                            <div className="activity-timeline">
-                                {launch.activityLog && launch.activityLog.length > 0 ? (
-                                    [...launch.activityLog].reverse().map((activity, index) => {
-                                        const IconComponent = ICON_COMPONENTS[getActivityIcon(activity.action)] || ICON_COMPONENTS.Activity;
-                                        return (
-                                            <div key={activity._id || index} className="activity-item">
-                                                <div className="activity-marker">
-                                                    <IconComponent size={16} className="activity-icon" />
+                    <div className="detail-right-column">
+                        <div className="detail-section">
+                            <div className="detail-section-header">
+                                <h2>Product Image</h2>
+                                {canEdit && productImageUrl && (
+                                    <div className="product-image-actions-header">
+                                        <button
+                                            className="asset-action-btn"
+                                            onClick={() => productImageInputRef.current?.click()}
+                                            title="Replace Product Image"
+                                        >
+                                            <Upload size={14} />
+                                        </button>
+                                        <button
+                                            className="asset-action-btn danger"
+                                            onClick={handleDeleteProductImage}
+                                            title="Delete Product Image"
+                                        >
+                                            <Trash2 size={14} />
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="detail-assets">
+                                <input
+                                    ref={productImageInputRef}
+                                    type="file"
+                                    accept="image/jpeg,image/jpg,image/png"
+                                    style={{ display: "none" }}
+                                    onChange={handleProductImageSelect}
+                                />
+
+                                {productImageUrl ? (
+                                    <div className="product-image-preview">
+                                        <img src={productImageUrl} alt={launch.title} className="product-image-thumb" />
+                                        <div className="product-image-info">
+                                            <span className="product-image-name">{launch.productImage?.originalName || "Product Image"}</span>
+                                            <span className="product-image-meta">
+                                                {launch.productImage?.size ? formatSize(launch.productImage.size) : ""}
+                                                {launch.productImage?.size && launch.productImage?.uploadedAt ? " \u00B7 " : ""}
+                                                {launch.productImage?.uploadedAt ? formatDateTime(launch.productImage.uploadedAt) : ""}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ) : canEdit ? (
+                                    <div
+                                        className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${productImageUploading ? "uploading" : ""}`}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setDragOver(false);
+                                            const files = e.dataTransfer.files;
+                                            if (files.length > 0) handleProductImageUpload(files[0]);
+                                        }}
+                                        onClick={() => !productImageUploading && productImageInputRef.current?.click()}
+                                    >
+                                        {productImageUploading ? (
+                                            <div className="asset-upload-progress">
+                                                <Loader2 size={24} className="spin" />
+                                                <span>Uploading... {productImageProgress}%</span>
+                                                <div className="progress-bar">
+                                                    <div className="progress-fill" style={{ width: `${productImageProgress}%` }} />
                                                 </div>
-                                                <div className="activity-content">
-                                                    <div className="activity-header">
-                                                        <span className="activity-action">{activity.action}</span>
-                                                        <span className="activity-description">{activity.description}</span>
-                                                    </div>
-                                                    <div className="activity-meta">
-                                                        <span className="activity-user">
-                                                            <User size={12} />
-                                                            {activity.performedBy?.name || "Unknown User"}
-                                                        </span>
-                                                        <span className="activity-time">
-                                                            <Clock size={12} />
-                                                            {formatDate(activity.createdAt)} \u00B7 {formatTime(activity.createdAt)}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                {index < (launch.activityLog?.length || 0) - 1 && (
-                                                    <div className="activity-connector" />
-                                                )}
                                             </div>
-                                        );
-                                    })
+                                        ) : (
+                                            <div className="asset-dropzone-text">
+                                                <ImageIcon size={24} />
+                                                <span>Upload Product Image (JPG, JPEG, PNG)</span>
+                                                <small>Click or drag & drop</small>
+                                            </div>
+                                        )}
+                                    </div>
                                 ) : (
-                                    <div className="activity-empty">
+                                    <div className="assets-empty">
+                                        <ImageIcon size={32} />
+                                        <span>No product image</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="detail-section">
+                            <div className="detail-section-header">
+                                <h2>Assets</h2>
+                                {canEdit && (
+                                    <button
+                                        className="detail-upload-btn"
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={uploading}
+                                    >
+                                        <Upload size={16} />
+                                        Upload Asset
+                                    </button>
+                                )}
+                            </div>
+                            <div className="detail-assets">
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    style={{ display: "none" }}
+                                    onChange={handleFileSelect}
+                                />
+
+                                {canEdit && (
+                                    <div
+                                        className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${uploading ? "uploading" : ""}`}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={handleDrop}
+                                        onClick={() => !uploading && fileInputRef.current?.click()}
+                                    >
+                                        {uploading ? (
+                                            <div className="asset-upload-progress">
+                                                <Loader2 size={24} className="spin" />
+                                                <span>Uploading... {uploadProgress}%</span>
+                                                <div className="progress-bar">
+                                                    <div className="progress-fill" style={{ width: `${uploadProgress}%` }} />
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="asset-dropzone-text">
+                                                <Upload size={24} />
+                                                <span>Drop files here or click to upload</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {launch.assets && launch.assets.length > 0 ? (
+                                    <div className="assets-list">
+                                        {launch.assets.map((asset) => {
+                                            const AssetIcon = getAssetIcon(asset.mimeType);
+                                            const isImage = asset.mimeType?.startsWith("image/");
+                                            return (
+                                                <div key={asset._id} className="asset-item">
+                                                    {isImage ? (
+                                                        <img
+                                                            src={`${API_BASE}${asset.url}`}
+                                                            alt={asset.originalName}
+                                                            className="asset-thumb"
+                                                        />
+                                                    ) : (
+                                                        <AssetIcon size={20} className="asset-icon" />
+                                                    )}
+                                                    <div className="asset-info">
+                                                        <span className="asset-name" title={asset.originalName}>
+                                                            {asset.originalName}
+                                                        </span>
+                                                        <span className="asset-meta">
+                                                            {formatSize(asset.size)}
+                                                            {" \u00B7 "}
+                                                            {formatDateTime(asset.uploadedAt)}
+                                                        </span>
+                                                    </div>
+                                                    <div className="asset-actions">
+                                                        <a
+                                                            href={`${API_BASE}${asset.url}`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="asset-action-btn"
+                                                            title="Download"
+                                                            download={asset.originalName}
+                                                        >
+                                                            <Download size={16} />
+                                                        </a>
+                                                        {canDelete && (
+                                                            <button
+                                                                className="asset-action-btn danger"
+                                                                onClick={() => handleDeleteAsset(asset._id)}
+                                                                title="Delete"
+                                                            >
+                                                                <Trash2 size={14} />
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div className="assets-empty">
                                         <FileText size={32} />
-                                        <span>No activity recorded yet</span>
+                                        <span>No assets available</span>
                                     </div>
                                 )}
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div className="detail-section">
-                        <div className="detail-section-header">
-                            <h2>Product Image</h2>
-                            {canEdit && productImageUrl && (
-                                <div className="product-image-actions-header">
-                                    <button
-                                        className="asset-action-btn"
-                                        onClick={() => productImageInputRef.current?.click()}
-                                        title="Replace Product Image"
-                                    >
-                                        <Upload size={14} />
-                                    </button>
-                                    <button
-                                        className="asset-action-btn danger"
-                                        onClick={handleDeleteProductImage}
-                                        title="Delete Product Image"
-                                    >
-                                        <Trash2 size={14} />
-                                    </button>
+                <div className="detail-section">
+                    <h2>Comments</h2>
+                    <div className="detail-comments">
+                        {launch.comments && launch.comments.length > 0 ? (
+                            launch.comments.map((comment, index) => (
+                                <div key={index}>
+                                    <strong>{comment.author}</strong>
+                                    <p>{comment.text}</p>
+                                    <small>{formatDateTime(comment.createdAt)}</small>
                                 </div>
-                            )}
-                        </div>
-                        <div className="detail-assets">
-                            <input
-                                ref={productImageInputRef}
-                                type="file"
-                                accept="image/jpeg,image/jpg,image/png"
-                                style={{ display: "none" }}
-                                onChange={handleProductImageSelect}
-                            />
-
-                            {productImageUrl ? (
-                                <div className="product-image-preview">
-                                    <img src={productImageUrl} alt={launch.title} className="product-image-thumb" />
-                                    <div className="product-image-info">
-                                        <span className="product-image-name">{launch.productImage?.originalName || "Product Image"}</span>
-                                        <span className="product-image-meta">
-                                            {launch.productImage?.size ? formatSize(launch.productImage.size) : ""}
-                                            {launch.productImage?.size && launch.productImage?.uploadedAt ? " \u00B7 " : ""}
-                                            {launch.productImage?.uploadedAt ? formatDateTime(launch.productImage.uploadedAt) : ""}
-                                        </span>
-                                    </div>
-                                </div>
-                            ) : canEdit ? (
-                                <div
-                                    className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${productImageUploading ? "uploading" : ""}`}
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setDragOver(false);
-                                        const files = e.dataTransfer.files;
-                                        if (files.length > 0) handleProductImageUpload(files[0]);
-                                    }}
-                                    onClick={() => !productImageUploading && productImageInputRef.current?.click()}
-                                >
-                                    {productImageUploading ? (
-                                        <div className="asset-upload-progress">
-                                            <Loader2 size={24} className="spin" />
-                                            <span>Uploading... {productImageProgress}%</span>
-                                            <div className="progress-bar">
-                                                <div className="progress-fill" style={{ width: `${productImageProgress}%` }} />
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="asset-dropzone-text">
-                                            <ImageIcon size={24} />
-                                            <span>Upload Product Image (JPG, JPEG, PNG)</span>
-                                            <small>Click or drag & drop</small>
-                                        </div>
-                                    )}
-                                </div>
-                            ) : (
-                                <div className="assets-empty">
-                                    <ImageIcon size={32} />
-                                    <span>No product image</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="detail-section">
-                        <div className="detail-section-header">
-                            <h2>Assets</h2>
-                            {canEdit && (
-                                <button
-                                    className="detail-upload-btn"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    disabled={uploading}
-                                >
-                                    <Upload size={16} />
-                                    Upload Asset
-                                </button>
-                            )}
-                        </div>
-                        <div className="detail-assets">
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                style={{ display: "none" }}
-                                onChange={handleFileSelect}
-                            />
-
-                            {canEdit && (
-                                <div
-                                    className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${uploading ? "uploading" : ""}`}
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onDrop={handleDrop}
-                                    onClick={() => !uploading && fileInputRef.current?.click()}
-                                >
-                                    {uploading ? (
-                                        <div className="asset-upload-progress">
-                                            <Loader2 size={24} className="spin" />
-                                            <span>Uploading... {uploadProgress}%</span>
-                                            <div className="progress-bar">
-                                                <div className="progress-fill" style={{ width: `${uploadProgress}%` }} />
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="asset-dropzone-text">
-                                            <Upload size={24} />
-                                            <span>Drop files here or click to upload</span>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-
-                            {launch.assets && launch.assets.length > 0 ? (
-                                <div className="assets-list">
-                                    {launch.assets.map((asset) => {
-                                        const AssetIcon = getAssetIcon(asset.mimeType);
-                                        const isImage = asset.mimeType?.startsWith("image/");
-                                        return (
-                                            <div key={asset._id} className="asset-item">
-                                                {isImage ? (
-                                                    <img
-                                                        src={`${API_BASE}${asset.url}`}
-                                                        alt={asset.originalName}
-                                                        className="asset-thumb"
-                                                    />
-                                                ) : (
-                                                    <AssetIcon size={20} className="asset-icon" />
-                                                )}
-                                                <div className="asset-info">
-                                                    <span className="asset-name" title={asset.originalName}>
-                                                        {asset.originalName}
-                                                    </span>
-                                                    <span className="asset-meta">
-                                                        {formatSize(asset.size)}
-                                                        {" \u00B7 "}
-                                                        {formatDateTime(asset.uploadedAt)}
-                                                    </span>
-                                                </div>
-                                                <div className="asset-actions">
-                                                    <a
-                                                        href={`${API_BASE}${asset.url}`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        className="asset-action-btn"
-                                                        title="Download"
-                                                        download={asset.originalName}
-                                                    >
-                                                        <Download size={16} />
-                                                    </a>
-                                                    {canDelete && (
-                                                        <button
-                                                            className="asset-action-btn danger"
-                                                            onClick={() => handleDeleteAsset(asset._id)}
-                                                            title="Delete"
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            ) : (
-                                <div className="assets-empty">
-                                    <FileText size={32} />
-                                    <span>No assets available</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="detail-section">
-                        <h2>Comments</h2>
-                        <div className="detail-comments">
-                            {launch.comments && launch.comments.length > 0 ? (
-                                launch.comments.map((comment, index) => (
-                                    <div key={index}>
-                                        <strong>{comment.author}</strong>
-                                        <p>{comment.text}</p>
-                                        <small>{formatDateTime(comment.createdAt)}</small>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="comments-empty">
-                                    <MessageCircle size={32} />
-                                    <span>No comments yet</span>
-                                </div>
-                            )}
-                            <div className="comment-input-area">
-                                <textarea
-                                    placeholder="Write a comment..."
-                                    disabled
-                                />
-                                <button className="comment-post-btn" disabled>
-                                    Post Comment
-                                </button>
+                            ))
+                        ) : (
+                            <div className="comments-empty">
+                                <MessageCircle size={32} />
+                                <span>No comments yet</span>
                             </div>
+                        )}
+                        <div className="comment-input-area">
+                            <textarea
+                                placeholder="Write a comment..."
+                                disabled
+                            />
+                            <button className="comment-post-btn" disabled>
+                                Post Comment
+                            </button>
                         </div>
                     </div>
                 </div>
