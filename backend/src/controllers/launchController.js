@@ -5,6 +5,7 @@ import {
     updateLaunch,
     deleteLaunch,
     updateLaunchStatus,
+    addLaunchComment,
 } from "../services/launchService.js";
 import Launch from "../models/Launch.js";
 import { addActivityLog, ACTIVITY_ACTIONS } from "../utils/activityLog.js";
@@ -93,6 +94,27 @@ export const updateLaunchStatusController = async (req, res) => {
     } catch (error) {
         console.error("Error updating launch status:", error);
         res.status(500).json({ message: "Failed to update launch status." });
+    }
+};
+
+export const addComment = async (req, res) => {
+    try {
+        const { text } = req.body;
+
+        if (!text || !text.trim()) {
+            return res.status(400).json({ message: "Comment text is required." });
+        }
+
+        const launch = await addLaunchComment(req.params.id, text.trim(), req.user);
+
+        if (!launch) {
+            return res.status(404).json({ message: "Launch not found" });
+        }
+
+        res.status(201).json(launch);
+    } catch (error) {
+        console.error("Error adding comment:", error);
+        res.status(500).json({ message: "Failed to add comment." });
     }
 };
 

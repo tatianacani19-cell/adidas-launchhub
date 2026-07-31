@@ -91,6 +91,7 @@ const launchSchema = new mongoose.Schema({
     comments: {
         type: [{
             author: String,
+            authorId: String,
             text: String,
             createdAt: {
                 type: Date,

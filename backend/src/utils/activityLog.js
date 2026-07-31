@@ -30,4 +30,5 @@ export const ACTIVITY_ACTIONS = {
     PRODUCT_IMAGE_UPLOADED: "Product Image Uploaded",
     PRODUCT_IMAGE_REPLACED: "Product Image Replaced",
     PRODUCT_IMAGE_DELETED: "Product Image Deleted",
+    COMMENT_ADDED: "Comment Added",
 };

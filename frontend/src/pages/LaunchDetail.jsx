@@ -68,6 +68,8 @@ function LaunchDetail() {
     });
     const [keyInfoSaving, setKeyInfoSaving] = useState(false);
     const [showAllActivity, setShowAllActivity] = useState(false);
+    const [commentText, setCommentText] = useState("");
+    const [commentPosting, setCommentPosting] = useState(false);
     const fileInputRef = useRef(null);
     const productImageInputRef = useRef(null);
 
@@ -238,6 +240,23 @@ function LaunchDetail() {
             addToast("Failed to save key information.", "error");
         } finally {
             setKeyInfoSaving(false);
+        }
+    }
+
+    async function handlePostComment() {
+        const text = commentText.trim();
+        if (!text || commentPosting) return;
+        try {
+            setCommentPosting(true);
+            await api.post(`/launches/${id}/comments`, { text });
+            addToast("Comment posted.", "success");
+            setCommentText("");
+            loadLaunch();
+        } catch (err) {
+            const msg = err.response?.data?.message || "Failed to post comment.";
+            addToast(msg, "error");
+        } finally {
+            setCommentPosting(false);
         }
     }
 
@@ -702,7 +721,7 @@ function LaunchDetail() {
                     <div className="detail-comments">
                         {launch.comments && launch.comments.length > 0 ? (
                             launch.comments.map((comment, index) => (
-                                <div key={index}>
+                                <div key={index} className="comment-item">
                                     <strong>{comment.author}</strong>
                                     <p>{comment.text}</p>
                                     <small>{formatDateTime(comment.createdAt)}</small>
@@ -714,15 +733,23 @@ function LaunchDetail() {
                                 <span>No comments yet</span>
                             </div>
                         )}
-                        <div className="comment-input-area">
-                            <textarea
-                                placeholder="Write a comment..."
-                                disabled
-                            />
-                            <button className="comment-post-btn" disabled>
-                                Post Comment
-                            </button>
-                        </div>
+                        {canEdit && (
+                            <div className="comment-input-area">
+                                <textarea
+                                    placeholder="Write a comment..."
+                                    value={commentText}
+                                    onChange={e => setCommentText(e.target.value)}
+                                />
+                                <button
+                                    className="comment-post-btn"
+                                    onClick={handlePostComment}
+                                    disabled={commentPosting || !commentText.trim()}
+                                >
+                                    {commentPosting && <Loader2 size={14} className="spin" />}
+                                    {commentPosting ? "Posting..." : "Post Comment"}
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

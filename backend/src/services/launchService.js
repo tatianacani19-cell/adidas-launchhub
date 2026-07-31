@@ -53,3 +53,22 @@ export const updateLaunchStatus = async (id, status, user) => {
         return null;
     }
 };
+
+export const addLaunchComment = async (id, text, user) => {
+    try {
+        const comment = {
+            author: user?.name || "Unknown User",
+            authorId: user?.id || user?._id || "",
+            text,
+            createdAt: new Date(),
+        };
+        const launch = await Launch.findByIdAndUpdate(id, { $push: { comments: comment } }, { new: true });
+        if (launch) {
+            await addActivityLog(launch._id, ACTIVITY_ACTIONS.COMMENT_ADDED, "Comment added", user);
+            return Launch.findById(id);
+        }
+        return launch;
+    } catch {
+        return null;
+    }
+};
