@@ -615,22 +615,6 @@ function LaunchDetail() {
                                     <h2>Files</h2>
                                     {canEdit && (
                                         <div className="files-header-actions">
-                                            <div
-                                                className={`asset-dropzone-inline ${dragOver ? "drag-over" : ""} ${uploading ? "uploading" : ""}`}
-                                                onDragOver={handleDragOver}
-                                                onDragLeave={handleDragLeave}
-                                                onDrop={handleDrop}
-                                                onClick={() => !uploading && fileInputRef.current?.click()}
-                                            >
-                                                {uploading ? (
-                                                    <Loader2 size={14} className="spin" />
-                                                ) : (
-                                                    <>
-                                                        <Upload size={14} />
-                                                        <span>Drop</span>
-                                                    </>
-                                                )}
-                                            </div>
                                             <button
                                                 className="detail-upload-btn"
                                                 onClick={() => fileInputRef.current?.click()}
