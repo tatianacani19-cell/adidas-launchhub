@@ -995,7 +995,13 @@
 }
 
 .detail-left-col .detail-desc-card {
-    min-height: 80px;
+    min-height: 120px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.detail-left-col .detail-desc-card p {
+    flex: 1;
 }
 
 .detail-assets-wrapper {
