@@ -23,7 +23,7 @@ export const uploadAsset = async (req, res) => {
             originalName: file.originalname,
             mimeType: file.mimetype,
             size: file.size,
-            url: `/uploads/${file.filename}`,
+            url: file.path,
             uploadedBy: req.user?.name || req.user?.id || "",
             uploadedAt: new Date(),
         };
@@ -101,7 +101,7 @@ export const uploadProductImage = async (req, res) => {
             originalName: file.originalname,
             mimeType: file.mimetype,
             size: file.size,
-            url: `/uploads/${file.filename}`,
+            url: file.path,
             uploadedBy: req.user?.name || req.user?.id || "",
             uploadedAt: new Date(),
         };

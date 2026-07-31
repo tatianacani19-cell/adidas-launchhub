@@ -15,13 +15,7 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
     const canApprove = user?.role === "ADMIN";
     const isInReview = launch.status === "In Review";
 
-    const API_BASE = import.meta.env.VITE_API_URL
-        ? import.meta.env.VITE_API_URL
-        : "http://localhost:3000";
-
-    const productImageUrl = launch.productImage?.url
-        ? `${API_BASE}${launch.productImage.url}`
-        : null;
+    const productImageUrl = launch.productImage?.url || null;
 
     async function handleApprove() {
         try {

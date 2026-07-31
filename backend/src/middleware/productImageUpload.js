@@ -1,17 +1,22 @@
 import multer from "multer";
-import path from "path";
-import crypto from "crypto";
-import { fileURLToPath } from "url";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-const storage = multer.diskStorage({
-    destination: path.join(__dirname, "../../uploads"),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        const unique = crypto.randomUUID();
-        cb(null, `product-${unique}${ext}`);
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "adidas-launchhub/product-images",
+        resource_type: "image",
+        public_id: (req, file) => {
+            const nameWithoutExt = file.originalname.split(".")[0];
+            return `${Date.now()}-${nameWithoutExt}`;
+        },
     },
 });
 

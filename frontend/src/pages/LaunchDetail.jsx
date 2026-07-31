@@ -76,10 +76,6 @@ function LaunchDetail() {
     const canEdit = user?.role === "CREATOR" || user?.role === "ADMIN";
     const canDelete = canEdit;
 
-    const API_BASE = import.meta.env.VITE_API_URL
-        ? import.meta.env.VITE_API_URL
-        : "http://localhost:3000";
-
     useEffect(() => {
         loadLaunch();
     }, [id]);
@@ -305,9 +301,7 @@ function LaunchDetail() {
         );
     }
 
-    const productImageUrl = launch.productImage?.url
-        ? `${API_BASE}${launch.productImage.url}`
-        : null;
+    const productImageUrl = launch.productImage?.url || null;
 
     return (
         <MainLayout title={launch.title}>
@@ -662,7 +656,7 @@ function LaunchDetail() {
                                                     <div key={asset._id} className="asset-item">
                                                         {isImage ? (
                                                             <img
-                                                                src={`${API_BASE}${asset.url}`}
+                                                                src={asset.url}
                                                                 alt={asset.originalName}
                                                                 className="asset-thumb"
                                                             />
@@ -681,7 +675,7 @@ function LaunchDetail() {
                                                         </div>
                                                         <div className="asset-actions">
                                                             <a
-                                                                href={`${API_BASE}${asset.url}`}
+                                                                href={asset.url}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="asset-action-btn"
