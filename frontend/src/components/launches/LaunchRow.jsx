@@ -12,7 +12,7 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
     const { addToast } = useToast();
 
     const canEdit = user?.role === "CREATOR" || user?.role === "ADMIN";
-    const canApprove = user?.role === "APPROVER" || user?.role === "ADMIN";
+    const canApprove = user?.role === "ADMIN";
     const isInReview = launch.status === "In Review";
 
     const API_BASE = import.meta.env.VITE_API_URL
