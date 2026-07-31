@@ -9,10 +9,12 @@ export const sendResetEmail = async (email, token) => {
         console.log("[EMAIL]   To:", email);
         console.log("[EMAIL]   Reset link:", resetLink);
 
+        const senderEmail = process.env.EMAIL_USER || "tatianacani19@gmail.com";
+
         const payload = {
             sender: {
                 name: "Adidas LaunchHub",
-                email: process.env.EMAIL_USER || "tatianacani19@11782206.brevosend.com"
+                email: senderEmail,
             },
             to: [{ email: email }],
             subject: "LaunchHub - Restablecer Contraseña",
