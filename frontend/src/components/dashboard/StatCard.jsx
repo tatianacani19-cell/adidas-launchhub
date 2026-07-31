@@ -1,12 +1,15 @@
 function StatCard({
     title,
     value,
-    subtitle
+    subtitle,
+    icon: Icon
 }) {
     return (
         <div className="stat-card">
 
-            <div className="stat-icon"></div>
+            <div className="stat-icon">
+                {Icon && <Icon size={22} />}
+            </div>
 
             <div>
 

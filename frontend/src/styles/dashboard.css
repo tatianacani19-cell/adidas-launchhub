@@ -70,6 +70,10 @@
     background: var(--bg-skeleton);
     border-radius: 10px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
 }
 
 .stat-card h4 {
