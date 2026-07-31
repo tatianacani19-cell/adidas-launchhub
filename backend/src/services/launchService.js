@@ -16,7 +16,7 @@ export const getLaunchById = async (id) => {
 export const createLaunch = async (data, user) => {
     const launch = await Launch.create(data);
     await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_CREATED, "Launch created", user);
-    return launch;
+    return Launch.findById(launch._id);
 };
 
 export const updateLaunch = async (id, data, user) => {
@@ -24,6 +24,7 @@ export const updateLaunch = async (id, data, user) => {
         const launch = await Launch.findByIdAndUpdate(id, data, { new: true });
         if (launch) {
             await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_UPDATED, "Launch details updated", user);
+            return Launch.findById(id);
         }
         return launch;
     } catch {
@@ -45,6 +46,7 @@ export const updateLaunchStatus = async (id, status, user) => {
         const launch = await Launch.findByIdAndUpdate(id, { status }, { new: true });
         if (launch) {
             await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_STATUS_CHANGED, `Status changed to ${status}`, user);
+            return Launch.findById(id);
         }
         return launch;
     } catch {

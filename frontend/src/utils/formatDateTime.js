@@ -36,9 +36,12 @@ export function getActivityIcon(action) {
     const actionIcons = {
         "Launch Created": "FilePlus",
         "Launch Updated": "Edit3",
+        "Launch Deleted": "Trash2",
         "Status Changed": "ArrowRightLeft",
         "Asset Uploaded": "Upload",
         "Asset Deleted": "Trash2",
+        "Product Image Uploaded": "Image",
+        "Product Image Replaced": "Image",
         "Product Image Updated": "Image",
         "Product Image Deleted": "Trash2",
         "Launch Approved": "CheckCircle",
