@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     PieChart,
     Pie,
@@ -14,7 +15,16 @@ const COLORS = [
     "#6F6F6F",
 ];
 
+const STATUS_COLORS = [
+    "#991B1B",
+    "#92400E",
+    "#166534",
+    "#1E40AF",
+];
+
 function StatusChart({ stats }) {
+
+    const [activeIndex, setActiveIndex] = useState(null);
 
     const data = [
         { name: "Draft", value: stats.draft },
@@ -48,7 +58,9 @@ function StatusChart({ stats }) {
                             {data.map((entry, index) => (
                                 <Cell
                                     key={index}
-                                    fill={COLORS[index]}
+                                    fill={activeIndex === index ? STATUS_COLORS[index] : COLORS[index]}
+                                    onMouseEnter={() => setActiveIndex(index)}
+                                    onMouseLeave={() => setActiveIndex(null)}
                                 />
                             ))}
                         </Pie>

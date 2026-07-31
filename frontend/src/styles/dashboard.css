@@ -155,6 +155,11 @@
     position: relative;
 }
 
+.chart-wrapper .recharts-sector {
+    transition: fill var(--transition-normal);
+    cursor: pointer;
+}
+
 .chart-center {
     width: 70px;
     height: 70px;
