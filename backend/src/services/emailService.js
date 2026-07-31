@@ -1,8 +1,6 @@
-import { Resend } from 'resend';
-
 export const sendResetEmail = async (email, token) => {
     try {
-        console.log("[EMAIL] Preparing to send reset email via Resend API...");
+        console.log("[EMAIL] Preparing to send reset email via Brevo REST API...");
 
         const frontendUrl = process.env.FRONTEND_URL || 'https://adidas-launchhub.vercel.app';
         const cleanBaseUrl = frontendUrl.replace(/\/+$/, '');
@@ -11,13 +9,14 @@ export const sendResetEmail = async (email, token) => {
         console.log("[EMAIL]   To:", email);
         console.log("[EMAIL]   Reset link:", resetLink);
 
-        const resend = new Resend(process.env.RESEND_API_KEY);
-
-        const data = await resend.emails.send({
-            from: 'Adidas LaunchHub <onboarding@resend.dev>',
-            to: email,
-            subject: 'LaunchHub - Restablecer Contraseña',
-            html: `
+        const payload = {
+            sender: {
+                name: "Adidas LaunchHub",
+                email: process.env.EMAIL_USER || "tatianacani19@11782206.brevosend.com"
+            },
+            to: [{ email: email }],
+            subject: "LaunchHub - Restablecer Contraseña",
+            htmlContent: `
                 <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
                     <h2 style="color: #1a1a1a;">Password Reset Request</h2>
                     <p style="color: #555; font-size: 14px; line-height: 1.6;">
@@ -35,18 +34,30 @@ export const sendResetEmail = async (email, token) => {
                     </p>
                 </div>
             `
+        };
+
+        const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+            method: "POST",
+            headers: {
+                "accept": "application/json",
+                "api-key": process.env.BREVO_API_KEY,
+                "content-type": "application/json"
+            },
+            body: JSON.stringify(payload)
         });
 
-        if (data.error) {
-            console.error("[EMAIL] Resend API Error:", data.error);
-            throw new Error(data.error.message || "Failed to send email via Resend API");
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("[EMAIL] Brevo API Error response:", data);
+            throw new Error(data.message || "Failed to send email via Brevo API");
         }
 
-        console.log("[EMAIL] Email sent successfully via Resend API! ID:", data.data?.id);
+        console.log("[EMAIL] Email sent successfully via Brevo API! MessageId:", data.messageId);
         return data;
 
     } catch (error) {
-        console.error("[EMAIL] FAILED to send email via Resend API:", error.message);
+        console.error("[EMAIL] FAILED to send email via Brevo API:", error.message);
         throw error;
     }
 };
