@@ -39,10 +39,11 @@ function StatusChart({ stats, selectedStatus }) {
         : null;
 
     function getFill(index) {
+        if (hovered) return STATUS_COLORS[index];
         if (selectedIndex !== null) {
             return index === selectedIndex ? STATUS_COLORS[index] : COLORS[index];
         }
-        return hovered ? STATUS_COLORS[index] : COLORS[index];
+        return COLORS[index];
     }
 
     return (
