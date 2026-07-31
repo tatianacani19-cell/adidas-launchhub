@@ -583,6 +583,16 @@ function LaunchDetail() {
                                                     {launch.productImage?.uploadedAt ? formatDateTime(launch.productImage.uploadedAt) : ""}
                                                 </span>
                                             </div>
+                                            <a
+                                                href={productImageUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="asset-action-btn"
+                                                title="Download"
+                                                download={launch.productImage?.originalName || "product-image"}
+                                            >
+                                                <Download size={16} />
+                                            </a>
                                         </div>
                                     ) : canEdit ? (
                                         <div
