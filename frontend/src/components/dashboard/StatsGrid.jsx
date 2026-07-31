@@ -17,6 +17,8 @@ function StatsGrid({ stats, analytics }) {
                 value={stats.draft}
                 subtitle="Pending approval"
                 icon={FileText}
+                iconBg="#FEE2E2"
+                iconColor="#991B1B"
             />
 
             <StatCard
@@ -24,6 +26,8 @@ function StatsGrid({ stats, analytics }) {
                 value={stats.inReview}
                 subtitle="Under review"
                 icon={Clock}
+                iconBg="#FEF9C3"
+                iconColor="#92400E"
             />
 
             <StatCard
@@ -31,6 +35,8 @@ function StatsGrid({ stats, analytics }) {
                 value={stats.approved}
                 subtitle="Ready to publish"
                 icon={CheckCircle}
+                iconBg="#DCFCE7"
+                iconColor="#166534"
             />
 
             <StatCard
@@ -38,6 +44,8 @@ function StatsGrid({ stats, analytics }) {
                 value={stats.published}
                 subtitle="Live launches"
                 icon={Globe}
+                iconBg="#DBEAFE"
+                iconColor="#1E40AF"
             />
 
             {analytics && (

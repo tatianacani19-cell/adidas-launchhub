@@ -2,12 +2,20 @@ function StatCard({
     title,
     value,
     subtitle,
-    icon: Icon
+    icon: Icon,
+    iconBg,
+    iconColor
 }) {
     return (
         <div className="stat-card">
 
-            <div className="stat-icon">
+            <div
+                className="stat-icon"
+                style={{
+                    "--icon-hover-bg": iconBg,
+                    "--icon-hover-color": iconColor,
+                }}
+            >
                 {Icon && <Icon size={22} />}
             </div>
 
