@@ -67,6 +67,7 @@ function LaunchDetail() {
         distributionChannels: "", pricePoint: "", targetAudience: "", region: "",
     });
     const [keyInfoSaving, setKeyInfoSaving] = useState(false);
+    const [showAllActivity, setShowAllActivity] = useState(false);
     const fileInputRef = useRef(null);
     const productImageInputRef = useRef(null);
 
@@ -468,7 +469,7 @@ function LaunchDetail() {
                                 <h2>Activity Log</h2>
                                 <div className="activity-timeline">
                                     {launch.activityLog && launch.activityLog.length > 0 ? (
-                                        [...launch.activityLog].reverse().map((activity, index) => {
+                                        [...launch.activityLog].reverse().slice(0, showAllActivity ? undefined : 4).map((activity, index) => {
                                             const IconComponent = ICON_COMPONENTS[getActivityIcon(activity.action)] || ICON_COMPONENTS.Activity;
                                             return (
                                                 <div key={activity._id || index} className="activity-item">
@@ -491,7 +492,7 @@ function LaunchDetail() {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    {index < (launch.activityLog?.length || 0) - 1 && (
+                                                    {index < Math.min(launch.activityLog?.length || 0, showAllActivity ? Infinity : 4) - 1 && (
                                                         <div className="activity-connector" />
                                                     )}
                                                 </div>
@@ -504,6 +505,24 @@ function LaunchDetail() {
                                         </div>
                                     )}
                                 </div>
+                                {launch.activityLog && launch.activityLog.length > 4 && (
+                                    <button
+                                        className="activity-toggle-btn"
+                                        onClick={() => setShowAllActivity(!showAllActivity)}
+                                    >
+                                        {showAllActivity ? (
+                                            <>
+                                                <ArrowLeft size={14} />
+                                                Show Less
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ArrowRightLeft size={14} />
+                                                Show All ({launch.activityLog.length})
+                                            </>
+                                        )}
+                                    </button>
+                                )}
                             </div>
                         </div>
 

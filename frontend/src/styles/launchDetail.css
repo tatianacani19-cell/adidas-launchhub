@@ -275,6 +275,30 @@
     gap: 8px;
 }
 
+.activity-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 8px 0;
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.activity-toggle-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-hover);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .activity-header {
