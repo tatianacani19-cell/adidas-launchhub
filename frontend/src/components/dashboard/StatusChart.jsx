@@ -3,6 +3,7 @@ import {
     PieChart,
     Pie,
     Cell,
+    Tooltip,
     ResponsiveContainer
 } from "recharts";
 
@@ -68,6 +69,21 @@ function StatusChart({ stats }) {
                                     />
                                 ))}
                             </Pie>
+
+                            <Tooltip
+                                trigger="click"
+                                cursor={false}
+                                content={({ active, payload }) => {
+                                    if (!active || !payload || !payload.length) {
+                                        return null;
+                                    }
+                                    return (
+                                        <div className="chart-tooltip">
+                                            {payload[0].name}
+                                        </div>
+                                    );
+                                }}
+                            />
 
                         </PieChart>
                     </ResponsiveContainer>
