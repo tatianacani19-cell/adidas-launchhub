@@ -7,6 +7,7 @@ import {
     editLaunch,
     removeLaunch,
     updateLaunchStatusController,
+    migrateActivityLog,
 } from "../controllers/launchController.js";
 
 import { authenticateToken, authorizeRoles } from "../middleware/auth.js";
@@ -21,5 +22,7 @@ router.put("/:id", authorizeRoles("CREATOR", "ADMIN"), editLaunch);
 router.delete("/:id", authorizeRoles("CREATOR", "ADMIN"), removeLaunch);
 
 router.put("/:id/status", authorizeRoles("APPROVER", "ADMIN"), updateLaunchStatusController);
+
+router.post("/migrate-activity", migrateActivityLog);
 
 export default router;

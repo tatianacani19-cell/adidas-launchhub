@@ -6,6 +6,8 @@ import {
     deleteLaunch,
     updateLaunchStatus,
 } from "../services/launchService.js";
+import Launch from "../models/Launch.js";
+import { addActivityLog, ACTIVITY_ACTIONS } from "../utils/activityLog.js";
 
 export const getLaunches = async (req, res) => {
     try {
@@ -91,5 +93,34 @@ export const updateLaunchStatusController = async (req, res) => {
     } catch (error) {
         console.error("Error updating launch status:", error);
         res.status(500).json({ message: "Failed to update launch status." });
+    }
+};
+
+export const migrateActivityLog = async (req, res) => {
+    try {
+        const launches = await Launch.find({ activityLog: { $size: 0 } });
+        let count = 0;
+
+        for (const launch of launches) {
+            await Launch.findByIdAndUpdate(launch._id, {
+                $push: {
+                    activityLog: {
+                        action: ACTIVITY_ACTIONS.LAUNCH_CREATED,
+                        description: "Launch created",
+                        performedBy: {
+                            _id: "",
+                            name: launch.owner || "Unknown User",
+                        },
+                        createdAt: launch.createdAt,
+                    },
+                },
+            });
+            count++;
+        }
+
+        res.json({ message: `${count} launches migrated.` });
+    } catch (error) {
+        console.error("Migration error:", error);
+        res.status(500).json({ message: "Migration failed." });
     }
 };
