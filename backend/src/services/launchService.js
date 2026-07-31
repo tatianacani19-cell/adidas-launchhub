@@ -1,8 +1,46 @@
 import Launch from "../models/Launch.js";
 import { addActivityLog, ACTIVITY_ACTIONS } from "../utils/activityLog.js";
 
-export const getAllLaunches = async () => {
-    return Launch.find().sort({ createdAt: -1 });
+export const getAllLaunches = async (query = {}) => {
+    const { search, status, market, date, sortField, sortDir, page, limit = 8 } = query;
+
+    let filter = {};
+    if (search) {
+        filter.title = { $regex: search, $options: "i" };
+    }
+    if (status && status !== "All Status") {
+        filter.status = status;
+    }
+    if (market && market !== "All Markets") {
+        filter.market = market;
+    }
+    if (date) {
+        filter.launchDate = { $regex: `^${date}` };
+    }
+
+    let sort = {};
+    if (sortField) {
+        sort[sortField] = sortDir === "desc" ? -1 : 1;
+    } else {
+        sort.createdAt = -1;
+    }
+
+    if (page) {
+        const pageNum = parseInt(page);
+        const limitNum = parseInt(limit);
+        const skip = (pageNum - 1) * limitNum;
+
+        const launches = await Launch.find(filter).sort(sort).skip(skip).limit(limitNum);
+        const total = await Launch.countDocuments(filter);
+
+        return {
+            launches,
+            totalPages: Math.ceil(total / limitNum),
+            totalCount: total,
+        };
+    } else {
+        return Launch.find(filter).sort(sort);
+    }
 };
 
 export const getLaunchById = async (id) => {

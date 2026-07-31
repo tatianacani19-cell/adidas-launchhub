@@ -12,7 +12,7 @@ import { addActivityLog, ACTIVITY_ACTIONS } from "../utils/activityLog.js";
 
 export const getLaunches = async (req, res) => {
     try {
-        const launches = await getAllLaunches();
+        const launches = await getAllLaunches(req.query);
         res.json(launches);
     } catch (error) {
         console.error("Error fetching launches:", error);

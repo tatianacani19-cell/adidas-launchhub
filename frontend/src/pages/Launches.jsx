@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import MainLayout from "../components/layout/MainLayout";
 
 import LaunchHeader from "../components/launches/LaunchHeader";
@@ -21,6 +21,7 @@ function Launches() {
     const { addToast } = useToast();
 
     const [launches, setLaunches] = useState([]);
+    const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -37,15 +38,33 @@ function Launches() {
     const [deleteTarget, setDeleteTarget] = useState(null);
 
     useEffect(() => {
-        loadLaunches();
-    }, []);
+        setCurrentPage(1);
+    }, [searchTerm, statusFilter, marketFilter, dateFilter, sortField, sortDir]);
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            loadLaunches();
+        }, 300);
+        return () => clearTimeout(delayDebounceFn);
+    }, [currentPage, searchTerm, statusFilter, marketFilter, dateFilter, sortField, sortDir]);
 
     async function loadLaunches() {
         try {
             setLoading(true);
             setError(null);
-            const response = await api.get("/launches");
-            setLaunches(response.data);
+            const params = {
+                page: currentPage,
+                limit: ITEMS_PER_PAGE,
+                search: searchTerm,
+                status: statusFilter,
+                market: marketFilter,
+                date: dateFilter,
+                sortField,
+                sortDir
+            };
+            const response = await api.get("/launches", { params });
+            setLaunches(response.data.launches || []);
+            setTotalPages(response.data.totalPages || 1);
         } catch (err) {
             console.error("Error loading launches:", err);
             setError("Failed to load launches. Please try again later.");
@@ -61,19 +80,19 @@ function Launches() {
         );
     }, []);
 
-    const handleDelete = useCallback(async () => {
+    const handleDelete = async () => {
         if (!deleteTarget) return;
         try {
             await api.delete(`/launches/${deleteTarget._id}`);
-            setLaunches((prev) => prev.filter((l) => l._id !== deleteTarget.id));
             addToast("Launch deleted successfully.", "success");
+            loadLaunches();
         } catch (err) {
             console.error("Error deleting launch:", err);
             addToast("Failed to delete launch.", "error");
         } finally {
             setDeleteTarget(null);
         }
-    }, [deleteTarget, addToast]);
+    };
 
     function handleSort(field) {
         if (sortField === field) {
@@ -93,50 +112,36 @@ function Launches() {
         setCurrentPage(1);
     }
 
-    const filteredLaunches = useMemo(() => {
-        let result = launches.filter((launch) => {
-            const matchesSearch = launch.title
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase());
-            const matchesStatus =
-                statusFilter === "All Status" || launch.status === statusFilter;
-            const matchesMarket =
-                marketFilter === "All Markets" || launch.market === marketFilter;
-            const matchesDate =
-                !dateFilter || launch.launchDate?.slice(0, 10) === dateFilter;
-            return matchesSearch && matchesStatus && matchesMarket && matchesDate;
-        });
-
-        result.sort((a, b) => {
-            const aVal = a[sortField] || "";
-            const bVal = b[sortField] || "";
-            const cmp = aVal.localeCompare(bVal);
-            return sortDir === "asc" ? cmp : -cmp;
-        });
-
-        return result;
-    }, [launches, searchTerm, statusFilter, marketFilter, dateFilter, sortField, sortDir]);
-
-    const totalPages = Math.ceil(filteredLaunches.length / ITEMS_PER_PAGE);
-    const paginatedLaunches = filteredLaunches.slice(
-        (currentPage - 1) * ITEMS_PER_PAGE,
-        currentPage * ITEMS_PER_PAGE
-    );
-
-    function exportCSV() {
-        const headers = ["Title", "Market", "Date", "Status", "Description"];
-        const rows = filteredLaunches.map((l) => [
-            l.title, l.market, l.launchDate, l.status, l.description,
-        ]);
-        const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
-        const blob = new Blob([csv], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "launches.csv";
-        a.click();
-        URL.revokeObjectURL(url);
-        addToast("CSV exported successfully.", "info");
+    async function exportCSV() {
+        try {
+            const params = {
+                search: searchTerm,
+                status: statusFilter,
+                market: marketFilter,
+                date: dateFilter,
+                sortField,
+                sortDir
+            };
+            const response = await api.get("/launches", { params });
+            const allFiltered = response.data;
+            
+            const headers = ["Title", "Market", "Date", "Status", "Description"];
+            const rows = allFiltered.map((l) => [
+                l.title, l.market, l.launchDate, l.status, l.description,
+            ]);
+            const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(",")).join("\n");
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "launches.csv";
+            a.click();
+            URL.revokeObjectURL(url);
+            addToast("CSV exported successfully.", "info");
+        } catch (err) {
+            console.error("Error exporting CSV:", err);
+            addToast("Failed to export CSV.", "error");
+        }
     }
 
     function exportPDF() {
@@ -144,13 +149,15 @@ function Launches() {
         addToast("Print dialog opened for PDF export.", "info");
     }
 
+    const hasFilters = searchTerm || statusFilter !== "All Status" || marketFilter !== "All Markets" || dateFilter;
+
     return (
         <MainLayout title="Launches">
             <a href="#launches-table" className="skip-link">Skip to table</a>
 
             <LaunchHeader />
 
-            {!loading && !error && launches.length > 0 && (
+            {!loading && !error && (launches.length > 0 || hasFilters) && (
                 <LaunchFilters
                     searchTerm={searchTerm}
                     onSearchChange={setSearchTerm}
@@ -189,14 +196,14 @@ function Launches() {
                 <>
                     <LaunchTable
                         id="launches-table"
-                        launches={paginatedLaunches}
+                        launches={launches}
                         sortField={sortField}
                         sortDir={sortDir}
                         onSort={handleSort}
                         onDelete={(launch) => setDeleteTarget(launch)}
                         onStatusChange={handleStatusChange}
                     />
-                    {filteredLaunches.length > ITEMS_PER_PAGE && (
+                    {totalPages > 1 && (
                         <Pagination
                             currentPage={currentPage}
                             totalPages={totalPages}
