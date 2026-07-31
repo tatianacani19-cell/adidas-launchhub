@@ -104,19 +104,6 @@ function LoginForm() {
                 {submitting ? "Signing in..." : "Login"}
             </button>
 
-            <div className="divider">
-                <span></span>
-                <p>or</p>
-                <span></span>
-            </div>
-
-            <button
-                type="button"
-                className="sso-btn"
-            >
-                Login with SSO
-            </button>
-
             <footer>
                 © 2026 Adidas. All rights reserved.
             </footer>

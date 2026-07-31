@@ -109,8 +109,7 @@
     font-weight: 400 !important;
 }
 
-.login-btn,
-.sso-btn {
+.login-btn {
     width: 100%;
     padding: 14px;
     border: none;
@@ -122,26 +121,8 @@
     transition: .25s;
 }
 
-.login-btn:hover,
-.sso-btn:hover {
+.login-btn:hover {
     background: #2b2b2b;
-}
-
-.divider {
-    display: flex;
-    align-items: center;
-    margin: 30px 0;
-}
-
-.divider span {
-    flex: 1;
-    height: 1px;
-    background: #ddd;
-}
-
-.divider p {
-    margin: 0 15px;
-    color: #666;
 }
 
 footer {
