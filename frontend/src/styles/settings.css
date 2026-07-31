@@ -59,7 +59,7 @@
     height: 64px;
     border-radius: 50%;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,7 +164,7 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #fff;
+    background: var(--on-accent);
     transition: transform var(--transition-fast);
 }
 
@@ -280,7 +280,7 @@
 
 .settings-segmented-btn.active {
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
 }
 
 /* ── Buttons ── */
@@ -298,7 +298,7 @@
 
 .settings-btn.primary {
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     border-color: var(--accent);
 }
 

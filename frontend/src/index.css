@@ -17,6 +17,7 @@
 
     --accent: #000000;
     --accent-hover: #333333;
+    --on-accent: #ffffff;
 
     --toast-success: #16a34a;
     --toast-error: #dc2626;
@@ -52,6 +53,7 @@
 
     --accent: #ffffff;
     --accent-hover: #cccccc;
+    --on-accent: #1a1a1a;
 
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
     --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -95,7 +97,7 @@ select:focus-visible {
     top: -40px;
     left: 0;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     padding: 8px 16px;
     z-index: 1000;
     transition: top var(--transition-fast);
@@ -339,7 +341,7 @@ select:focus-visible {
     gap: 8px;
     padding: 10px 20px;
     background: var(--accent);
-    color: #fff;
+    color: var(--on-accent);
     border: none;
     border-radius: var(--radius-md);
     font-size: 14px;
