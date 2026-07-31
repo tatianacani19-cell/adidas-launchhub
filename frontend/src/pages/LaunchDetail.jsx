@@ -406,63 +406,6 @@ function LaunchDetail() {
                     </div>
                 </div>
             </div>
-
-            <div className="detail-section">
-                <h2>Key Information</h2>
-                <div className="detail-key-info">
-                    <div className="key-info-grid">
-                        <div className="key-info-item">
-                            <span className="key-info-label">Product Category</span>
-                            <span className={`key-info-value${!launch.productCategory ? " empty" : ""}`}>
-                                {launch.productCategory || "\u2014"}
-                            </span>
-                        </div>
-                        <div className="key-info-item">
-                            <span className="key-info-label">Subcategory</span>
-                            <span className={`key-info-value${!launch.subcategory ? " empty" : ""}`}>
-                                {launch.subcategory || "\u2014"}
-                            </span>
-                        </div>
-                        <div className="key-info-item">
-                            <span className="key-info-label">Season</span>
-                            <span className={`key-info-value${!launch.season ? " empty" : ""}`}>
-                                {launch.season || "\u2014"}
-                            </span>
-                        </div>
-                        <div className="key-info-item">
-                            <span className="key-info-label">Region</span>
-                            <span className={`key-info-value${!launch.region ? " empty" : ""}`}>
-                                {launch.region || "\u2014"}
-                            </span>
-                        </div>
-                        <div className="key-info-item">
-                            <span className="key-info-label">Target Audience</span>
-                            <span className={`key-info-value${!launch.targetAudience ? " empty" : ""}`}>
-                                {launch.targetAudience || "\u2014"}
-                            </span>
-                        </div>
-                        <div className="key-info-item">
-                            <span className="key-info-label">Price Point</span>
-                            <span className={`key-info-value${!launch.pricePoint ? " empty" : ""}`}>
-                                {launch.pricePoint || "\u2014"}
-                            </span>
-                        </div>
-                        <div className="key-info-item">
-                            <span className="key-info-label">Distribution Channels</span>
-                            <span className={`key-info-value${!launch.distributionChannels ? " empty" : ""}`}>
-                                {launch.distributionChannels || "\u2014"}
-                            </span>
-                        </div>
-                        <div className="key-info-item">
-                            <span className="key-info-label">Tagline</span>
-                            <span className={`key-info-value${!launch.tagline ? " empty" : ""}`}>
-                                {launch.tagline || "\u2014"}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div className="detail-section">
                 <div className="detail-section-header">
                     <h2>Assets</h2>
