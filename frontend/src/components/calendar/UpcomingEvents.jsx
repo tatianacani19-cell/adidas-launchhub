@@ -3,14 +3,14 @@ import { useMemo } from "react";
 function UpcomingEvents({ events }) {
 
     const upcoming = useMemo(() => {
-        const today = new Date().toISOString().split("T")[0];
-        const nextWeek = new Date();
-        nextWeek.setDate(nextWeek.getDate() + 7);
-        const limit = nextWeek.toISOString().split("T")[0];
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const limit = new Date(today);
+        limit.setDate(limit.getDate() + 7);
 
         return events
             .filter((e) => {
-                const date = e.start;
+                const date = new Date(e.start + "T00:00:00");
                 return date >= today && date <= limit;
             })
             .sort((a, b) => a.start.localeCompare(b.start));
