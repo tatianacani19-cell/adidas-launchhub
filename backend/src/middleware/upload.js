@@ -1,28 +1,31 @@
 import multer from "multer";
-import path from "path";
-import crypto from "crypto";
-import { fileURLToPath } from "url";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Configurar Cloudinary con las variables de entorno
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-const storage = multer.diskStorage({
-    destination: path.join(__dirname, "../../uploads"),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname).toLowerCase();
-        const unique = crypto.randomUUID();
-        cb(null, `${unique}${ext}`);
+// Configurar el almacenamiento directamente hacia Cloudinary
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "adidas-launchhub", // Carpeta donde se guardarán en Cloudinary
+        resource_type: "auto",      // Soporta automáticamente imágenes, PDFs, etc.
+        public_id: (req, file) => {
+            // Mantenemos el uso de UUID como tenías originalmente
+            const nameWithoutExt = file.originalname.split(".")[0];
+            return `${Date.now()}-${nameWithoutExt}`;
+        },
     },
 });
 
-const fileFilter = (req, file, cb) => {
-    cb(null, true);
-};
-
 const upload = multer({
     storage,
-    fileFilter,
-    limits: { fileSize: 50 * 1024 * 1024 },
+    limits: { fileSize: 50 * 1024 * 1024 }, // Límite de 50MB
 });
 
 export default upload;
