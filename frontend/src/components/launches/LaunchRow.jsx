@@ -16,6 +16,9 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
     const isInReview = launch.status === "In Review";
 
     const productImageUrl = launch.productImage?.url || null;
+    const lastActivity = launch.activityLog?.length
+        ? launch.activityLog[launch.activityLog.length - 1]
+        : null;
 
     async function handleApprove() {
         try {
@@ -88,6 +91,12 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
             <td>{formatDateTime(launch.updatedAt)}</td>
 
             <td>
+                {lastActivity && (
+                    <div className="launch-last-activity" title={`${lastActivity.action} · ${lastActivity.description}`}>
+                        <span className="launch-last-activity-label">{lastActivity.action}</span>
+                        <span className="launch-last-activity-desc">{lastActivity.description}</span>
+                    </div>
+                )}
 
                 <div className="actions">
 

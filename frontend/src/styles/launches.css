@@ -270,6 +270,28 @@
     gap: 4px;
 }
 
+.launch-last-activity {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 8px;
+    max-width: 220px;
+}
+
+.launch-last-activity-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.launch-last-activity-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .action-btn {
     display: flex;
     align-items: center;
