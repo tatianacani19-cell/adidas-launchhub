@@ -76,12 +76,13 @@ export const updateLaunchStatus = async (id, status, user) => {
     }
 
     const currentIndex = STATUS_FLOW.indexOf(launch.status);
-    const isNextStep = targetIndex === currentIndex + 1;
-    const isRevertToDraft = status === "Draft" && launch.status !== "Published";
 
-    if (!isNextStep && !isRevertToDraft) {
+    const isForwardStep = targetIndex === currentIndex + 1;
+    const isBackward = targetIndex < currentIndex;
+
+    if (!isForwardStep && !isBackward) {
         const error = new Error(
-            `Cannot change status from "${launch.status}" to "${status}". Status must follow the sequence: ${STATUS_FLOW.join(" → ")}.`
+            `Cannot change status from "${launch.status}" to "${status}". Move one step forward or back to a previous status.`
         );
         error.status = 400;
         throw error;

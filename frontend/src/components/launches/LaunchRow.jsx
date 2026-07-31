@@ -1,21 +1,27 @@
-import { Pencil, Trash2, Check, X, Send, Globe } from "lucide-react";
+import { Pencil, Trash2, Check, X, Send, Globe, Undo2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import StatusBadge from "./StatusBadge";
 import { formatDateTime } from "../../utils/formatDateTime";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
+
+const STATUS_ORDER = ["Draft", "In Review", "Approved", "Published"];
 
 function LaunchRow({ launch, onDelete, onStatusChange }) {
 
     const navigate = useNavigate();
     const { user } = useAuth();
     const { addToast } = useToast();
+    const [backMenuOpen, setBackMenuOpen] = useState(false);
 
     const canEdit = user?.role === "CREATOR" || user?.role === "ADMIN";
     const canApprove = user?.role === "APPROVER" || user?.role === "ADMIN";
     const isDraft = launch.status === "Draft";
     const isInReview = launch.status === "In Review";
     const isApproved = launch.status === "Approved";
+    const currentIndex = STATUS_ORDER.indexOf(launch.status);
+    const previousStatuses = currentIndex > 0 ? STATUS_ORDER.slice(0, currentIndex) : [];
 
     const productImageUrl = launch.productImage?.url || null;
     const lastActivity = launch.activityLog?.length
@@ -55,6 +61,17 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
             addToast("Launch published.", "success");
         } catch (err) {
             addToast(err.response?.data?.message || "Failed to publish launch.", "error");
+        }
+    }
+
+    async function handleStepBack(target) {
+        try {
+            await onStatusChange(launch._id, target);
+            addToast(`Launch moved back to ${target}.`, "info");
+        } catch (err) {
+            addToast(err.response?.data?.message || "Failed to move launch back.", "error");
+        } finally {
+            setBackMenuOpen(false);
         }
     }
 
@@ -162,6 +179,40 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
                         >
                             <Globe size={16} />
                         </button>
+                    )}
+
+                    {user?.role === "ADMIN" && previousStatuses.length > 0 && (
+                        <div className="back-menu-wrapper">
+                            <button
+                                className="action-btn back"
+                                onClick={() => setBackMenuOpen(!backMenuOpen)}
+                                aria-label={`Move ${launch.title} back a step`}
+                                title="Move back"
+                                aria-expanded={backMenuOpen}
+                            >
+                                <Undo2 size={16} />
+                            </button>
+                            {backMenuOpen && (
+                                <>
+                                    <div
+                                        style={{ position: "fixed", inset: 0, zIndex: 99 }}
+                                        onClick={() => setBackMenuOpen(false)}
+                                    />
+                                    <div className="back-menu">
+                                        {previousStatuses.map((target) => (
+                                            <button
+                                                key={target}
+                                                className="back-menu-item"
+                                                onClick={() => handleStepBack(target)}
+                                            >
+                                                <Undo2 size={14} />
+                                                {target}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     )}
 
                     {canEdit && (

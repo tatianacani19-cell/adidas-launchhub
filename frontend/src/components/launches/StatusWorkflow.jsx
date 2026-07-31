@@ -1,20 +1,24 @@
-import { Send, Check, X, Globe } from "lucide-react";
+import { Send, Check, X, Globe, Undo2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 import api from "../../services/api";
+
+const STATUS_ORDER = ["Draft", "In Review", "Approved", "Published"];
 
 function StatusWorkflow({ launch, onStatusChanged }) {
     const { user } = useAuth();
     const { addToast } = useToast();
     const role = user?.role;
     const status = launch?.status;
+    const currentIndex = STATUS_ORDER.indexOf(status);
 
     const canSubmitForReview = (role === "CREATOR" || role === "ADMIN") && status === "Draft";
     const canApprove = (role === "APPROVER" || role === "ADMIN") && status === "In Review";
     const canReject = (role === "APPROVER" || role === "ADMIN") && status === "In Review";
     const canPublish = role === "ADMIN" && status === "Approved";
+    const canStepBack = role === "ADMIN" && currentIndex > 0;
 
-    const showWorkflow = canSubmitForReview || canApprove || canReject || canPublish;
+    const showWorkflow = canSubmitForReview || canApprove || canReject || canPublish || canStepBack;
 
     if (!showWorkflow) return null;
 
@@ -69,6 +73,22 @@ function StatusWorkflow({ launch, onStatusChanged }) {
                     <Globe size={16} />
                     Publish
                 </button>
+            )}
+            {canStepBack && (
+                <div className="wf-back-group">
+                    <span className="wf-back-label">Move back:</span>
+                    {STATUS_ORDER.slice(0, currentIndex).map((target) => (
+                        <button
+                            key={target}
+                            className="wf-btn back"
+                            onClick={() => changeStatus(target)}
+                            title={`Move back to ${target}`}
+                        >
+                            <Undo2 size={14} />
+                            {target}
+                        </button>
+                    ))}
+                </div>
             )}
         </div>
     );

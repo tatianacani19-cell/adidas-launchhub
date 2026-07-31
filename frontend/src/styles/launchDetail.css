@@ -1241,6 +1241,33 @@
     color: #a5b4fc;
 }
 
+.wf-back-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.wf-back-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.wf-btn.back:hover {
+    background: #F5F5F4;
+    border-color: #d6d3d1;
+    color: #44403c;
+}
+
+[data-theme="dark"] .wf-btn.back:hover {
+    background: #292524;
+    border-color: #57534e;
+    color: #d6d3d1;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 1200px) {
