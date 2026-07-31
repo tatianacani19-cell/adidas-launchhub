@@ -298,13 +298,13 @@
 .key-info-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 28px 36px;
 }
 
 .key-info-item {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 10px;
 }
 
 .key-info-label {
