@@ -8,17 +8,6 @@ const router = Router({ mergeParams: true });
 
 router.use(authenticateToken);
 
-router.post("/", authorizeRoles("ADMIN", "CREATOR"), upload.single("file"), (err, req, res, next) => {
-    if (err instanceof multer.MulterError) {
-        return res.status(400).json({ message: err.message });
-    } else if (err) {
-        return res.status(400).json({ message: err.message });
-    }
-    next();
-}, uploadAsset);
-
-router.delete("/:assetId", authorizeRoles("ADMIN", "CREATOR"), deleteAsset);
-
 router.post("/product-image", authorizeRoles("ADMIN", "CREATOR"), productImageUpload.single("file"), (err, req, res, next) => {
     if (err instanceof multer.MulterError) {
         return res.status(400).json({ message: err.message });
@@ -29,6 +18,17 @@ router.post("/product-image", authorizeRoles("ADMIN", "CREATOR"), productImageUp
 }, uploadProductImage);
 
 router.delete("/product-image", authorizeRoles("ADMIN", "CREATOR"), deleteProductImage);
+
+router.post("/", authorizeRoles("ADMIN", "CREATOR"), upload.single("file"), (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({ message: err.message });
+    } else if (err) {
+        return res.status(400).json({ message: err.message });
+    }
+    next();
+}, uploadAsset);
+
+router.delete("/:assetId", authorizeRoles("ADMIN", "CREATOR"), deleteAsset);
 
 import multer from "multer";
 
