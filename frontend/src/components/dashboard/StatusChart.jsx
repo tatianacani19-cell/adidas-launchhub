@@ -16,10 +16,10 @@ const COLORS = [
 ];
 
 const STATUS_COLORS = [
-    "#FEE2E2",
-    "#FEF9C3",
-    "#DCFCE7",
-    "#DBEAFE",
+    "#FECACA",
+    "#FEF08A",
+    "#BBF7D0",
+    "#BFDBFE",
 ];
 
 function StatusChart({ stats }) {
