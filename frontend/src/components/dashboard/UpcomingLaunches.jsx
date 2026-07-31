@@ -24,7 +24,15 @@ function UpcomingLaunches({ launches }) {
                         className="launch-item"
                     >
 
-                        <div className="launch-image"></div>
+                        {launch.productImage?.url ? (
+                            <img
+                                src={launch.productImage.url}
+                                alt={launch.title}
+                                className="launch-image"
+                            />
+                        ) : (
+                            <div className="launch-image"></div>
+                        )}
 
                         <div className="launch-info">
 
