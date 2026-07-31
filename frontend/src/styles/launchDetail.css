@@ -167,7 +167,7 @@
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 24px;
+    padding: 16px;
     box-shadow: var(--shadow-sm);
 }
 
@@ -180,8 +180,8 @@
 .activity-item {
     display: flex;
     align-items: flex-start;
-    gap: 16px;
-    padding-bottom: 24px;
+    gap: 12px;
+    padding-bottom: 16px;
     position: relative;
 }
 
@@ -1037,6 +1037,42 @@
     height: 34px;
     padding: 0 14px;
     font-size: 13px;
+}
+
+.files-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.asset-dropzone-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 12px;
+    border: 1.5px dashed var(--border-color);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.asset-dropzone-inline:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.asset-dropzone-inline.drag-over {
+    border-color: var(--accent);
+    background: var(--bg-hover);
+    color: var(--accent);
+}
+
+.asset-dropzone-inline.uploading {
+    border-color: var(--accent);
+    cursor: default;
 }
 
 .detail-section > h2 {

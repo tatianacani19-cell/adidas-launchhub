@@ -593,14 +593,32 @@ function LaunchDetail() {
                                 <div className="detail-section-header">
                                     <h2>Files</h2>
                                     {canEdit && (
-                                        <button
-                                            className="detail-upload-btn"
-                                            onClick={() => fileInputRef.current?.click()}
-                                            disabled={uploading}
-                                        >
-                                            <Upload size={16} />
-                                            Upload Asset
-                                        </button>
+                                        <div className="files-header-actions">
+                                            <div
+                                                className={`asset-dropzone-inline ${dragOver ? "drag-over" : ""} ${uploading ? "uploading" : ""}`}
+                                                onDragOver={handleDragOver}
+                                                onDragLeave={handleDragLeave}
+                                                onDrop={handleDrop}
+                                                onClick={() => !uploading && fileInputRef.current?.click()}
+                                            >
+                                                {uploading ? (
+                                                    <Loader2 size={14} className="spin" />
+                                                ) : (
+                                                    <>
+                                                        <Upload size={14} />
+                                                        <span>Drop</span>
+                                                    </>
+                                                )}
+                                            </div>
+                                            <button
+                                                className="detail-upload-btn"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                disabled={uploading}
+                                            >
+                                                <Upload size={16} />
+                                                Upload
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                                 <div className="detail-assets-inner">
@@ -610,31 +628,6 @@ function LaunchDetail() {
                                         style={{ display: "none" }}
                                         onChange={handleFileSelect}
                                     />
-
-                                    {canEdit && (
-                                        <div
-                                            className={`asset-dropzone ${dragOver ? "drag-over" : ""} ${uploading ? "uploading" : ""}`}
-                                            onDragOver={handleDragOver}
-                                            onDragLeave={handleDragLeave}
-                                            onDrop={handleDrop}
-                                            onClick={() => !uploading && fileInputRef.current?.click()}
-                                        >
-                                            {uploading ? (
-                                                <div className="asset-upload-progress">
-                                                    <Loader2 size={24} className="spin" />
-                                                    <span>Uploading... {uploadProgress}%</span>
-                                                    <div className="progress-bar">
-                                                        <div className="progress-fill" style={{ width: `${uploadProgress}%` }} />
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <div className="asset-dropzone-text">
-                                                    <Upload size={24} />
-                                                    <span>Drop files here or click to upload</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
 
                                     {launch.assets && launch.assets.length > 0 ? (
                                         <div className="assets-list">
