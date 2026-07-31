@@ -63,8 +63,10 @@ export const updateLaunchStatus = async (id, status, user) => {
         return launch;
     }
 
-    if (user?.role === "APPROVER" && launch.status !== "In Review") {
-        const error = new Error("Approvers can only approve or reject launches that are In Review.");
+    const isApproverAction = launch.status === "In Review" || (launch.status === "Approved" && status === "Published");
+
+    if (user?.role === "APPROVER" && !isApproverAction) {
+        const error = new Error("Approvers can approve or reject launches that are In Review, or publish Approved launches.");
         error.status = 403;
         throw error;
     }

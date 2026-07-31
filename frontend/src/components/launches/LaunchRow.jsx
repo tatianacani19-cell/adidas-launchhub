@@ -184,7 +184,7 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
                         </>
                     )}
 
-                    {user?.role === "ADMIN" && isApproved && (
+                    {(user?.role === "ADMIN" || user?.role === "APPROVER") && isApproved && (
                         <button
                             className="action-btn publish"
                             onClick={handlePublish}

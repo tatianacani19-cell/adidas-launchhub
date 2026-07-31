@@ -15,7 +15,7 @@ function StatusWorkflow({ launch, onStatusChanged }) {
     const canSubmitForReview = (role === "CREATOR" || role === "ADMIN") && status === "Draft";
     const canApprove = (role === "APPROVER" || role === "ADMIN") && status === "In Review";
     const canReject = (role === "APPROVER" || role === "ADMIN") && status === "In Review";
-    const canPublish = role === "ADMIN" && status === "Approved";
+    const canPublish = (role === "ADMIN" || role === "APPROVER") && status === "Approved";
     const canStepBack = (role === "ADMIN" || role === "CREATOR") && currentIndex > 0;
 
     const showWorkflow = canSubmitForReview || canApprove || canReject || canPublish || canStepBack;
