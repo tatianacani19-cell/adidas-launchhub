@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
 import SettingsCard from "../components/settings/SettingsCard";
-import SettingsToggle from "../components/settings/SettingsToggle";
 import SettingsInput from "../components/settings/SettingsInput";
 import UserManagement from "../components/settings/UserManagement";
 import { useAuth } from "../context/AuthContext";
@@ -34,9 +33,6 @@ function Settings() {
     const [timeFormat, setTimeFormat] = useState("12h");
     const [timezone, setTimezone] = useState("America/Bogota");
 
-    const [emailNotifications, setEmailNotifications] = useState(true);
-    const [marketingNotifications, setMarketingNotifications] = useState(false);
-
     const [profileSubmitting, setProfileSubmitting] = useState(false);
     const [prefsSubmitting, setPrefsSubmitting] = useState(false);
 
@@ -59,8 +55,6 @@ function Settings() {
             setDateFormat(data.dateFormat || "MM/DD/YYYY");
             setTimeFormat(data.timeFormat || "12h");
             setTimezone(data.timezone || "America/Bogota");
-            setEmailNotifications(data.notifications?.emailNotifications ?? true);
-            setMarketingNotifications(data.notifications?.marketingNotifications ?? false);
         } catch {
             if (authUser) {
                 setFullName(authUser.name || "");
@@ -70,8 +64,6 @@ function Settings() {
                 setDateFormat(authUser.dateFormat || "MM/DD/YYYY");
                 setTimeFormat(authUser.timeFormat || "12h");
                 setTimezone(authUser.timezone || "America/Bogota");
-                setEmailNotifications(authUser.notifications?.emailNotifications ?? true);
-                setMarketingNotifications(authUser.notifications?.marketingNotifications ?? false);
             }
         } finally {
             setLoading(false);
@@ -143,21 +135,6 @@ function Settings() {
             addToast("Failed to save preferences.", "error");
         } finally {
             setPrefsSubmitting(false);
-        }
-    }
-
-    async function handleSaveNotifications() {
-        try {
-            const response = await api.put("/users/profile", {
-                notifications: {
-                    emailNotifications,
-                    marketingNotifications,
-                },
-            });
-            setProfile(response.data);
-            addToast("Notification settings saved.", "success");
-        } catch {
-            addToast("Failed to save notification settings.", "error");
         }
     }
 
@@ -309,29 +286,6 @@ function Settings() {
                             >
                                 {passwordSubmitting && <Loader2 size={16} className="spin" />}
                                 {passwordSubmitting ? "Updating..." : "Update Password"}
-                            </button>
-                        </div>
-                    </SettingsCard>
-
-                    <SettingsCard title="Notifications">
-                        <div className="settings-toggles">
-                            <SettingsToggle
-                                label="Email notifications"
-                                checked={emailNotifications}
-                                onChange={setEmailNotifications}
-                            />
-                            <SettingsToggle
-                                label="Marketing updates"
-                                checked={marketingNotifications}
-                                onChange={setMarketingNotifications}
-                            />
-                        </div>
-                        <div className="settings-card-footer">
-                            <button
-                                className="settings-btn primary"
-                                onClick={handleSaveNotifications}
-                            >
-                                Save Notifications
                             </button>
                         </div>
                     </SettingsCard>
