@@ -3,7 +3,6 @@ import {
     PieChart,
     Pie,
     Cell,
-    Tooltip,
     ResponsiveContainer
 } from "recharts";
 
@@ -26,6 +25,7 @@ const STATUS_COLORS = [
 function StatusChart({ stats }) {
 
     const [hovered, setHovered] = useState(false);
+    const [clickedIndex, setClickedIndex] = useState(null);
 
     const data = [
         { name: "Draft", value: stats.draft },
@@ -47,7 +47,14 @@ function StatusChart({ stats }) {
 
             <div className="chart-wrapper">
 
-                <div className="chart-area">
+                <div
+                    className="chart-area"
+                    onClick={(e) => {
+                        if (!e.target.closest(".recharts-sector")) {
+                            setClickedIndex(null);
+                        }
+                    }}
+                >
 
                     <ResponsiveContainer
                         width={180}
@@ -61,6 +68,7 @@ function StatusChart({ stats }) {
                                 outerRadius={75}
                                 dataKey="value"
                                 stroke="none"
+                                onClick={(_, index) => setClickedIndex(index)}
                             >
                                 {data.map((entry, index) => (
                                     <Cell
@@ -70,22 +78,6 @@ function StatusChart({ stats }) {
                                 ))}
                             </Pie>
 
-                            <Tooltip
-                                trigger="click"
-                                cursor={false}
-                                position={{ x: 165, y: 80 }}
-                                content={({ active, payload }) => {
-                                    if (!active || !payload || !payload.length) {
-                                        return null;
-                                    }
-                                    return (
-                                        <div className="chart-tooltip">
-                                            {payload[0].name}
-                                        </div>
-                                    );
-                                }}
-                            />
-
                         </PieChart>
                     </ResponsiveContainer>
 
@@ -93,6 +85,12 @@ function StatusChart({ stats }) {
                         <h2>{stats.total}</h2>
                         <span>Total</span>
                     </div>
+
+                    {clickedIndex !== null && (
+                        <div className="chart-tooltip">
+                            {data[clickedIndex].name}
+                        </div>
+                    )}
 
                 </div>
 
