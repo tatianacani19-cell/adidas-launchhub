@@ -1,9 +1,12 @@
 import axios from "axios";
 
-// Usa la variable de entorno de Vite o cae de vuelta a localhost si estás en local
-const API_BASE_URL = import.meta.env.VITE_API_URL
-    ? `${import.meta.env.VITE_API_URL}/api`
-    : "http://localhost:3000/api"; // O el puerto que uses localmente
+// Limpiamos barras al final si existen en la variable de entorno
+const rawUrl = import.meta.env.VITE_API_URL || "";
+const cleanUrl = rawUrl.replace(/\/+$/, "");
+
+const API_BASE_URL = cleanUrl
+    ? `${cleanUrl}/api`
+    : "http://localhost:3000/api";
 
 const api = axios.create({
     baseURL: API_BASE_URL
