@@ -125,6 +125,42 @@
     margin-left: auto;
 }
 
+.date-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0 12px;
+    background: var(--bg-secondary);
+    color: var(--text-muted);
+    transition: border-color var(--transition-fast);
+}
+
+.date-filter:focus-within {
+    border-color: var(--accent);
+}
+
+.date-filter input[type="date"] {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: var(--text-primary);
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.date-filter input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.date-filter input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
 .export-btn {
     display: flex;
     align-items: center;
@@ -500,6 +536,7 @@
 
     .search-box,
     .filters-container select,
+    .date-filter,
     .clear-btn {
         width: 100%;
     }

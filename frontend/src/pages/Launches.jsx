@@ -27,6 +27,7 @@ function Launches() {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("All Status");
     const [marketFilter, setMarketFilter] = useState("All Markets");
+    const [dateFilter, setDateFilter] = useState("");
 
     const [sortField, setSortField] = useState("title");
     const [sortDir, setSortDir] = useState("asc");
@@ -88,6 +89,7 @@ function Launches() {
         setSearchTerm("");
         setStatusFilter("All Status");
         setMarketFilter("All Markets");
+        setDateFilter("");
         setCurrentPage(1);
     }
 
@@ -100,7 +102,9 @@ function Launches() {
                 statusFilter === "All Status" || launch.status === statusFilter;
             const matchesMarket =
                 marketFilter === "All Markets" || launch.market === marketFilter;
-            return matchesSearch && matchesStatus && matchesMarket;
+            const matchesDate =
+                !dateFilter || launch.launchDate?.slice(0, 10) === dateFilter;
+            return matchesSearch && matchesStatus && matchesMarket && matchesDate;
         });
 
         result.sort((a, b) => {
@@ -111,7 +115,7 @@ function Launches() {
         });
 
         return result;
-    }, [launches, searchTerm, statusFilter, marketFilter, sortField, sortDir]);
+    }, [launches, searchTerm, statusFilter, marketFilter, dateFilter, sortField, sortDir]);
 
     const totalPages = Math.ceil(filteredLaunches.length / ITEMS_PER_PAGE);
     const paginatedLaunches = filteredLaunches.slice(
@@ -154,6 +158,8 @@ function Launches() {
                     onStatusChange={setStatusFilter}
                     marketFilter={marketFilter}
                     onMarketChange={setMarketFilter}
+                    dateFilter={dateFilter}
+                    onDateChange={setDateFilter}
                     onClear={handleClearFilters}
                     onExportCSV={exportCSV}
                     onExportPDF={exportPDF}

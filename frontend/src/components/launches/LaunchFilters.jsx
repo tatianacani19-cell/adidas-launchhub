@@ -1,4 +1,4 @@
-import { Search, X, Download, FileText } from "lucide-react";
+import { Search, X, Download, FileText, Calendar } from "lucide-react";
 
 function LaunchFilters({
     searchTerm,
@@ -7,6 +7,8 @@ function LaunchFilters({
     onStatusChange,
     marketFilter,
     onMarketChange,
+    dateFilter,
+    onDateChange,
     onClear,
     onExportCSV,
     onExportPDF,
@@ -47,6 +49,16 @@ function LaunchFilters({
                 <option>Approved</option>
                 <option>Published</option>
             </select>
+
+            <div className="date-filter">
+                <Calendar size={16} />
+                <input
+                    type="date"
+                    value={dateFilter}
+                    onChange={(e) => onDateChange(e.target.value)}
+                    aria-label="Filter by launch date"
+                />
+            </div>
 
             <button className="clear-btn" onClick={onClear} aria-label="Clear all filters">
                 <X size={16} />
