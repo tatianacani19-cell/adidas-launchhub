@@ -28,9 +28,6 @@ function Settings() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordSubmitting, setPasswordSubmitting] = useState(false);
 
-    const [language, setLanguage] = useState("en");
-    const [dateFormat, setDateFormat] = useState("MM/DD/YYYY");
-    const [timeFormat, setTimeFormat] = useState("12h");
     const [timezone, setTimezone] = useState("America/Bogota");
 
     const [profileSubmitting, setProfileSubmitting] = useState(false);
@@ -51,18 +48,12 @@ function Settings() {
             setFullName(data.name || "");
             setEmail(data.email || "");
             setDepartment(data.department || "");
-            setLanguage(data.language || "en");
-            setDateFormat(data.dateFormat || "MM/DD/YYYY");
-            setTimeFormat(data.timeFormat || "12h");
             setTimezone(data.timezone || "America/Bogota");
         } catch {
             if (authUser) {
                 setFullName(authUser.name || "");
                 setEmail(authUser.email || "");
                 setDepartment(authUser.department || "");
-                setLanguage(authUser.language || "en");
-                setDateFormat(authUser.dateFormat || "MM/DD/YYYY");
-                setTimeFormat(authUser.timeFormat || "12h");
                 setTimezone(authUser.timezone || "America/Bogota");
             }
         } finally {
@@ -124,9 +115,6 @@ function Settings() {
         try {
             setPrefsSubmitting(true);
             const response = await api.put("/users/profile", {
-                language,
-                dateFormat,
-                timeFormat,
                 timezone,
             });
             setProfile(response.data);
@@ -324,66 +312,6 @@ function Settings() {
                                     onClick={() => { if (!dark) toggleTheme(); }}
                                 >
                                     Dark
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="settings-preference">
-                            <span className="settings-preference-label">Language</span>
-                            <div className="settings-segmented">
-                                <button
-                                    className={`settings-segmented-btn ${language === "en" ? "active" : ""}`}
-                                    onClick={() => setLanguage("en")}
-                                >
-                                    English
-                                </button>
-                                <button
-                                    className={`settings-segmented-btn ${language === "es" ? "active" : ""}`}
-                                    onClick={() => setLanguage("es")}
-                                >
-                                    Spanish
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="settings-preference">
-                            <span className="settings-preference-label">Date Format</span>
-                            <div className="settings-segmented">
-                                <button
-                                    className={`settings-segmented-btn ${dateFormat === "MM/DD/YYYY" ? "active" : ""}`}
-                                    onClick={() => setDateFormat("MM/DD/YYYY")}
-                                >
-                                    MM/DD/YYYY
-                                </button>
-                                <button
-                                    className={`settings-segmented-btn ${dateFormat === "DD/MM/YYYY" ? "active" : ""}`}
-                                    onClick={() => setDateFormat("DD/MM/YYYY")}
-                                >
-                                    DD/MM/YYYY
-                                </button>
-                                <button
-                                    className={`settings-segmented-btn ${dateFormat === "YYYY-MM-DD" ? "active" : ""}`}
-                                    onClick={() => setDateFormat("YYYY-MM-DD")}
-                                >
-                                    YYYY-MM-DD
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="settings-preference">
-                            <span className="settings-preference-label">Time Format</span>
-                            <div className="settings-segmented">
-                                <button
-                                    className={`settings-segmented-btn ${timeFormat === "12h" ? "active" : ""}`}
-                                    onClick={() => setTimeFormat("12h")}
-                                >
-                                    12h
-                                </button>
-                                <button
-                                    className={`settings-segmented-btn ${timeFormat === "24h" ? "active" : ""}`}
-                                    onClick={() => setTimeFormat("24h")}
-                                >
-                                    24h
                                 </button>
                             </div>
                         </div>
