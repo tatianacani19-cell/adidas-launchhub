@@ -33,15 +33,15 @@ function StatusChart({ stats }) {
             <div className="chart-wrapper">
 
                 <ResponsiveContainer
-                    width={230}
-                    height={230}
+                    width={180}
+                    height={180}
                 >
                     <PieChart>
 
                         <Pie
                             data={data}
-                            innerRadius={65}
-                            outerRadius={95}
+                            innerRadius={50}
+                            outerRadius={75}
                             dataKey="value"
                             stroke="none"
                         >
