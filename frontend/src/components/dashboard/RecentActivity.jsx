@@ -1,12 +1,6 @@
-function RecentActivity() {
-    const activities = [
-        "You created the launch",
-        "Launch Gazelle moved to In Review",
-        "You updated assets",
-        "Launch 'Stan Smith' was approved",
-        "You created the launch 'Campus'",
-    ];
+import { formatDateTime } from "../../utils/formatDateTime";
 
+function RecentActivity({ activities }) {
     return (
         <div className="dashboard-card">
             <div className="card-header">
@@ -14,10 +8,25 @@ function RecentActivity() {
             </div>
 
             <div className="activity-list">
-                {activities.map((activity, index) => (
-                    <div key={index} className="activity-item">
+                {activities.length === 0 && (
+                    <p className="dashboard-empty">No recent activity.</p>
+                )}
+
+                {activities.map((activity) => (
+                    <div key={activity._id} className="activity-item">
                         <div className="activity-dot"></div>
-                        <span>{activity}</span>
+                        <div className="activity-text">
+                            <span className="activity-main">
+                                <strong>{activity.launchTitle || "Launch"}</strong>
+                                {" \u00B7 "}
+                                {activity.action}
+                            </span>
+                            <span className="activity-meta">
+                                {activity.performedBy?.name || "Unknown User"}
+                                {" \u00B7 "}
+                                {formatDateTime(activity.createdAt)}
+                            </span>
+                        </div>
                     </div>
                 ))}
             </div>

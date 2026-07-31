@@ -79,6 +79,18 @@ function Dashboard() {
             .slice(0, 5);
     }, [launches]);
 
+    const recentActivities = useMemo(() => {
+        const all = [];
+        launches.forEach((l) => {
+            (l.activityLog || []).forEach((a) => {
+                all.push({ ...a, launchTitle: l.title });
+            });
+        });
+        return all
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .slice(0, 5);
+    }, [launches]);
+
     function exportDashboardCSV() {
         const headers = ["Title", "Market", "Date", "Status", "Description"];
         const rows = launches.map((l) => [
@@ -130,6 +142,7 @@ function Dashboard() {
                 byMarket={byMarket}
                 upcoming={upcoming}
                 recent={recent}
+                recentActivities={recentActivities}
             />
         </MainLayout>
     );
