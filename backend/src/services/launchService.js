@@ -69,16 +69,19 @@ export const updateLaunchStatus = async (id, status, user) => {
         throw error;
     }
 
-    if (user?.role === "CREATOR" && !(launch.status === "Draft" && status === "In Review")) {
-        const error = new Error("Creators can only submit Draft launches for review.");
-        error.status = 403;
-        throw error;
-    }
-
     const currentIndex = STATUS_FLOW.indexOf(launch.status);
 
     const isForwardStep = targetIndex === currentIndex + 1;
     const isBackward = targetIndex < currentIndex;
+
+    if (user?.role === "CREATOR") {
+        const canSubmitForReview = launch.status === "Draft" && status === "In Review";
+        if (!canSubmitForReview && !isBackward) {
+            const error = new Error("Creators can submit Draft launches for review or move a launch back a step.");
+            error.status = 403;
+            throw error;
+        }
+    }
 
     if (!isForwardStep && !isBackward) {
         const error = new Error(

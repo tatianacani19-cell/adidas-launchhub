@@ -195,7 +195,7 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
                         </button>
                     )}
 
-                    {user?.role === "ADMIN" && previousStatuses.length > 0 && (
+                    {(user?.role === "ADMIN" || user?.role === "CREATOR") && previousStatuses.length > 0 && (
                         <div className="back-menu-wrapper">
                             <button
                                 ref={backBtnRef}
