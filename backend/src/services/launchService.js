@@ -41,14 +41,43 @@ export const deleteLaunch = async (id, user) => {
     }
 };
 
+export const STATUS_FLOW = ["Draft", "In Review", "Approved", "Published"];
+
 export const updateLaunchStatus = async (id, status, user) => {
+    const launch = await Launch.findById(id);
+    if (!launch) return null;
+
+    const targetIndex = STATUS_FLOW.indexOf(status);
+
+    if (targetIndex === -1) {
+        const error = new Error("Invalid status.");
+        error.status = 400;
+        throw error;
+    }
+
+    if (launch.status === status) {
+        return launch;
+    }
+
+    const currentIndex = STATUS_FLOW.indexOf(launch.status);
+    const isNextStep = targetIndex === currentIndex + 1;
+    const isRevertToDraft = status === "Draft" && launch.status !== "Published";
+
+    if (!isNextStep && !isRevertToDraft) {
+        const error = new Error(
+            `Cannot change status from "${launch.status}" to "${status}". Status must follow the sequence: ${STATUS_FLOW.join(" → ")}.`
+        );
+        error.status = 400;
+        throw error;
+    }
+
     try {
-        const launch = await Launch.findByIdAndUpdate(id, { status }, { new: true });
-        if (launch) {
-            await addActivityLog(launch._id, ACTIVITY_ACTIONS.LAUNCH_STATUS_CHANGED, `Status changed to ${status}`, user);
+        const updated = await Launch.findByIdAndUpdate(id, { status }, { new: true });
+        if (updated) {
+            await addActivityLog(updated._id, ACTIVITY_ACTIONS.LAUNCH_STATUS_CHANGED, `Status changed to ${status}`, user);
             return Launch.findById(id);
         }
-        return launch;
+        return updated;
     } catch {
         return null;
     }

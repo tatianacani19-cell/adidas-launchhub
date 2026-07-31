@@ -54,9 +54,9 @@ function Launches() {
     }
 
     const handleStatusChange = useCallback(async (id, status) => {
-        await api.put(`/launches/${id}/status`, { status });
+        const response = await api.put(`/launches/${id}/status`, { status });
         setLaunches((prev) =>
-            prev.map((l) => (l._id === id ? { ...l, status } : l))
+            prev.map((l) => (l._id === id ? { ...l, status: response.data?.status || status } : l))
         );
     }, []);
 

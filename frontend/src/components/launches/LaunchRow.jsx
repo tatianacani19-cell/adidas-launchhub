@@ -24,8 +24,8 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
         try {
             await onStatusChange(launch._id, "Approved");
             addToast("Launch approved.", "success");
-        } catch {
-            addToast("Failed to approve launch.", "error");
+        } catch (err) {
+            addToast(err.response?.data?.message || "Failed to approve launch.", "error");
         }
     }
 
@@ -33,8 +33,8 @@ function LaunchRow({ launch, onDelete, onStatusChange }) {
         try {
             await onStatusChange(launch._id, "Draft");
             addToast("Launch sent back to Draft.", "info");
-        } catch {
-            addToast("Failed to reject launch.", "error");
+        } catch (err) {
+            addToast(err.response?.data?.message || "Failed to reject launch.", "error");
         }
     }
 

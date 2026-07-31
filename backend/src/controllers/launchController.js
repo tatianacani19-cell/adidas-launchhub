@@ -78,10 +78,9 @@ export const removeLaunch = async (req, res) => {
 export const updateLaunchStatusController = async (req, res) => {
     try {
         const { status } = req.body;
-        const validStatuses = ["Draft", "In Review", "Approved", "Published"];
 
-        if (!status || !validStatuses.includes(status)) {
-            return res.status(400).json({ message: "Invalid status." });
+        if (!status) {
+            return res.status(400).json({ message: "Status is required." });
         }
 
         const launch = await updateLaunchStatus(req.params.id, status, req.user);
@@ -93,7 +92,7 @@ export const updateLaunchStatusController = async (req, res) => {
         res.json(launch);
     } catch (error) {
         console.error("Error updating launch status:", error);
-        res.status(500).json({ message: "Failed to update launch status." });
+        res.status(error.status || 500).json({ message: error.message || "Failed to update launch status." });
     }
 };
 
